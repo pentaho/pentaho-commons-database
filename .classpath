@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/pentaho-xul"/>
 	<classpathentry kind="lib" path="lib-swt/win32/swt.jar"/>
 	<classpathentry kind="lib" path="lib-ext/JDBC/hsqldb.jar"/>
 	<classpathentry kind="lib" path="lib-ext/JDBC/mysql-connector-java-3.1.14-bin.jar"/>
@@ -11,5 +10,6 @@
 	<classpathentry kind="lib" path="lib-ext/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib-ext/kettle-engine-3.0.jar"/>
 	<classpathentry kind="lib" path="lib-ext/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="lib-ext/pentaho-xul-framework-1.7.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
