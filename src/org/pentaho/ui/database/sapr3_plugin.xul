@@ -1,0 +1,9 @@
+				<groupbox id="database-options-box" orient="vertical" flex="1">
+					<caption label="Settings" />
+					<label id="language-label" value="Language:" />
+					<textbox id="language-text" />
+					<label id="system-number-label" value="System Number:" />
+					<textbox id="system-number-text" />
+					<label id="client-label" value="SAP Client:" />
+					<textbox id="client-text" />
+				</groupbox>

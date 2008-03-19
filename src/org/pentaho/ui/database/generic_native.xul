@@ -1,0 +1,7 @@
+				<groupbox id="database-options-box" orient="vertical" flex="1">
+					<caption label="Settings" />
+					<label id="custom-url-label" value="Custom Connection URL:" />
+					<textbox id="custom-url-text" />
+					<label id="custom-driver-class-label" value="Custom Driver Class Name:" />
+					<textbox id="custom-driver-class-text" />
+				</groupbox>

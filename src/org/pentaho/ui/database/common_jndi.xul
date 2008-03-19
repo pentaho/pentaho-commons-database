@@ -1,0 +1,5 @@
+				<groupbox id="database-options-box" orient="vertical" flex="1">
+					<caption label="Settings" />
+					<label id="database-name-label" value="JNDI Name:" />
+					<textbox id="database-name-text" />
+				</groupbox>
