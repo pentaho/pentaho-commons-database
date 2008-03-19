@@ -11,5 +11,7 @@
 	<classpathentry kind="lib" path="lib-ext/kettle-engine-3.0.jar"/>
 	<classpathentry kind="lib" path="lib-ext/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="lib-ext/pentaho-xul-framework-1.7.0.jar"/>
+	<classpathentry kind="lib" path="lib-ext/commons-beanutils-1.8.0-BETA.jar"/>
+	<classpathentry kind="lib" path="lib-ext/commons-logging-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
