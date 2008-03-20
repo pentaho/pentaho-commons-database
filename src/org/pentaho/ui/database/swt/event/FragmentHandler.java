@@ -15,6 +15,14 @@ import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.dom.Element;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 
+/**
+ * Fragment handler deals with the logistics of replacing a portion of the dialog 
+ * from a XUL fragment when the combination of database connection type and database 
+ * access method calls for a replacement.
+ *  
+ * @author gmoran
+ * @created Mar 19, 2008
+ */
 public class FragmentHandler extends XulEventHandler {
   
   private XulListbox connectionBox;
@@ -40,6 +48,8 @@ public class FragmentHandler extends XulEventHandler {
     
     org.pentaho.ui.xul.dom.Element parentElement = document.getElementById("database-options-box").getParent();
 
+    // This gets rid of the old group box...
+    
     group.dispose();
     parentElement.removeChild(groupElement);
 
@@ -48,11 +58,22 @@ public class FragmentHandler extends XulEventHandler {
     try {
       SAXReader rdr = new SAXReader();
       doc = rdr.read(in);
+      
+      // Get new group box fragment ...
+      // This will effectively set up the SWT parent child relationship...
+      
       fragmentContainer = new SwtXulLoader().loadXulFragment(doc,(XulContainer)parentElement);
       
+      // Need to establish the DOM parent child relationship ...
+      
       parentElement.addChild(fragmentContainer.getDocumentRoot());
+      
+      // Re-apply the rules of XUL layouting...
+      
       parentElement.getXulElement().layout();
 
+      // Then tell SWT to re-render.
+      
       Composite parentComposite = (Composite) parentElement.getXulElement().getManagedObject();
       parentComposite.layout(true);
     
@@ -66,6 +87,14 @@ public class FragmentHandler extends XulEventHandler {
     
   }
   
+  /**
+   * This method handles the resource-like loading of the XUL
+   * fragment definitions based on connection type and access 
+   * method. If there is a common definition, and no connection
+   * specific override definition, then the common definition is used. 
+   * Connection specific definition resources follow the naming 
+   * pattern [connection type code]_[access method].xul.  
+   */
   public void refreshOptions(){
 
     connectionBox = (XulListbox)document.getElementById("connection-type-list");
@@ -126,6 +155,10 @@ public class FragmentHandler extends XulEventHandler {
   @Override
   public Object getData() {
     return null;
+  }
+
+  @Override
+  public void setData(Object arg0) {
   }
 
 

@@ -17,9 +17,25 @@ import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.dom.Element;
 import org.pentaho.ui.xul.swt.tags.SwtMessageBox;
 
+/**
+ * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
+ * 
+ *  TODO:
+ *  2. Needs to be abstracted away from the DatabaseMeta object, so other tools 
+ *  in the platform can use the dialog and their preferred database object.
+ *  3. Needs exception handling, string resourcing and logging
+ *  4. References to SWT need to be replaced with generic XUL references. 
+ *   
+ * @author gmoran
+ * @created Mar 19, 2008
+ *
+ */
 public class DataHandler extends XulEventHandler {
 
   public static final SortedMap<String, DatabaseInterface> connectionMap = new TreeMap<String, DatabaseInterface>();
+
+  // The connectionMap allows us to keep track of the connection
+  // type we are working with and the correlating database interface
 
   static {
     String[] dbTypeDescriptions = DatabaseMeta.getDBTypeDescLongList();
@@ -67,7 +83,7 @@ public class DataHandler extends XulEventHandler {
 
   // Informix specific
   private XulTextbox serverNameBox;
-  
+
   // SAP R/3 specific
   private XulTextbox languageBox;
 
@@ -89,7 +105,7 @@ public class DataHandler extends XulEventHandler {
   public void loadConnectionData() {
 
     getControls();
-    
+
     // Add sorted types to the listbox now.
 
     for (String key : connectionMap.keySet()) {
@@ -98,11 +114,17 @@ public class DataHandler extends XulEventHandler {
 
     // HACK: Need to force height of list control, as it does not behave 
     // well when using relative layouting
+
     connectionBox.setRows(connectionBox.getRows());
 
     Object key = connectionBox.getSelectedItem();
 
-    // Nothing selected yet...
+    // Nothing selected yet...select first item.
+
+    // TODO Implement a connection type preference,
+    // and use that type as the default for 
+    // new databases.
+
     if (key == null) {
       key = connectionMap.firstKey();
       connectionBox.setSelectedItem(key);
@@ -113,7 +135,7 @@ public class DataHandler extends XulEventHandler {
   public void loadAccessData() {
 
     getControls();
-    
+
     Object key = connectionBox.getSelectedItem();
 
     // Nothing selected yet...
@@ -128,17 +150,23 @@ public class DataHandler extends XulEventHandler {
     int acc[] = database.getAccessTypeList();
     Object accessKey = accessBox.getSelectedItem();
     accessBox.removeItems();
+
+    // Add those access types applicable to this conneciton type
+
     for (int value : acc) {
       accessBox.addItem(DatabaseMeta.getAccessTypeDescLong(value));
     }
 
     // HACK: Need to force height of list control, as it does not behave 
     // well when using relative layouting
+
     accessBox.setRows(accessBox.getRows());
 
     // May not exist for this connection type.
+
     accessBox.setSelectedItem(accessKey);
 
+    // Last resort, set first as default
     if (accessBox.getSelectedItem() == null) {
       accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(acc[0]));
     }
@@ -149,169 +177,271 @@ public class DataHandler extends XulEventHandler {
     return databaseMeta;
   }
 
-  public void onCancel(){
+  @Override
+  public void setData(Object data) {
+    if (data instanceof DatabaseMeta){
+      databaseMeta = (DatabaseMeta)data;
+    }
+    setInfo(databaseMeta);
+  }
+  
+  public void onCancel() {
     Element e = document.getRootElement();
     XulElement xulE = e.getXulElement();
-    Shell parent = (Shell)xulE.getManagedObject();
+    Shell parent = (Shell) xulE.getManagedObject();
     parent.dispose();
   }
 
-  public void onOK(){
-    
+  public void onOK() {
+
     Element e = document.getRootElement();
     XulElement xulE = e.getXulElement();
-    Shell parent = (Shell)xulE.getManagedObject();
+    Shell parent = (Shell) xulE.getManagedObject();
 
     DatabaseMeta database = new DatabaseMeta();
     this.getInfo(database);
 
     String[] remarks = database.checkParameters();
     String message = ""; //$NON-NLS-1$
-    
-    if (remarks.length != 0){
-      for (int i = 0; i < remarks.length; i++){
+
+    if (remarks.length != 0) {
+      for (int i = 0; i < remarks.length; i++) {
         message = message.concat("* ").concat(remarks[i]).concat(System.getProperty("line.separator")); //$NON-NLS-1$ //$NON-NLS-2$
       }
-      XulMessageBox messageBox = new SwtMessageBox(parent,message);
+      XulMessageBox messageBox = new SwtMessageBox(parent, message);
       messageBox.open();
-    }else{
+    } else {
       parent.dispose();
       databaseMeta = database;
     }
   }
 
-  public void testDatabaseConnection(){
+  public void testDatabaseConnection() {
 
     DatabaseMeta database = new DatabaseMeta();
     Element e = document.getRootElement();
     XulElement xulE = e.getXulElement();
-    Shell parent = (Shell)xulE.getManagedObject();
+    Shell parent = (Shell) xulE.getManagedObject();
 
     getInfo(database);
     String[] remarks = database.checkParameters();
     String message = ""; //$NON-NLS-1$
-    
-    if (remarks.length != 0){
-      for (int i = 0; i < remarks.length; i++){
+
+    if (remarks.length != 0) {
+      for (int i = 0; i < remarks.length; i++) {
         message = message.concat("* ").concat(remarks[i]).concat(System.getProperty("line.separator")); //$NON-NLS-1$  //$NON-NLS-2$
       }
     } else {
       message = database.testConnection();
     }
 
-    XulMessageBox messageBox = new SwtMessageBox(parent,message);
+    XulMessageBox messageBox = new SwtMessageBox(parent, message);
     messageBox.open();
   }
 
-  private void getInfo(DatabaseMeta meta) 
-  {
-    
+  private void getInfo(DatabaseMeta meta) {
+
     getControls();
-    
-    if ( this.databaseMeta != null &&  this.databaseMeta != meta){
+
+    if (this.databaseMeta != null && this.databaseMeta != meta) {
       meta.initializeVariablesFrom(this.databaseMeta);
     }
-      // Before we put all attributes back in, clear the old list to make sure...
-      // Warning: the port is an attribute too now.
-      // 
-      meta.getAttributes().clear();
+    // Before we put all attributes back in, clear the old list to make sure...
+    // Warning: the port is an attribute too now.
+    // 
+    meta.getAttributes().clear();
 
-      // Name:
-      meta.setName(connectionNameBox.getValue());
+    // Name:
+    meta.setName(connectionNameBox.getValue());
 
-      // Connection type:
-      Object connection = connectionBox.getSelectedItem();
-      if (connection != null){
-          meta.setDatabaseType((String)connection);
-      }
-
-      // Access type:
-      Object access = accessBox.getSelectedItem();
-      if (access != null){
-          meta.setAccessType(DatabaseMeta.getAccessType((String)access));
-      }
-
-      // Hostname:
-      if (hostNameBox != null){
-        meta.setHostname(hostNameBox.getValue());
-      }
-
-      // Database name:
-      if (databaseNameBox != null){
-        meta.setDBName(databaseNameBox.getValue());
-      }
-
-      // Port number:
-      if (portNumberBox != null){
-        meta.setDBPort(portNumberBox.getValue());
-      }
-
-      // Username:
-      if (userNameBox != null){
-        meta.setUsername(userNameBox.getValue());
-      }
-
-      // Password:
-      if (passwordBox != null){
-        meta.setPassword(passwordBox.getValue());
-      }
-
-      // Streaming result cursor:
-      if (resultStreamingCursorCheck != null){
-        meta.setStreamingResults(resultStreamingCursorCheck.isChecked());
-      }
-      
-      // Data tablespace:
-      if (dataTablespaceBox != null){
-        meta.setDataTablespace(dataTablespaceBox.getValue());
-      }
-
-      // Index tablespace
-      if (indexTablespaceBox != null){
-        meta.setIndexTablespace(indexTablespaceBox.getValue());
-      }
-
-      // The SQL Server instance name overrides the option.
-      // Empty doesn't clears the option, we have mercy.
-
-      if (serverInstanceBox != null){
-        if (serverInstanceBox.getValue().trim().length() > 0){
-          meta.setSQLServerInstance(serverInstanceBox.getValue());
-        }
-      }
-      
-      // SQL Server double decimal separator
-      if (doubleDecimalSeparatorCheck != null){
-        meta.setUsingDoubleDecimalAsSchemaTableSeparator( doubleDecimalSeparatorCheck.isChecked() );
-      }
-
-      // SAP Attributes...
-      if (languageBox != null){
-        meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_LANGUAGE, languageBox.getValue());
-      }
-      if (systemNumberBox != null){
-        meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_SYSTEM_NUMBER, systemNumberBox.getValue());
-      }
-      if (clientBox != null){
-        meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_CLIENT, clientBox.getValue());
-      }
-
-      // Generic settings...
-      if (customUrlBox != null){
-        meta.getAttributes().put(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_URL, customUrlBox.getValue());
-      }
-      if (customDriverClassBox != null){
-        meta.getAttributes().put(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_DRIVER_CLASS, customDriverClassBox.getValue());
-      }
-
-      // Server Name:  (Informix)
-      if (serverNameBox != null){
-        meta.setServername(serverNameBox.getValue());
-      }
-
+    // Connection type:
+    Object connection = connectionBox.getSelectedItem();
+    if (connection != null) {
+      meta.setDatabaseType((String) connection);
     }
 
+    // Access type:
+    Object access = accessBox.getSelectedItem();
+    if (access != null) {
+      meta.setAccessType(DatabaseMeta.getAccessType((String) access));
+    }
+
+    // Hostname:
+    if (hostNameBox != null) {
+      meta.setHostname(hostNameBox.getValue());
+    }
+
+    // Database name:
+    if (databaseNameBox != null) {
+      meta.setDBName(databaseNameBox.getValue());
+    }
+
+    // Port number:
+    if (portNumberBox != null) {
+      meta.setDBPort(portNumberBox.getValue());
+    }
+
+    // Username:
+    if (userNameBox != null) {
+      meta.setUsername(userNameBox.getValue());
+    }
+
+    // Password:
+    if (passwordBox != null) {
+      meta.setPassword(passwordBox.getValue());
+    }
+
+    // Streaming result cursor:
+    if (resultStreamingCursorCheck != null) {
+      meta.setStreamingResults(resultStreamingCursorCheck.isChecked());
+    }
+
+    // Data tablespace:
+    if (dataTablespaceBox != null) {
+      meta.setDataTablespace(dataTablespaceBox.getValue());
+    }
+
+    // Index tablespace
+    if (indexTablespaceBox != null) {
+      meta.setIndexTablespace(indexTablespaceBox.getValue());
+    }
+
+    // The SQL Server instance name overrides the option.
+    // Empty doesn't clear the option, we have mercy.
+
+    if (serverInstanceBox != null) {
+      if (serverInstanceBox.getValue().trim().length() > 0) {
+        meta.setSQLServerInstance(serverInstanceBox.getValue());
+      }
+    }
+
+    // SQL Server double decimal separator
+    if (doubleDecimalSeparatorCheck != null) {
+      meta.setUsingDoubleDecimalAsSchemaTableSeparator(doubleDecimalSeparatorCheck.isChecked());
+    }
+
+    // SAP Attributes...
+    if (languageBox != null) {
+      meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_LANGUAGE, languageBox.getValue());
+    }
+    if (systemNumberBox != null) {
+      meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_SYSTEM_NUMBER, systemNumberBox.getValue());
+    }
+    if (clientBox != null) {
+      meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_CLIENT, clientBox.getValue());
+    }
+
+    // Generic settings...
+    if (customUrlBox != null) {
+      meta.getAttributes().put(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_URL, customUrlBox.getValue());
+    }
+    if (customDriverClassBox != null) {
+      meta.getAttributes().put(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_DRIVER_CLASS, customDriverClassBox.getValue());
+    }
+
+    // Server Name:  (Informix)
+    if (serverNameBox != null) {
+      meta.setServername(serverNameBox.getValue());
+    }
+
+  }
+
+  private void setInfo(DatabaseMeta meta) {
+
+    if (meta == null) {
+      return;
+    }
+
+    // Name:
+    connectionNameBox.setValue(meta.getName());
+
+    // Connection type:
+    connectionBox.setSelectedItem(meta.getDatabaseInterface().getDatabaseTypeDescLong());
+
+    // Access type:
+    accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(meta.getAccessType()));
+
+    getControls();
+
+    if (hostNameBox != null) {
+      hostNameBox.setValue(meta.getHostname());
+    }
+
+    // Database name:
+    if (databaseNameBox != null) {
+      databaseNameBox.setValue(meta.getDatabaseName());
+    }
+
+    // Port number:
+    if (portNumberBox != null) {
+      portNumberBox.setValue(meta.getDatabasePortNumberString());
+    }
+
+    // Username:
+    if (userNameBox != null) {
+      userNameBox.setValue(meta.getUsername());
+    }
+
+    // Password:
+    if (passwordBox != null) {
+      passwordBox.setValue(meta.getPassword());
+    }
+
+    // Streaming result cursor:
+    if (resultStreamingCursorCheck != null) {
+      resultStreamingCursorCheck.setChecked(meta.isStreamingResults());
+    }
+
+    // Data tablespace:
+    if (dataTablespaceBox != null) {
+      dataTablespaceBox.setValue(meta.getDataTablespace());
+    }
+
+    // Index tablespace
+    if (indexTablespaceBox != null) {
+      indexTablespaceBox.setValue(meta.getIndexTablespace());
+    }
+
+    if (serverInstanceBox != null) {
+      serverInstanceBox.setValue(meta.getSQLServerInstance());
+    }
+
+    // SQL Server double decimal separator
+    if (doubleDecimalSeparatorCheck != null) {
+      doubleDecimalSeparatorCheck.setChecked(meta.isUsingDoubleDecimalAsSchemaTableSeparator());
+    }
+
+    // SAP Attributes...
+    if (languageBox != null) {
+      languageBox.setValue(meta.getAttributes().getProperty(SAPR3DatabaseMeta.ATTRIBUTE_SAP_LANGUAGE));
+    }
+    if (systemNumberBox != null) {
+      systemNumberBox.setValue(meta.getAttributes().getProperty(SAPR3DatabaseMeta.ATTRIBUTE_SAP_SYSTEM_NUMBER));
+    }
+    if (clientBox != null) {
+      clientBox.setValue(meta.getAttributes().getProperty(SAPR3DatabaseMeta.ATTRIBUTE_SAP_CLIENT));
+    }
+
+    // Generic settings...
+    if (customUrlBox != null) {
+      customUrlBox.setValue(meta.getAttributes().getProperty(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_URL));
+    }
+    if (customDriverClassBox != null) {
+      customDriverClassBox.setValue(meta.getAttributes().getProperty(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_DRIVER_CLASS));
+    }
+
+    // Server Name:  (Informix)
+    if (serverNameBox != null) {
+      serverNameBox.setValue(meta.getServername());
+    }
+
+  }
+
   private void getControls() {
+
+    // Not all of these controls are created at the same time.. that's OK, for now, just check
+    // each one for null before using.
+
     connectionBox = (XulListbox) document.getElementById("connection-type-list"); //$NON-NLS-1$
     accessBox = (XulListbox) document.getElementById("access-type-list"); //$NON-NLS-1$
     connectionNameBox = (XulTextbox) document.getElementById("connection-name-text"); //$NON-NLS-1$
