@@ -1,56 +1,93 @@
 <?xml version="1.0"?>
 <window id="general-datasource-window"
-	title="Testing groupboxes for SWT, Swing" orient="vertical" height="550" width="700"
+	title="Testing groupboxes for SWT, Swing" orient="vertical"
+	height="550" width="700"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="dataHandler.loadConnectionData()">
 	<script id="fragmentHandler" src="org.pentaho.ui.database.swt.event.FragmentHandler" />
 	<script id="dataHandler" src="org.pentaho.ui.database.swt.event.DataHandler" />
+	<script id="dialogHandler" src="org.pentaho.ui.database.swt.event.DialogHandler" />
 	<hbox id="all-box" flex="1">
-		<groupbox id="options-box" orient="vertical" flex="1">
-			<label id="label-one" value="General" />
-			<label id="label-two" value="Advanced" />
-			<label id="label-three" value="Options" />
-			<label id="label-one" value="Pooling" />
-			<label id="label-two" value="Explore" />
-			<label id="label-three" value="Feature List" />
-		</groupbox>
-		<groupbox id="general-settings-box" orient="vertical" flex="8">
-			<label id="connection-name-label" value="Connection Name:" />
-			<textbox id="connection-name-text" />
-			<hbox id="button-box" flex="1">
-				<vbox id="type-box" flex="1">
-					<label id="connection-type-label" value="Connection Type:" />
-					<listbox id="connection-type-list" rows="8" onselect="dataHandler.loadAccessData()">
-					</listbox>
-					<label id="access-type-label" value="Access:" />
-					<listbox id="access-type-list" rows="5" onselect="fragmentHandler.refreshOptions()">
-					</listbox>
-				</vbox>
-				<!--  This is the container that will be replaced on change of the access method  -->				
-				<groupbox id="database-options-box" orient="vertical" flex="1">
-					<caption label="Settings" />
-					<label id="server-host-name-label" value="Server Host Name:" />
-					<textbox id="server-host-name-text" />
-					<label id="database-name-label" value="Database Name:" />
-					<textbox id="database-name-text" />
-					<label id="port-number-label" value="Port Number:" />
-					<textbox id="port-number-text" />
-					<label id="username-label" value="Username:" />
-					<textbox id="username-text" />
-					<label id="password-label" value="Password:" />
-					<textbox id="password-text" />
-				</groupbox>
+		<listbox id="deck-options-list" flex="1"
+			onselect="dialogHandler.setDeckChildIndex()">
+			<listitem id="general-item" label="General" />
+			<listitem id="advanced-item" label="Advanced" />
+			<listitem id="options-item" label="Options" />
+			<listitem id="pooling-item" label="Pooling" />
+			<listitem id="cluster-item" label="Clustering" />
+			<listitem id="explore-item" label="Explore" />
+			<listitem id="feature-list-item" label="Feature List" />
+		</listbox>
+		<deck id="dialog-panel-deck" selectedIndex="1" flex="8">
+			<groupbox id="general-settings-box" orient="vertical">
+				<label id="connection-name-label"
+					value="Connection Name:" />
+				<textbox id="connection-name-text" />
+				<hbox id="button-box" flex="1">
+					<vbox id="type-box" flex="1">
+						<label id="connection-type-label" value="Connection Type:" />
+						<listbox id="connection-type-list" rows="8" onselect="dataHandler.loadAccessData()">
+						</listbox>
+						<label id="access-type-label" value="Access:" />
+						<listbox id="access-type-list" rows="5" onselect="fragmentHandler.refreshOptions()">
+						</listbox>
+					</vbox>
+					<!--  This is the container that will be replaced on change of the access method  -->
+					<groupbox id="database-options-box" orient="vertical" flex="1">
+						<caption label="Settings" />
+						<label id="server-host-name-label" value="Server Host Name:" />
+						<textbox id="server-host-name-text" />
+						<label id="database-name-label" value="Database Name:" />
+						<textbox id="database-name-text" />
+						<label id="port-number-label" value="Port Number:" />
+						<textbox id="port-number-text" />
+						<label id="username-label" value="Username:" />
+						<textbox id="username-text" />
+						<label id="password-label" value="Password:" />
+						<textbox id="password-text" />
+					</groupbox>
+				</hbox>
+				<hbox id="test-button-box">
+					<label id="spacer-label" flex="10" />
+					<button id="test-button" label="Test" flex="1"
+						onclick="dataHandler.testDatabaseConnection()" />
+				</hbox>
+			</groupbox>
+			<vbox>
+				<checkbox id="quote-identifiers-check" label="Quote All Identifiers in Database" checked="false" />
+				<checkbox id="force-lower-case-check" label="Force All Identifiers to Lower Case" checked="false" />
+				<checkbox id="force-upper-case-check" label="Force All Identifiers to Upper Case" checked="false" />
+				<label id="spacer-label" value="" />
+				<label id="sql-label" value="Enter the SQL statements (separated by ;) to execute right after connecting:" />
+				<textbox id="sql-text" multiline="true" flex="1" />
+			</vbox>
+			<hbox>
+				<groupbox id="place-holder-box-0" orient="vertical" flex="1">
+					<caption label="Options" />
+				</groupbox>				
 			</hbox>
-			<hbox id="test-button-box">
-				<label id="spacer-label" flex="10" />
-				<button id="test-button" label="Test" flex="1" onclick="dataHandler.testDatabaseConnection()" />
-			</hbox>
-		</groupbox>
+			<vbox>
+				<checkbox id="use-pool-check" label="Use a Connection Pool" checked="false" />
+				<label id="pool-size-label" value="Initial Pool Size:" disabled="true"/>
+				<textbox id="pool-size-text" disabled="true"/>
+				<label id="max-pool-size-label" value="Maximum Pool Size:" disabled="true"/>
+				<textbox id="max-pool-size-text" disabled="true"/>
+				<groupbox id="place-holder-box-1" orient="vertical" flex="1">
+					<caption label="Pool Parameters" />
+				</groupbox>				
+			</vbox>
+			<vbox>
+				<checkbox id="use-cluster-check" label="Use Clustering" checked="false" />
+				<groupbox id="place-holder-box-2" orient="vertical" flex="1">
+					<caption label="Cluster Parameters" />
+				</groupbox>				
+			</vbox>
+		</deck>
 	</hbox>
 	<hbox id="button-box">
 		<!--  flexing all three controls allows me to control the size of the OK, Cancel buttons -->
 		<label id="spacer-label" flex="10" />
-		<button id="ok-button" label="OK" flex="1" onclick="dataHandler.onOK()"/>
-		<button id="cancel-button" label="Cancel" flex="1" onclick="dataHandler.onCancel()"/>
+		<button id="ok-button" label="OK" flex="1" onclick="dataHandler.onOK()" />
+		<button id="cancel-button" label="Cancel" flex="1" onclick="dataHandler.onCancel()" />
 	</hbox>
 
 </window>

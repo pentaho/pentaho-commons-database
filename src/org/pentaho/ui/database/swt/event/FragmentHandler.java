@@ -4,7 +4,6 @@ import java.io.InputStream;
 
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
-import org.eclipse.swt.widgets.Composite;
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.ui.xul.XulContainer;
@@ -35,7 +34,6 @@ public class FragmentHandler extends XulEventHandler {
   
   private void loadDatabaseOptionsFragment(String fragmentUri){
     
-    // TODO This could be a generic method for removing and replacing children...
     
     InputStream in = getClass().getClassLoader().getResourceAsStream(fragmentUri);
     if (in == null) {
@@ -44,14 +42,8 @@ public class FragmentHandler extends XulEventHandler {
     }
 
     Element groupElement = document.getElementById("database-options-box");
-    Composite group = (Composite)groupElement.getXulElement().getManagedObject();
-    
-    org.pentaho.ui.xul.dom.Element parentElement = document.getElementById("database-options-box").getParent();
+    Element parentElement = groupElement.getParent();
 
-    // This gets rid of the old group box...
-    
-    group.dispose();
-    parentElement.removeChild(groupElement);
 
     Document doc;
     XulDomContainer fragmentContainer = null;
@@ -63,20 +55,8 @@ public class FragmentHandler extends XulEventHandler {
       // This will effectively set up the SWT parent child relationship...
       
       fragmentContainer = new SwtXulLoader().loadXulFragment(doc,(XulContainer)parentElement);
+      parentElement.replaceChild(groupElement, fragmentContainer.getDocumentRoot());
       
-      // Need to establish the DOM parent child relationship ...
-      
-      parentElement.addChild(fragmentContainer.getDocumentRoot());
-      
-      // Re-apply the rules of XUL layouting...
-      
-      parentElement.getXulElement().layout();
-
-      // Then tell SWT to re-render.
-      
-      Composite parentComposite = (Composite) parentElement.getXulElement().getManagedObject();
-      parentComposite.layout(true);
-    
     } catch (Exception e) {
       // TODO catch exception
     }

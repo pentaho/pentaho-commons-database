@@ -7,14 +7,11 @@ import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
-import org.pentaho.ui.xul.XulElement;
 import org.pentaho.ui.xul.XulEventHandler;
 import org.pentaho.ui.xul.components.XulCheckbox;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulListbox;
-import org.pentaho.ui.xul.dom.Element;
-import org.pentaho.ui.xul.swt.tags.SwtMessageBox;
 
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
@@ -190,9 +187,6 @@ public class DataHandler extends XulEventHandler {
 
   public void onOK() {
 
-    Element e = document.getRootElement();
-    XulElement xulE = e.getXulElement();
-
     DatabaseMeta database = new DatabaseMeta();
     this.getInfo(database);
 
@@ -203,7 +197,7 @@ public class DataHandler extends XulEventHandler {
       for (int i = 0; i < remarks.length; i++) {
         message = message.concat("* ").concat(remarks[i]).concat(System.getProperty("line.separator")); //$NON-NLS-1$ //$NON-NLS-2$
       }
-      XulMessageBox messageBox = this.xulDomContainer.createMessageBox(message);
+      XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
       messageBox.open();
     } else {
       this.xulDomContainer.close();
@@ -214,8 +208,6 @@ public class DataHandler extends XulEventHandler {
   public void testDatabaseConnection() {
 
     DatabaseMeta database = new DatabaseMeta();
-    Element e = document.getRootElement();
-    XulElement xulE = e.getXulElement();
 
     getInfo(database);
     String[] remarks = database.checkParameters();
@@ -228,7 +220,7 @@ public class DataHandler extends XulEventHandler {
     } else {
       message = database.testConnection();
     }
-      XulMessageBox messageBox = this.xulDomContainer.createMessageBox(message);
+      XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
       messageBox.open();
   }
 
