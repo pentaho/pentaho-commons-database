@@ -3,7 +3,6 @@ package org.pentaho.ui.database.swt.event;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.eclipse.swt.widgets.Shell;
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
@@ -186,17 +185,13 @@ public class DataHandler extends XulEventHandler {
   }
   
   public void onCancel() {
-    Element e = document.getRootElement();
-    XulElement xulE = e.getXulElement();
-    Shell parent = (Shell) xulE.getManagedObject();
-    parent.dispose();
+    this.xulDomContainer.close();
   }
 
   public void onOK() {
 
     Element e = document.getRootElement();
     XulElement xulE = e.getXulElement();
-    Shell parent = (Shell) xulE.getManagedObject();
 
     DatabaseMeta database = new DatabaseMeta();
     this.getInfo(database);
@@ -208,10 +203,10 @@ public class DataHandler extends XulEventHandler {
       for (int i = 0; i < remarks.length; i++) {
         message = message.concat("* ").concat(remarks[i]).concat(System.getProperty("line.separator")); //$NON-NLS-1$ //$NON-NLS-2$
       }
-      XulMessageBox messageBox = new SwtMessageBox(parent, message);
+      XulMessageBox messageBox = this.xulDomContainer.createMessageBox(message);
       messageBox.open();
     } else {
-      parent.dispose();
+      this.xulDomContainer.close();
       databaseMeta = database;
     }
   }
@@ -221,7 +216,6 @@ public class DataHandler extends XulEventHandler {
     DatabaseMeta database = new DatabaseMeta();
     Element e = document.getRootElement();
     XulElement xulE = e.getXulElement();
-    Shell parent = (Shell) xulE.getManagedObject();
 
     getInfo(database);
     String[] remarks = database.checkParameters();
@@ -234,9 +228,8 @@ public class DataHandler extends XulEventHandler {
     } else {
       message = database.testConnection();
     }
-
-    XulMessageBox messageBox = new SwtMessageBox(parent, message);
-    messageBox.open();
+      XulMessageBox messageBox = this.xulDomContainer.createMessageBox(message);
+      messageBox.open();
   }
 
   private void getInfo(DatabaseMeta meta) {
