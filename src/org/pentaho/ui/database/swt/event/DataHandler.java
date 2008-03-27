@@ -9,6 +9,7 @@ import org.pentaho.di.core.database.GenericDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
 import org.pentaho.ui.xul.XulEventHandler;
 import org.pentaho.ui.xul.components.XulCheckbox;
+import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
@@ -98,6 +99,18 @@ public class DataHandler extends XulEventHandler {
 
   // MySQL specific
   private XulCheckbox resultStreamingCursorCheck;
+  
+  private XulCheckbox poolingCheck;
+  
+  private XulCheckbox clusteringCheck;
+  
+  private XulTextbox poolSizeBox;
+  
+  private XulTextbox maxPoolSizeBox;
+
+  private XulLabel poolSizeLabel;
+  
+  private XulLabel maxPoolSizeLabel;
 
   public DataHandler() {
   }
@@ -186,6 +199,29 @@ public class DataHandler extends XulEventHandler {
     
   }
 
+  public void onPoolingCheck(){
+    if (poolingCheck != null){
+      boolean dis = !poolingCheck.isChecked();
+      if (poolSizeBox != null){
+        poolSizeBox.setDisabled(dis);
+      }
+      if (maxPoolSizeBox != null){
+        maxPoolSizeBox.setDisabled(dis);
+      }
+      if (poolSizeLabel != null){
+        poolSizeLabel.setDisabled(dis);
+      }
+      if (maxPoolSizeLabel != null){
+        maxPoolSizeLabel.setDisabled(dis);
+      }
+    }
+  }
+  
+  public void onClusterCheck(){
+    if (clusteringCheck != null){
+      
+    }
+  }
 
   @Override
   public Object getData() {
@@ -469,6 +505,13 @@ public class DataHandler extends XulEventHandler {
     clientBox = (XulTextbox) document.getElementById("client-text"); //$NON-NLS-1$
     doubleDecimalSeparatorCheck = (XulCheckbox) document.getElementById("decimal-separator-check"); //$NON-NLS-1$
     resultStreamingCursorCheck = (XulCheckbox) document.getElementById("result-streaming-check"); //$NON-NLS-1$
+    poolingCheck = (XulCheckbox) document.getElementById("use-pool-check"); //$NON-NLS-1$
+    clusteringCheck = (XulCheckbox) document.getElementById("use-cluster-check"); //$NON-NLS-1$
+    poolSizeLabel = (XulLabel) document.getElementById("pool-size-label"); //$NON-NLS-1$
+    poolSizeBox = (XulTextbox) document.getElementById("pool-size-text"); //$NON-NLS-1$
+    maxPoolSizeLabel = (XulLabel) document.getElementById("max-pool-size-label"); //$NON-NLS-1$
+    maxPoolSizeBox = (XulTextbox) document.getElementById("max-pool-size-text"); //$NON-NLS-1$
+    
   }
 
 }
