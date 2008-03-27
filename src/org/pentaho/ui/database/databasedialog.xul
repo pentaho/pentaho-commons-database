@@ -5,19 +5,15 @@
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="dataHandler.loadConnectionData()">
 	<script id="fragmentHandler" src="org.pentaho.ui.database.swt.event.FragmentHandler" />
 	<script id="dataHandler" src="org.pentaho.ui.database.swt.event.DataHandler" />
-	<script id="dialogHandler" src="org.pentaho.ui.database.swt.event.DialogHandler" />
 	<hbox id="all-box" flex="1">
-		<listbox id="deck-options-list" flex="1"
-			onselect="dialogHandler.setDeckChildIndex()">
+		<listbox id="deck-options-list" flex="1" onselect="dataHandler.setDeckChildIndex()">
 			<listitem id="general-item" label="General" />
 			<listitem id="advanced-item" label="Advanced" />
 			<listitem id="options-item" label="Options" />
 			<listitem id="pooling-item" label="Pooling" />
 			<listitem id="cluster-item" label="Clustering" />
-			<listitem id="explore-item" label="Explore" />
-			<listitem id="feature-list-item" label="Feature List" />
 		</listbox>
-		<deck id="dialog-panel-deck" selectedIndex="1" flex="8">
+		<deck id="dialog-panel-deck" selectedIndex="0" flex="8">
 			<groupbox id="general-settings-box" orient="vertical">
 				<label id="connection-name-label"
 					value="Connection Name:" />

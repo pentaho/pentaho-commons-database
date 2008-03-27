@@ -11,6 +11,7 @@ import org.pentaho.ui.xul.XulEventHandler;
 import org.pentaho.ui.xul.components.XulCheckbox;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
+import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulListbox;
 
 /**
@@ -20,7 +21,6 @@ import org.pentaho.ui.xul.containers.XulListbox;
  *  2. Needs to be abstracted away from the DatabaseMeta object, so other tools 
  *  in the platform can use the dialog and their preferred database object.
  *  3. Needs exception handling, string resourcing and logging
- *  4. References to SWT need to be replaced with generic XUL references. 
  *   
  * @author gmoran
  * @created Mar 19, 2008
@@ -45,6 +45,10 @@ public class DataHandler extends XulEventHandler {
   }
 
   private DatabaseMeta databaseMeta = null;
+
+  private XulDeck dialogDeck;
+
+  private XulListbox deckOptionsBox;
 
   private XulListbox connectionBox;
 
@@ -125,6 +129,12 @@ public class DataHandler extends XulEventHandler {
       key = connectionMap.firstKey();
       connectionBox.setSelectedItem(key);
     }
+    
+    // HACK: Need to force selection of first panel
+
+    if (dialogDeck != null){
+      dialogDeck.setSelectedIndex(dialogDeck.getSelectedIndex());
+    }
 
   }
 
@@ -167,9 +177,20 @@ public class DataHandler extends XulEventHandler {
       accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(acc[0]));
     }
   }
+  
+  public void setDeckChildIndex(){
+    
+    getControls();
+    int selected = deckOptionsBox.getSelectedIndex();
+    dialogDeck.setSelectedIndex(selected);
+    
+  }
+
 
   @Override
   public Object getData() {
+    databaseMeta = new DatabaseMeta();
+    this.getInfo(databaseMeta);
     return databaseMeta;
   }
 
@@ -427,6 +448,8 @@ public class DataHandler extends XulEventHandler {
     // Not all of these controls are created at the same time.. that's OK, for now, just check
     // each one for null before using.
 
+    dialogDeck = (XulDeck) document.getElementById("dialog-panel-deck"); //$NON-NLS-1$
+    deckOptionsBox = (XulListbox)document.getElementById("deck-options-list"); //$NON-NLS-1$
     connectionBox = (XulListbox) document.getElementById("connection-type-list"); //$NON-NLS-1$
     accessBox = (XulListbox) document.getElementById("access-type-list"); //$NON-NLS-1$
     connectionNameBox = (XulTextbox) document.getElementById("connection-name-text"); //$NON-NLS-1$
