@@ -9,6 +9,7 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.ui.xul.XulContainer;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulEventHandler;
+import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.dom.Element;
@@ -35,12 +36,6 @@ public class FragmentHandler extends XulEventHandler {
   private void loadDatabaseOptionsFragment(String fragmentUri){
     
     
-    InputStream in = getClass().getClassLoader().getResourceAsStream(fragmentUri);
-    if (in == null) {
-      // TODO log error
-      return;
-    }
-
     Element groupElement = document.getElementById("database-options-box");
     Element parentElement = groupElement.getParent();
 
@@ -48,17 +43,17 @@ public class FragmentHandler extends XulEventHandler {
     Document doc;
     XulDomContainer fragmentContainer = null;
     try {
-      SAXReader rdr = new SAXReader();
-      doc = rdr.read(in);
       
       // Get new group box fragment ...
       // This will effectively set up the SWT parent child relationship...
       
-      fragmentContainer = new SwtXulLoader().loadXulFragment(doc,(XulContainer)parentElement);
-      parentElement.replaceChild(groupElement, fragmentContainer.getDocumentRoot());
+      fragmentContainer = this.xulDomContainer.loadFragment(fragmentUri);
+      Element newGroup = fragmentContainer.getDocumentRoot().getFirstChild();
+      parentElement.replaceChild(groupElement, newGroup);
       
-    } catch (Exception e) {
-      // TODO catch exception
+    } catch (XulException e) {
+      System.out.println("Error loading Database Fragment: "+e.getMessage());
+      e.printStackTrace(System.out);
     }
     
     if (fragmentContainer == null){
