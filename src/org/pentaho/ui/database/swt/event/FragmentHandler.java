@@ -6,6 +6,7 @@ import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulContainer;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.impl.XulEventHandler;
@@ -36,8 +37,8 @@ public class FragmentHandler extends XulEventHandler {
   private void loadDatabaseOptionsFragment(String fragmentUri){
     
     
-    Element groupElement = document.getElementById("database-options-box");
-    Element parentElement = groupElement.getParent();
+    XulComponent groupElement = document.getElementById("database-options-box");
+    XulComponent parentElement = groupElement.getParent();
 
 
     Document doc;
@@ -48,7 +49,7 @@ public class FragmentHandler extends XulEventHandler {
       // This will effectively set up the SWT parent child relationship...
       
       fragmentContainer = this.xulDomContainer.loadFragment(fragmentUri);
-      Element newGroup = fragmentContainer.getDocumentRoot().getFirstChild();
+      XulComponent newGroup = fragmentContainer.getDocumentRoot().getFirstChild();
       parentElement.replaceChild(groupElement, newGroup);
       
     } catch (XulException e) {

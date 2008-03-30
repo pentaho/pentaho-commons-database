@@ -7,7 +7,6 @@ import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
-//import org.pentaho.ui.xul.XulElement;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.pentaho.ui.xul.components.XulCheckbox;
