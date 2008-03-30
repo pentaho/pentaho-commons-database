@@ -55,7 +55,7 @@ public class SwingTest {
          } catch (Exception e) {
            e.printStackTrace();
          } 
-         XulWindow dialog = (XulWindow) container.getDocumentRoot().getXulElement();
+         XulWindow dialog = (XulWindow) container.getDocumentRoot().getRootElement();
          container.initialize();
          dialog.open();
 

@@ -7,8 +7,9 @@ import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
-import org.pentaho.ui.xul.XulElement;
-import org.pentaho.ui.xul.XulEventHandler;
+//import org.pentaho.ui.xul.XulElement;
+import org.pentaho.ui.xul.XulComponent;
+import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.pentaho.ui.xul.components.XulCheckbox;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMessageBox;
@@ -486,7 +487,7 @@ public class DataHandler extends XulEventHandler {
     // Not all of these controls are created at the same time.. that's OK, for now, just check
     // each one for null before using.
 
-    XulElement temp = (XulElement) document.getElementById("all-box"); //$NON-NLS-1$
+    XulComponent temp = (XulComponent) document.getElementById("all-box"); //$NON-NLS-1$
     dialogDeck = (XulDeck) document.getElementById("dialog-panel-deck"); //$NON-NLS-1$
     deckOptionsBox = (XulListbox)document.getElementById("deck-options-list"); //$NON-NLS-1$
     connectionBox = (XulListbox) document.getElementById("connection-type-list"); //$NON-NLS-1$

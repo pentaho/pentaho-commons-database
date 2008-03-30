@@ -1,6 +1,6 @@
 package org.pentaho.ui.database.swt.event;
 
-import org.pentaho.ui.xul.XulEventHandler;
+import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulListbox;
 

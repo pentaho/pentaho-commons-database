@@ -54,7 +54,7 @@ public class DatabaseDialogHarness {
     } catch (Exception e) {
       e.printStackTrace();
     } 
-    XulWindow dialog = (XulWindow) container.getDocumentRoot().getXulElement();
+    XulWindow dialog = (XulWindow) container.getDocumentRoot().getRootElement();
     dialog.open();
 
     try {

@@ -8,7 +8,7 @@ import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.ui.xul.XulContainer;
 import org.pentaho.ui.xul.XulDomContainer;
-import org.pentaho.ui.xul.XulEventHandler;
+import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulListbox;
