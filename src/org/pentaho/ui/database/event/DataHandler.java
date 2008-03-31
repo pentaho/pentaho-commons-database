@@ -1,4 +1,4 @@
-package org.pentaho.ui.database.swt.event;
+package org.pentaho.ui.database.event;
 
 import java.util.SortedMap;
 import java.util.TreeMap;

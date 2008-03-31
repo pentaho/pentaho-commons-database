@@ -9,8 +9,8 @@
 	<!--  ###############################################################################  -->
 	<!--     Scripts for event handling                                                    -->
 	<!--  ###############################################################################  -->
-	<script id="fragmentHandler" src="org.pentaho.ui.database.swt.event.FragmentHandler" />
-	<script id="dataHandler" src="org.pentaho.ui.database.swt.event.DataHandler" />
+	<script id="fragmentHandler" src="org.pentaho.ui.database.event.FragmentHandler" />
+	<script id="dataHandler" src="org.pentaho.ui.database.event.DataHandler" />
 
 
 	<hbox id="all-box" flex="1">

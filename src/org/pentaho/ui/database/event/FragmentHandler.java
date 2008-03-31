@@ -1,20 +1,16 @@
-package org.pentaho.ui.database.swt.event;
+package org.pentaho.ui.database.event;
 
 import java.io.InputStream;
 
 import org.dom4j.Document;
-import org.dom4j.io.SAXReader;
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.ui.xul.XulComponent;
-import org.pentaho.ui.xul.XulContainer;
 import org.pentaho.ui.xul.XulDomContainer;
-import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulListbox;
-import org.pentaho.ui.xul.dom.Element;
-import org.pentaho.ui.xul.swt.SwtXulLoader;
+import org.pentaho.ui.xul.impl.XulEventHandler;
 
 /**
  * Fragment handler deals with the logistics of replacing a portion of the dialog 
