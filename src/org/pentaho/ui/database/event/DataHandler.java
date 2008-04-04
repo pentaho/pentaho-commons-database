@@ -7,14 +7,14 @@ import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
-import org.pentaho.ui.xul.XulComponent;
-import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.pentaho.ui.xul.components.XulCheckbox;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulListbox;
+import org.pentaho.ui.xul.containers.XulTree;
+import org.pentaho.ui.xul.impl.XulEventHandler;
 
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
@@ -112,9 +112,12 @@ public class DataHandler extends XulEventHandler {
   private XulLabel poolSizeLabel;
   
   private XulLabel maxPoolSizeLabel;
+  
+  private XulTree poolParameterTree;
+
+  private XulTree clusterParameterTree;
 
   public DataHandler() {
-    int x = 2;
   }
 
   public void loadConnectionData() {
@@ -216,12 +219,18 @@ public class DataHandler extends XulEventHandler {
       if (maxPoolSizeLabel != null){
         maxPoolSizeLabel.setDisabled(dis);
       }
+      if (poolParameterTree != null){
+        poolParameterTree.setDisabled(dis);
+      }
     }
   }
   
   public void onClusterCheck(){
     if (clusteringCheck != null){
-      
+      boolean dis = !clusteringCheck.isChecked();
+      if (clusterParameterTree != null){
+        clusterParameterTree.setDisabled(dis);
+      }
     }
   }
 
@@ -486,7 +495,6 @@ public class DataHandler extends XulEventHandler {
     // Not all of these controls are created at the same time.. that's OK, for now, just check
     // each one for null before using.
 
-    XulComponent temp = (XulComponent) document.getElementById("all-box"); //$NON-NLS-1$
     dialogDeck = (XulDeck) document.getElementById("dialog-panel-deck"); //$NON-NLS-1$
     deckOptionsBox = (XulListbox)document.getElementById("deck-options-list"); //$NON-NLS-1$
     connectionBox = (XulListbox) document.getElementById("connection-type-list"); //$NON-NLS-1$
@@ -514,7 +522,8 @@ public class DataHandler extends XulEventHandler {
     poolSizeBox = (XulTextbox) document.getElementById("pool-size-text"); //$NON-NLS-1$
     maxPoolSizeLabel = (XulLabel) document.getElementById("max-pool-size-label"); //$NON-NLS-1$
     maxPoolSizeBox = (XulTextbox) document.getElementById("max-pool-size-text"); //$NON-NLS-1$
-    
+    poolParameterTree = (XulTree) document.getElementById("pool-parameter-tree"); //$NON-NLS-1$
+    clusterParameterTree = (XulTree) document.getElementById("cluster-parameter-tree"); //$NON-NLS-1$
   }
 
 }

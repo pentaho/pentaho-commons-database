@@ -113,8 +113,23 @@
 			 database.                                                                     -->
 	<!--  ###############################################################################  -->
 			<hbox>
-				<groupbox id="place-holder-box-0" orient="vertical" flex="1">
-					<caption label="Options" />
+				<groupbox id="options-group-box" orient="vertical" flex="1">
+					<caption label="Optional Parameters" />
+
+					<tree id="option-parameter-tree" flex="1" editable="true" seltype="cell">
+	
+						<treecols id="option-column-list">
+						  	<treecol id="parameter-col" label="Parameter" flex="1" editable="true" />  
+							<treecol id="param-value-col" label="Value" flex="2" editable="true" />
+						</treecols>
+					</tree>
+					
+					<hbox id="help-button-box">
+						<label id="spacer-label" flex="10" />
+						<button id="help-button" label="Help..." flex="1"
+							onclick="dataHandler.getOptionHelp()" />
+					</hbox>
+					
 				</groupbox>				
 			</hbox>
 	<!--  ###############################################################################  -->
@@ -128,13 +143,216 @@
 			<vbox>
 				<checkbox id="use-pool-check" label="Use a Connection Pool" checked="false" 
 					command="dataHandler.onPoolingCheck()"/>
-				<label id="pool-size-label" value="Initial Pool Size:" disabled="true"/>
-				<textbox id="pool-size-text" disabled="true"/>
-				<label id="max-pool-size-label" value="Maximum Pool Size:" disabled="true"/>
-				<textbox id="max-pool-size-text" disabled="true"/>
-				<groupbox id="place-holder-box-1" orient="vertical" flex="1">
-					<caption label="Pool Parameters" />
+				<groupbox id="pooling-group" orient="horizontal" flex="1">
+					<caption label="Pool Size" />
+					<vbox flex="1">
+						<label id="pool-size-label" value="Initial:" disabled="true"/>
+						<textbox id="pool-size-text" disabled="true"/>
+					</vbox>
+					<vbox flex="1">
+						<label id="max-pool-size-label" value="Maximum:" disabled="true"/>
+						<textbox id="max-pool-size-text" disabled="true"/>
+					</vbox>
 				</groupbox>				
+					
+				
+				<groupbox id="pooling-group" orient="horizontal" flex="1">
+					<caption label="Parameters:" />
+					<tree id="pool-parameter-tree" flex="1" editable="true" seltype="cell" disabled="true">
+	
+						<treecols id="column-list">
+						  	<treecol id="select-col" type="checkbox" editable="true" />  
+							<treecol id="parameter-col" label="Name" flex="2" editable="false" />
+							<treecol id="default-col" label="Default Value" flex="1" editable="false" />
+							<treecol id="value-col" label="Value" flex="1" editable="true" />
+							<treecol id="description-col" label="Description" flex="5" editable="false" />
+						</treecols>
+	
+						<treechildren id="main-treechildren">
+							<treeitem id="defaultAutoCommit-item">
+								<treerow id="defaultAutoCommit-row">
+									<treecell id="selected-1" />
+									<treecell id="name-1" label="defaultAutoCommit" />
+									<treecell id="default-1" label="true" />
+									<treecell id="value-1"/>
+									<treecell id="label-1" label="The default auto-commit state of connections created by this pool." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="defaultReadOnly" />
+									<treecell label="" />
+									<treecell />
+									<treecell label="The default read-only state of connections created by this pool. If not set then the setReadOnly method will not be called. (Some drivers don't support read only mode, ex: Informix)" />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="defaultTransactionIsolation" />
+									<treecell label="" />
+									<treecell />
+									<treecell label="The default TransactionIsolation state of connections created by this pool. One of the following: (see javadoc)\n\n  * NONE\n  * READ_COMMITTED\n  * READ_UNCOMMITTED\n  * REPEATABLE_READ  * SERIALIZABLE\n" />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="defaultCatalog" />
+									<treecell label="" />
+									<treecell />
+									<treecell label="The default catalog of connections created by this pool." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="initialSize" />
+									<treecell label="0" />
+									<treecell />
+									<treecell label="The initial number of connections that are created when the pool is started." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="maxActive" />
+									<treecell label="8" />
+									<treecell />
+									<treecell label="The maximum number of active connections that can be allocated from this pool at the same time, or non-positive for no limit." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="maxIdle" />
+									<treecell label="8" />
+									<treecell />
+									<treecell label="The maximum number of connections that can remain idle in the pool, without extra ones being released, or negative for no limit." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="minIdle" />
+									<treecell label="0" />
+									<treecell />
+									<treecell label="The minimum number of connections that can remain idle in the pool, without extra ones being created, or zero to create none." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="maxWait" />
+									<treecell label="-1" />
+									<treecell />
+									<treecell label="The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception, or -1 to wait indefinitely." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="validationQuery" />
+									<treecell label="" />
+									<treecell />
+									<treecell label="The SQL query that will be used to validate connections from this pool before returning them to the caller.\nIf specified, this query MUST be an SQL SELECT statement that returns at least one row." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="testOnBorrow" />
+									<treecell label="true" />
+									<treecell />
+									<treecell label="The indication of whether objects will be validated before being borrowed from the pool.\nIf the object fails to validate, it will be dropped from the pool, and we will attempt to borrow another.\nNOTE - for a true value to have any effect, the validationQuery parameter must be set to a non-null string." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="testOnReturn" />
+									<treecell label="false" />
+									<treecell />
+									<treecell label="The indication of whether objects will be validated before being returned to the pool.\nNOTE - for a true value to have any effect, the validationQuery parameter must be set to a non-null string." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="testWhileIdle" />
+									<treecell label="false" />
+									<treecell />
+									<treecell label="The indication of whether objects will be validated by the idle object evictor (if any). If an object fails to validate, it will be dropped from the pool.\nNOTE - for a true value to have any effect, the validationQuery parameter must be set to a non-null string." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="timeBetweenEvictionRunMillis" />
+									<treecell label="" />
+									<treecell />
+									<treecell label="The number of milliseconds to sleep between runs of the idle object evictor thread. When non-positive, no idle object evictor thread will be run." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="poolPreparedStatements" />
+									<treecell label="false" />
+									<treecell />
+									<treecell label="Enable prepared statement pooling for this pool." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="maxOpenPreparedStatements" />
+									<treecell label="-1" />
+									<treecell />
+									<treecell label="The maximum number of open statements that can be allocated from the statement pool at the same time, or zero for no limit." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="accessToUnderlyingConnectionAllowed" />
+									<treecell label="false" />
+									<treecell />
+									<treecell label="Controls if the PoolGuard allows access to the underlying connection." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="removeAbandoned" />
+									<treecell label="false" />
+									<treecell />
+									<treecell label="Flag to remove abandoned connections if they exceed the removeAbandonedTimout.\nIf set to true a connection is considered abandoned and eligible for removal if it has been idle longer than the removeAbandonedTimeout. Setting this to true can recover db connections from poorly written applications which fail to close a connection." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="removeAbandonedTimeout" />
+									<treecell label="300" />
+									<treecell />
+									<treecell label="Timeout in seconds before an abandoned connection can be removed." />
+								</treerow>
+							</treeitem>
+							<treeitem>
+								<treerow>
+									<treecell />
+									<treecell label="logAbandoned" />
+									<treecell label="false" />
+									<treecell />
+									<treecell label="Flag to log stack traces for application code which abandoned a Statement or Connection.\nLogging of abandoned Statements and Connections adds overhead for every Connection open or new Statement because a stack trace has to be generated." />
+								</treerow>
+							</treeitem>
+						</treechildren>
+					</tree>
+				</groupbox>
+
 			</vbox>
 	<!--  ###############################################################################  -->
 	<!--     END - POOLING SETTINGS BOX                                                    -->
@@ -149,6 +367,18 @@
 				command="dataHandler.onClusterCheck()"/>
 				<groupbox id="place-holder-box-2" orient="vertical" flex="1">
 					<caption label="Cluster Parameters" />
+					<tree id="cluster-parameter-tree" flex="1" editable="true" seltype="cell" disabled="true">
+	
+						<treecols id="cluster-column-list">
+						  	<treecol id="partition-col" label="Partition ID" flex="2" editable="true" />  
+							<treecol id="host-col" label="Host Name" flex="2" editable="true" />
+							<treecol id="port-col" label="Port" flex="1" editable="true" />
+							<treecol id="database-col" label="Database Name" flex="2" editable="true" />
+							<treecol id="user-col" label="User Name" flex="2" editable="true" />
+							<treecol id="password-col" label="Password" flex="2" editable="true" />
+						</treecols>
+					</tree>
+
 				</groupbox>				
 			</vbox>
 	<!--  ###############################################################################  -->
