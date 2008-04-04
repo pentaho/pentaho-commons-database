@@ -97,9 +97,12 @@
 	         attribute settings.                                                           -->
 	<!--  ###############################################################################  -->
 			<vbox>
-				<checkbox id="quote-identifiers-check" label="Quote All Identifiers in Database" checked="false" />
-				<checkbox id="force-lower-case-check" label="Force All Identifiers to Lower Case" checked="false" />
-				<checkbox id="force-upper-case-check" label="Force All Identifiers to Upper Case" checked="false" />
+				<groupbox id="identifier-group-box" orient="vertical">
+					<caption label="Identifiers" />
+					<checkbox id="quote-identifiers-check" label="Quote all in database" checked="false" />
+					<checkbox id="force-lower-case-check" label="Force all to lowercase" checked="false" />
+					<checkbox id="force-upper-case-check" label="Force all to upper case" checked="false" />
+				</groupbox>
 				<label id="spacer-label" value="" />
 				<label id="sql-label" value="Enter the SQL statements (separated by ;) to execute right after connecting:" />
 				<textbox id="sql-text" multiline="true" flex="1" />
@@ -116,7 +119,7 @@
 				<groupbox id="options-group-box" orient="vertical" flex="1">
 					<caption label="Optional Parameters" />
 
-					<tree id="option-parameter-tree" flex="1" editable="true" seltype="cell">
+					<tree id="options-parameter-tree" flex="1" editable="true" seltype="cell" onselect="dataHandler.editOptions()">
 	
 						<treecols id="option-column-list">
 						  	<treecol id="parameter-col" label="Parameter" flex="1" editable="true" />  
