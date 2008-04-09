@@ -115,6 +115,13 @@ public class DatabaseDialogHarness {
             String value = database.getExtraOptions().get(parameter);
             message = message.concat(carriageReturn).concat(parameter).concat(": ").concat(value);
         }
+        
+        message = message.concat(carriageReturn).concat("SQL: ")
+        .concat(database.getConnectSQL()!=null ? database.getConnectSQL() : "").concat(carriageReturn)
+        .concat("Quote Identifiers: ").concat(Boolean.toString(database.isQuoteAllFields())).concat(carriageReturn)
+        .concat("Upper Case Identifiers: ").concat(Boolean.toString(database.isForcingIdentifiersToUpperCase())).concat(carriageReturn)
+        .concat("Lower Case Identifiers: ").concat(Boolean.toString(database.isForcingIdentifiersToLowerCase())).concat(carriageReturn);
+        
 
       } catch (Exception e) {
         e.printStackTrace();

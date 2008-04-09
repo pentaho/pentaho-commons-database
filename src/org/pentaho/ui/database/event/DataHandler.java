@@ -124,6 +124,16 @@ public class DataHandler extends XulEventHandler {
   private XulTree clusterParameterTree;
   
   private XulTree optionsParameterTree;
+  
+  // ==== Advanced Panel ==== //
+  
+  XulCheckbox quoteIdentifiersCheck;
+
+  XulCheckbox lowerCaseIdentifiersCheck;
+  
+  XulCheckbox upperCaseIdentifiersCheck;
+  
+  XulTextbox sqlBox;
 
   public DataHandler() {
   }
@@ -142,6 +152,8 @@ public class DataHandler extends XulEventHandler {
     // well when using relative layouting
 
     connectionBox.setRows(connectionBox.getRows());
+     
+    poolParameterTree.setRows(poolParameterTree.getRows());
 
     Object key = connectionBox.getSelectedItem();
 
@@ -440,31 +452,51 @@ public class DataHandler extends XulEventHandler {
     
     // Option parameters: 
 
-    Object[][]values = optionsParameterTree.getValues();
-    for (int i = 0; i < values.length; i++) {
-      
-      String parameter = (String)values[i][0];
-      String value = (String)values[i][1];
+    if (optionsParameterTree != null){
+      Object[][]values = optionsParameterTree.getValues();
+      for (int i = 0; i < values.length; i++) {
+        
+        String parameter = (String)values[i][0];
+        String value = (String)values[i][1];
 
-      if (value == null){
-        value = "";
-      }
-      
-      int dbType = meta.getDatabaseType();
+        if (value == null){
+          value = "";
+        }
+        
+        int dbType = meta.getDatabaseType();
 
-      // Only if parameter are supplied, we will add to the map...
-      if ((parameter != null) && (parameter.trim().length() > 0)){
-          if (value.trim().length() <= 0){
-            value = DatabaseMeta.EMPTY_OPTIONS_STRING;
-          }
-          String typedParameter = BaseDatabaseMeta.ATTRIBUTE_PREFIX_EXTRA_OPTION + 
-                                  DatabaseMeta.getDatabaseTypeCode(dbType) + 
-                                  "." + parameter; //$NON-NLS-1$
-          meta.getAttributes().put(typedParameter, value);
+        // Only if parameter are supplied, we will add to the map...
+        if ((parameter != null) && (parameter.trim().length() > 0)){
+            if (value.trim().length() <= 0){
+              value = DatabaseMeta.EMPTY_OPTIONS_STRING;
+            }
+            String typedParameter = BaseDatabaseMeta.ATTRIBUTE_PREFIX_EXTRA_OPTION + 
+                                    DatabaseMeta.getDatabaseTypeCode(dbType) + 
+                                    "." + parameter; //$NON-NLS-1$
+            meta.getAttributes().put(typedParameter, value);
+        }
+        
       }
-      
     }
-
+    
+    // Advanced panel settings:
+    
+    if (quoteIdentifiersCheck != null){
+      meta.setQuoteAllFields(quoteIdentifiersCheck.isChecked());
+    }
+    
+    if (lowerCaseIdentifiersCheck != null){
+      meta.setForcingIdentifiersToLowerCase(lowerCaseIdentifiersCheck.isChecked());
+    }
+    
+    if (upperCaseIdentifiersCheck != null){
+      meta.setForcingIdentifiersToUpperCase(upperCaseIdentifiersCheck.isChecked());
+    }
+    
+    if (sqlBox != null){
+      meta.setConnectSQL(sqlBox.getValue());
+    }
+    
 
   }
 
@@ -559,6 +591,53 @@ public class DataHandler extends XulEventHandler {
     
     // Options Parameters:
     setOptionsData(meta.getExtraOptions());
+
+    // Advanced panel settings:
+    
+    if (quoteIdentifiersCheck != null){
+      quoteIdentifiersCheck.setChecked(meta.isQuoteAllFields());
+    }
+    
+    if (lowerCaseIdentifiersCheck != null){
+      lowerCaseIdentifiersCheck.setChecked(meta.isForcingIdentifiersToLowerCase());
+    }
+    
+    if (upperCaseIdentifiersCheck != null){
+      upperCaseIdentifiersCheck.setChecked(meta.isForcingIdentifiersToUpperCase());
+    }
+    
+    if (sqlBox != null){
+      sqlBox.setValue(meta.getConnectSQL()==null?"":meta.getConnectSQL());
+    }
+  }
+
+  private void setOptionsData(Map <String, String> extraOptions){
+    
+    // The extra options as well...
+      Iterator<String> keys = extraOptions.keySet().iterator();
+      while (keys.hasNext()){
+        
+          String parameter = keys.next();
+          String value = extraOptions.get(parameter);
+          if ((value == null) || 
+              (value.trim().length() <= 0) ||
+              (value.equals(DatabaseMeta.EMPTY_OPTIONS_STRING))){
+            value = ""; //$NON-NLS-1$
+          }
+
+          // If the paremeter starts with a database type code we add it...
+          // For example MySQL.defaultFetchSize
+
+          int dotIndex = parameter.indexOf('.'); 
+          if (dotIndex >= 0){
+              String parameterOption = parameter.substring(dotIndex + 1);
+
+              XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
+              row.addCellText(0, parameterOption);
+              row.addCellText(1, value);
+              
+          }
+      }
   }
 
   private void getControls() {
@@ -596,36 +675,12 @@ public class DataHandler extends XulEventHandler {
     poolParameterTree = (XulTree) document.getElementById("pool-parameter-tree"); //$NON-NLS-1$
     clusterParameterTree = (XulTree) document.getElementById("cluster-parameter-tree"); //$NON-NLS-1$
     optionsParameterTree = (XulTree) document.getElementById("options-parameter-tree"); //$NON-NLS-1$
+    quoteIdentifiersCheck = (XulCheckbox)document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
+    lowerCaseIdentifiersCheck = (XulCheckbox)document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
+    upperCaseIdentifiersCheck = (XulCheckbox)document.getElementById("force-upper-case-check"); //$NON-NLS-1$;
+    sqlBox = (XulTextbox)document.getElementById("sql-text"); //$NON-NLS-1$;
   }
   
-  private void setOptionsData(Map <String, String> extraOptions){
-      
-    // The extra options as well...
-      Iterator<String> keys = extraOptions.keySet().iterator();
-      while (keys.hasNext()){
-        
-          String parameter = keys.next();
-          String value = extraOptions.get(parameter);
-          if ((value == null) || 
-              (value.trim().length() <= 0) ||
-              (value.equals(DatabaseMeta.EMPTY_OPTIONS_STRING))){
-            value = ""; //$NON-NLS-1$
-          }
-
-          // If the paremeter starts with a database type code we add it...
-          // For example MySQL.defaultFetchSize
-
-          int dotIndex = parameter.indexOf('.'); 
-          if (dotIndex >= 0){
-              String parameterOption = parameter.substring(dotIndex + 1);
-
-              XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
-              row.addCellText(0, parameterOption);
-              row.addCellText(1, value);
-              
-          }
-      }
-  }
   
 
 }

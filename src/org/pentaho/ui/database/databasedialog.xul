@@ -161,7 +161,7 @@
 				
 				<groupbox id="pooling-group" orient="horizontal" flex="1">
 					<caption label="Parameters:" />
-					<tree id="pool-parameter-tree" flex="1" editable="false" seltype="cell" disabled="true">
+					<tree id="pool-parameter-tree" flex="1" rows="5" editable="false" seltype="cell" disabled="true">
 	
 						<treecols id="column-list">
 						  	<treecol id="select-col" type="checkbox" editable="true" />  
