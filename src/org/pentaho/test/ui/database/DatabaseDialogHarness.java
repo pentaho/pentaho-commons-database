@@ -55,6 +55,8 @@ public class DatabaseDialogHarness {
       e.printStackTrace();
     } 
     XulWindow dialog = (XulWindow) container.getDocumentRoot().getRootElement();
+    Shell s = (Shell)dialog.getManagedObject();
+    s.setText("New Database Connection");
     dialog.open();
 
     try {

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <window id="general-datasource-window"
-	title="Testing groupboxes for SWT, Swing" orient="vertical"
+	title="New Database Connection" orient="vertical"
 	height="550" width="700"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="dataHandler.loadConnectionData()">
 	
@@ -119,12 +119,13 @@
 				<groupbox id="options-group-box" orient="vertical" flex="1">
 					<caption label="Optional Parameters" />
 
-					<tree id="options-parameter-tree" flex="1" editable="true" seltype="cell" onselect="dataHandler.editOptions()">
+					<tree id="options-parameter-tree" flex="1" editable="true" onselect="dataHandler.editOptions()" seltype="cell">
 	
 						<treecols id="option-column-list">
 						  	<treecol id="parameter-col" label="Parameter" flex="1" editable="true" />  
 							<treecol id="param-value-col" label="Value" flex="2" editable="true" />
 						</treecols>
+
 					</tree>
 					
 					<hbox id="help-button-box">
@@ -161,7 +162,7 @@
 				
 				<groupbox id="pooling-group" orient="horizontal" flex="1">
 					<caption label="Parameters:" />
-					<tree id="pool-parameter-tree" flex="1" editable="true" seltype="cell" disabled="true">
+					<tree id="pool-parameter-tree" flex="1" editable="false" seltype="cell" disabled="true">
 	
 						<treecols id="column-list">
 						  	<treecol id="select-col" type="checkbox" editable="true" />  

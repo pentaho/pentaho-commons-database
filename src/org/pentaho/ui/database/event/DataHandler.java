@@ -116,6 +116,8 @@ public class DataHandler extends XulEventHandler {
   private XulTree poolParameterTree;
 
   private XulTree clusterParameterTree;
+  
+  private XulTree optionsParameterTree;
 
   public DataHandler() {
   }
@@ -195,6 +197,9 @@ public class DataHandler extends XulEventHandler {
       accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(acc[0]));
     }
   }
+  
+  public void editOptions(){
+  }    
   
   public void setDeckChildIndex(){
     
@@ -524,6 +529,7 @@ public class DataHandler extends XulEventHandler {
     maxPoolSizeBox = (XulTextbox) document.getElementById("max-pool-size-text"); //$NON-NLS-1$
     poolParameterTree = (XulTree) document.getElementById("pool-parameter-tree"); //$NON-NLS-1$
     clusterParameterTree = (XulTree) document.getElementById("cluster-parameter-tree"); //$NON-NLS-1$
+    optionsParameterTree = (XulTree) document.getElementById("options-parameter-tree"); //$NON-NLS-1$
   }
 
 }
