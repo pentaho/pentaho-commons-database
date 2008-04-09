@@ -1,6 +1,7 @@
 package org.pentaho.test.ui.database;
 
 import java.io.InputStream;
+import java.util.Iterator;
 
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
@@ -62,6 +63,7 @@ public class DatabaseDialogHarness {
     try {
       database = (DatabaseMeta) container.getEventHandler("dataHandler").getData();
     } catch (Exception e) {
+      e.printStackTrace();
     }
 
     String message = DatabaseDialogHarness.setMessage(database);
@@ -103,7 +105,17 @@ public class DatabaseDialogHarness {
                 .concat("User Name: ").concat(database.getUsername()).concat(carriageReturn)
                 .concat("Password: ").concat(database.getPassword()).concat(carriageReturn)
                 .concat("Driver Class: ").concat(database.getDriverClass()).concat(carriageReturn)
-                .concat("URL: ").concat(database.getURL());
+                .concat("URL: ").concat(database.getURL()).concat(carriageReturn);
+        
+        
+        Iterator<String> keys = database.getExtraOptions().keySet().iterator();
+        message = message.concat(carriageReturn).concat("Option Parameters:").concat(carriageReturn);
+        while (keys.hasNext()){
+            String parameter = keys.next();
+            String value = database.getExtraOptions().get(parameter);
+            message = message.concat(carriageReturn).concat(parameter).concat(": ").concat(value);
+        }
+
       } catch (Exception e) {
         e.printStackTrace();
       }

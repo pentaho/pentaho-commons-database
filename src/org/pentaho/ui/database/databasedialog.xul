@@ -130,8 +130,7 @@
 					
 					<hbox id="help-button-box">
 						<label id="spacer-label" flex="10" />
-						<button id="help-button" label="Help..." flex="1"
-							onclick="dataHandler.getOptionHelp()" />
+						<button id="help-button" label="Help..." flex="1" onclick="dataHandler.getOptionHelp()" />
 					</hbox>
 					
 				</groupbox>				

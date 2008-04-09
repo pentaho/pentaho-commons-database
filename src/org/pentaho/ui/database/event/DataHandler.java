@@ -1,12 +1,17 @@
 package org.pentaho.ui.database.event;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.pentaho.di.core.database.BaseDatabaseMeta;
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
+import org.pentaho.ui.util.Launch;
+import org.pentaho.ui.util.Launch.Status;
 import org.pentaho.ui.xul.components.XulCheckbox;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMessageBox;
@@ -14,6 +19,7 @@ import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTree;
+import org.pentaho.ui.xul.containers.XulTreeRow;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 
 /**
@@ -201,6 +207,31 @@ public class DataHandler extends XulEventHandler {
   public void editOptions(){
   }    
   
+  public void getOptionHelp(){
+    
+    String message = null;
+    DatabaseMeta database = new DatabaseMeta();
+
+    getInfo(database);
+    String url = database.getExtraOptionsHelpText();
+    
+    if ((url == null) || (url.trim().length()==0)){
+      message = "No help information available for this connection type.";
+      XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
+      messageBox.open();
+      return;
+    }
+    
+    Status status = Launch.openURL(url);
+
+    if (status.equals(Status.Failed)){
+      message = "Unable to launch browser. Please visit " + url + " for help with this connection's optional parameters.";
+      XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
+      messageBox.open();
+    }
+
+  }
+  
   public void setDeckChildIndex(){
     
     getControls();
@@ -241,8 +272,13 @@ public class DataHandler extends XulEventHandler {
 
   @Override
   public Object getData() {
-    databaseMeta = new DatabaseMeta();
-    this.getInfo(databaseMeta);
+    
+    if (databaseMeta == null){
+      databaseMeta = new DatabaseMeta();
+    }
+    if (!xulDomContainer.isClosed()){
+      this.getInfo(databaseMeta);
+    }
     return databaseMeta;
   }
 
@@ -401,6 +437,34 @@ public class DataHandler extends XulEventHandler {
     if (serverNameBox != null) {
       meta.setServername(serverNameBox.getValue());
     }
+    
+    // Option parameters: 
+
+    Object[][]values = optionsParameterTree.getValues();
+    for (int i = 0; i < values.length; i++) {
+      
+      String parameter = (String)values[i][0];
+      String value = (String)values[i][1];
+
+      if (value == null){
+        value = "";
+      }
+      
+      int dbType = meta.getDatabaseType();
+
+      // Only if parameter are supplied, we will add to the map...
+      if ((parameter != null) && (parameter.trim().length() > 0)){
+          if (value.trim().length() <= 0){
+            value = DatabaseMeta.EMPTY_OPTIONS_STRING;
+          }
+          String typedParameter = BaseDatabaseMeta.ATTRIBUTE_PREFIX_EXTRA_OPTION + 
+                                  DatabaseMeta.getDatabaseTypeCode(dbType) + 
+                                  "." + parameter; //$NON-NLS-1$
+          meta.getAttributes().put(typedParameter, value);
+      }
+      
+    }
+
 
   }
 
@@ -492,7 +556,9 @@ public class DataHandler extends XulEventHandler {
     if (serverNameBox != null) {
       serverNameBox.setValue(meta.getServername());
     }
-
+    
+    // Options Parameters:
+    setOptionsData(meta.getExtraOptions());
   }
 
   private void getControls() {
@@ -531,5 +597,35 @@ public class DataHandler extends XulEventHandler {
     clusterParameterTree = (XulTree) document.getElementById("cluster-parameter-tree"); //$NON-NLS-1$
     optionsParameterTree = (XulTree) document.getElementById("options-parameter-tree"); //$NON-NLS-1$
   }
+  
+  private void setOptionsData(Map <String, String> extraOptions){
+      
+    // The extra options as well...
+      Iterator<String> keys = extraOptions.keySet().iterator();
+      while (keys.hasNext()){
+        
+          String parameter = keys.next();
+          String value = extraOptions.get(parameter);
+          if ((value == null) || 
+              (value.trim().length() <= 0) ||
+              (value.equals(DatabaseMeta.EMPTY_OPTIONS_STRING))){
+            value = ""; //$NON-NLS-1$
+          }
+
+          // If the paremeter starts with a database type code we add it...
+          // For example MySQL.defaultFetchSize
+
+          int dotIndex = parameter.indexOf('.'); 
+          if (dotIndex >= 0){
+              String parameterOption = parameter.substring(dotIndex + 1);
+
+              XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
+              row.addCellText(0, parameterOption);
+              row.addCellText(1, value);
+              
+          }
+      }
+  }
+  
 
 }

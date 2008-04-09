@@ -49,7 +49,7 @@ public class FragmentHandler extends XulEventHandler {
       parentElement.replaceChild(groupElement, newGroup);
       
     } catch (XulException e) {
-      System.out.println("Error loading Database Fragment: "+e.getMessage());
+      //System.out.println("Error loading Database Fragment: "+e.getMessage());
       e.printStackTrace(System.out);
     }
     
@@ -83,7 +83,12 @@ public class FragmentHandler extends XulEventHandler {
 
     switch(access){
       case DatabaseMeta.TYPE_ACCESS_JNDI:
-        loadDatabaseOptionsFragment(packagePath.concat("common_jndi.xul"));
+        fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_jndi.xul");
+        in = getClass().getClassLoader().getResourceAsStream(fragment);
+        if (in == null){
+          fragment = packagePath.concat("common_jndi.xul");
+        }
+        loadDatabaseOptionsFragment(fragment);
         break;
       case DatabaseMeta.TYPE_ACCESS_NATIVE:
         fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_native.xul");
@@ -102,7 +107,12 @@ public class FragmentHandler extends XulEventHandler {
         loadDatabaseOptionsFragment(fragment);
         break;
       case DatabaseMeta.TYPE_ACCESS_ODBC:
-        loadDatabaseOptionsFragment(packagePath.concat("common_odbc.xul"));
+        fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_odbc.xul");
+        in = getClass().getClassLoader().getResourceAsStream(fragment);
+        if (in == null){
+          fragment = packagePath.concat("common_odbc.xul");
+        }
+        loadDatabaseOptionsFragment(fragment);
         break;
       case DatabaseMeta.TYPE_ACCESS_PLUGIN:
         fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_plugin.xul");

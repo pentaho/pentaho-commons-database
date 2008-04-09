@@ -1,0 +1,9 @@
+				<groupbox id="database-options-box" orient="vertical" flex="1">
+					<caption label="Settings" />
+					<label id="database-name-label" value="ODBC DSN source name:" />
+					<textbox id="database-name-text" />
+					<label id="data-tablespace-label" value="Tablespace for Data:" />
+					<textbox id="data-tablespace-text" />
+					<label id="index-tablespace-label" value="Tablespace for Indices:" />
+					<textbox id="index-tablespace-text" />
+				</groupbox>
