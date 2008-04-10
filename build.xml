@@ -75,7 +75,7 @@
 		   <zipfileset dir="${lib-ext.dir}" prefix="lib-ext"/>
 		   <zipfileset dir="lib-swt/win32" includes="**/*.jar" prefix="lib-swt/win32"/>
 		   <zipfileset dir="lib-swt" includes="*.jar" prefix="lib-swt"/>		
-		   <zipfileset dir="lib" includes="*.jar" prefix="lib"/>
+		   <zipfileset dir="dist" includes="*.jar" prefix="lib"/>
 		   <zipfileset dir="." includes="*.bat" />
 		</zip>
 	</target>
