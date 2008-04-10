@@ -70,5 +70,14 @@
 		</jar>
 	</target>
 
+	<target name="test-dist" depends="dist" description="Creates a package to launch and run the database dialog test harness.">
+		<zip destfile="dist/pentaho-xul-database-TEST-${release.major.number}.${release.minor.number}.${release.milestone.number}.zip">
+		   <zipfileset dir="${lib-ext.dir}" prefix="lib-ext"/>
+		   <zipfileset dir="lib-swt/win32" includes="**/*.jar" prefix="lib-swt/win32"/>
+		   <zipfileset dir="lib-swt" includes="*.jar" prefix="lib-swt"/>		
+		   <zipfileset dir="lib" includes="*.jar" prefix="lib"/>
+		   <zipfileset dir="." includes="*.bat" />
+		</zip>
+	</target>
 
 </project>
