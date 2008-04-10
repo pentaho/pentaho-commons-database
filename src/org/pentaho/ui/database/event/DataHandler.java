@@ -122,6 +122,8 @@ public class DataHandler extends XulEventHandler {
 
   private XulTree clusterParameterTree;
 
+  private XulLabel poolingDescription;
+  
   // ==== Advanced Panel ==== //
 
   XulCheckbox quoteIdentifiersCheck;
@@ -152,7 +154,8 @@ public class DataHandler extends XulEventHandler {
   public void loadConnectionData() {
 
     getControls();
-
+    
+    
     // Add sorted types to the listbox now.
 
     for (String key : connectionMap.keySet()) {
@@ -182,11 +185,22 @@ public class DataHandler extends XulEventHandler {
     if (dialogDeck != null) {
       setDeckChildIndex();
     }
+    // HACK: select general item in deck
+    deckOptionsBox.setSelectedIndex(0);
+    
+    // HACK: reDim the pooling table
+    poolParameterTree.setRows(poolParameterTree.getRows());
 
   }
 
+  //On Database type change
   public void loadAccessData() {
 
+    //cache current settings
+    DatabaseMeta currentData = new DatabaseMeta();
+
+    getInfo(currentData);
+    
     getControls();
 
     Object key = connectionBox.getSelectedItem();
@@ -223,6 +237,9 @@ public class DataHandler extends XulEventHandler {
     if (accessBox.getSelectedItem() == null) {
       accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(acc[0]));
     }
+    
+    //re populate
+    mergeData(currentData);
   }
 
   public void editOptions() {
@@ -258,6 +275,7 @@ public class DataHandler extends XulEventHandler {
 
     getControls();
     int selected = deckOptionsBox.getSelectedIndex();
+
     if (selected < 0) {
       selected = 0;
       deckOptionsBox.setSelectedIndex(0);
@@ -313,7 +331,12 @@ public class DataHandler extends XulEventHandler {
     if (data instanceof DatabaseMeta) {
       databaseMeta = (DatabaseMeta) data;
     }
-    setInfo(databaseMeta);
+    setInfo(databaseMeta, false);
+  }
+  
+  public void mergeData(Object data) {
+    databaseMeta = (DatabaseMeta)data;
+    setInfo(databaseMeta, true);
   }
 
   public void onCancel() {
@@ -588,7 +611,7 @@ public class DataHandler extends XulEventHandler {
 
   }
 
-  private void setInfo(DatabaseMeta meta) {
+  private void setInfo(DatabaseMeta meta, boolean ignoreType) {
 
     if (meta == null) {
       return;
@@ -598,8 +621,10 @@ public class DataHandler extends XulEventHandler {
     connectionNameBox.setValue(meta.getName());
 
     // Connection type:
-    connectionBox.setSelectedItem(meta.getDatabaseInterface().getDatabaseTypeDescLong());
-
+    if(!ignoreType){
+      connectionBox.setSelectedItem(meta.getDatabaseInterface().getDatabaseTypeDescLong());
+    }
+    
     // Access type:
     accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(meta.getAccessType()));
 
@@ -615,7 +640,7 @@ public class DataHandler extends XulEventHandler {
     }
 
     // Port number:
-    if (portNumberBox != null) {
+    if (portNumberBox != null && !ignoreType) {
       portNumberBox.setValue(meta.getDatabasePortNumberString());
     }
 
@@ -800,7 +825,44 @@ public class DataHandler extends XulEventHandler {
       }
     }
   }
+  
+  private String[] poolingDescriptions = {
 
+      "The default auto-commit state of connections created by this pool."
+      ,"The default read-only state of connections created by this pool. If not set then the setReadOnly method will not be called. (Some drivers don't support read only mode, ex: Informix)"
+      ,"The default TransactionIsolation state of connections created by this pool. One of the following: (see javadoc)\n\n  * NONE\n  * READ_COMMITTED\n  * READ_UNCOMMITTED\n  * REPEATABLE_READ  * SERIALIZABLE\n"
+      ,"The default catalog of connections created by this pool."
+      ,"The initial number of connections that are created when the pool is started."
+      ,"The maximum number of active connections that can be allocated from this pool at the same time, or non-positive for no limit."
+      ,"The maximum number of connections that can remain idle in the pool, without extra ones being released, or negative for no limit."
+      ,"The minimum number of connections that can remain idle in the pool, without extra ones being created, or zero to create none."
+      ,"The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception, or -1 to wait indefinitely."
+      ,"The SQL query that will be used to validate connections from this pool before returning them to the caller.\nIf specified, this query MUST be an SQL SELECT statement that returns at least one row."
+      ,"The indication of whether objects will be validated before being borrowed from the pool.\nIf the object fails to validate, it will be dropped from the pool, and we will attempt to borrow another.\nNOTE - for a true value to have any effect, the validationQuery parameter must be set to a non-null string."
+      ,"The indication of whether objects will be validated before being returned to the pool.\nNOTE - for a true value to have any effect, the validationQuery parameter must be set to a non-null string."
+      ,"The indication of whether objects will be validated by the idle object evictor (if any). If an object fails to validate, it will be dropped from the pool.\nNOTE - for a true value to have any effect, the validationQuery parameter must be set to a non-null string."
+      ,"The number of milliseconds to sleep between runs of the idle object evictor thread. When non-positive, no idle object evictor thread will be run."
+      ,"Enable prepared statement pooling for this pool."
+      ,"The maximum number of open statements that can be allocated from the statement pool at the same time, or zero for no limit."
+      ,"Controls if the PoolGuard allows access to the underlying connection."
+      ,"Flag to remove abandoned connections if they exceed the removeAbandonedTimout.\nIf set to true a connection is considered abandoned and eligible for removal if it has been idle longer than the removeAbandonedTimeout. Setting this to true can recover db connections from poorly written applications which fail to close a connection."
+      ,"Timeout in seconds before an abandoned connection can be removed."
+      ,"Flag to log stack traces for application code which abandoned a Statement or Connection.\nLogging of abandoned Statements and Connections adds overhead for every Connection open or new Statement because a stack trace has to be generated."
+  };
+
+  public void poolingRowChange(Integer idx){
+    if(idx != -1){
+      if(idx >= poolingDescriptions.length){
+        idx = poolingDescriptions.length-1;
+      }
+      if(idx < 0){
+        idx = 0;
+      }
+      poolingDescription.setValue(poolingDescriptions[idx]);
+    }
+  }
+  
+  
   private void getControls() {
 
     // Not all of these controls are created at the same time.. that's OK, for now, just check
@@ -836,6 +898,7 @@ public class DataHandler extends XulEventHandler {
     poolParameterTree = (XulTree) document.getElementById("pool-parameter-tree"); //$NON-NLS-1$
     clusterParameterTree = (XulTree) document.getElementById("cluster-parameter-tree"); //$NON-NLS-1$
     optionsParameterTree = (XulTree) document.getElementById("options-parameter-tree"); //$NON-NLS-1$
+    poolingDescription = (XulLabel) document.getElementById("pooling-description"); //$NON-NLS-1$ 
     quoteIdentifiersCheck = (XulCheckbox) document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
     lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
     upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-upper-case-check"); //$NON-NLS-1$;
