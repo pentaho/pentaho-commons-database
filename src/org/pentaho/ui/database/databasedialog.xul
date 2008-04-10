@@ -32,7 +32,7 @@
 	<!--     START - DIALOG PANEL DECK: The layers of panels that hold the different 
 			 database attributes.                                                          -->
 	<!--  ###############################################################################  -->
-		<deck id="dialog-panel-deck" selectedIndex="0" flex="8">
+		<deck id="dialog-panel-deck" selectedIndex="3" flex="8">
 		
 	<!--  ###############################################################################  -->
 	<!--     START - GENERAL SETTINGS BOX: The General panel on the deck; the general 
@@ -79,14 +79,6 @@
 					</groupbox>
 				</hbox>
 				
-	<!--  ###############################################################################  -->
-	<!--     TEST BUTTON BOX: A box for the test button.                                   -->
-	<!--  ###############################################################################  -->
-				<hbox id="test-button-box">
-					<label id="spacer-label" flex="10" />
-					<button id="test-button" label="Test" flex="1"
-						onclick="dataHandler.testDatabaseConnection()" />
-				</hbox>
 			</groupbox>
 	<!--  ###############################################################################  -->
 	<!--     END - GENERAL SETTINGS BOX                                                    -->
@@ -96,7 +88,7 @@
 	<!--     START - ADVANCED SETTINGS BOX: The panel that holds the advanced database
 	         attribute settings.                                                           -->
 	<!--  ###############################################################################  -->
-			<vbox>
+			<groupbox id="advanced-group-box" orient="vertical">
 				<groupbox id="identifier-group-box" orient="vertical">
 					<caption label="Identifiers" />
 					<checkbox id="quote-identifiers-check" label="Quote all in database" checked="false" />
@@ -106,7 +98,7 @@
 				<label id="spacer-label" value="" />
 				<label id="sql-label" value="Enter the SQL statements (separated by ;) to execute right after connecting:" />
 				<textbox id="sql-text" multiline="true" flex="1" />
-			</vbox>
+			</groupbox>
 	<!--  ###############################################################################  -->
 	<!--     END - ADVANCED SETTINGS BOX                                                   -->
 	<!--  ###############################################################################  -->
@@ -115,26 +107,26 @@
 	<!--     START - OPTIONS SETTINGS BOX: The panel that holds the options for the
 			 database.                                                                     -->
 	<!--  ###############################################################################  -->
-			<hbox>
-				<groupbox id="options-group-box" orient="vertical" flex="1">
-					<caption label="Parameters" />
+			<groupbox id="options-group-box" orient="vertical" flex="1">
 
-					<tree id="options-parameter-tree" flex="1" editable="true" onselect="dataHandler.editOptions()" seltype="cell">
-	
-						<treecols id="option-column-list">
-						  	<treecol id="parameter-col" label="Parameter" flex="1" editable="true" />  
-							<treecol id="param-value-col" label="Value" flex="2" editable="true" />
-						</treecols>
+				<label id="parameter-description-label" value="Parameters:"/>
+				<label id="spacer" />
 
-					</tree>
-					
-					<hbox id="help-button-box">
-						<label id="spacer-label" flex="10" />
-						<button id="help-button" label="Help..." flex="1" onclick="dataHandler.getOptionHelp()" />
-					</hbox>
-					
-				</groupbox>				
-			</hbox>
+				<tree id="options-parameter-tree" flex="1" editable="true" onselect="dataHandler.editOptions()" seltype="cell">
+
+					<treecols id="option-column-list">
+					  	<treecol id="parameter-col" label="Parameter" flex="1" editable="true" />  
+						<treecol id="param-value-col" label="Value" flex="2" editable="true" />
+					</treecols>
+
+				</tree>
+				
+				<hbox id="help-button-box">
+					<label id="spacer-label" flex="10" />
+					<button id="help-button" label="Help..." flex="1" onclick="dataHandler.getOptionHelp()" />
+				</hbox>
+				
+			</groupbox>				
 	<!--  ###############################################################################  -->
 	<!--     END - OPTIONS SETTINGS BOX                                                    -->
 	<!--  ###############################################################################  -->
@@ -144,30 +136,34 @@
 			 the database.                                                                 -->
 	<!--  ###############################################################################  -->
 			<vbox>
-				<checkbox id="use-pool-check" label="Enable Connection Pooling" checked="false" 
-					command="dataHandler.onPoolingCheck()"/>
-				<groupbox id="pooling-group" orient="horizontal" flex="1">
-					<caption label="Pool Size" />
-					<vbox flex="1">
-						<label id="pool-size-label" value="Initial:" disabled="true"/>
-						<textbox id="pool-size-text" disabled="true"/>
-					</vbox>
-					<vbox flex="1">
-						<label id="max-pool-size-label" value="Maximum:" disabled="true"/>
-						<textbox id="max-pool-size-text" disabled="true"/>
-					</vbox>
-				</groupbox>				
-					
 				
 				<groupbox id="pooling-group" orient="vertical" flex="1">
-					<caption label="Parameters:" />
 
-					<tree id="pool-parameter-tree" flex="1" rows="22" editable="false" seltype="cell" disabled="true" onselect="dataHandler.poolingRowChange()">
+					<checkbox id="use-pool-check" label="Enable Connection Pooling" checked="false" 
+						command="dataHandler.onPoolingCheck()"/>
+
+					<groupbox id="pooling-size-group" orient="horizontal" flex="1">
+						<caption label="Pool Size" />
+						<vbox flex="1">
+							<label id="pool-size-label" value="Initial:" disabled="true"/>
+							<textbox id="pool-size-text" disabled="true"/>
+						</vbox>
+						<vbox flex="1">
+							<label id="max-pool-size-label" value="Maximum:" disabled="true"/>
+							<textbox id="max-pool-size-text" disabled="true"/>
+						</vbox>
+					</groupbox>				
+
+					<label id="spacer" />
+					<label id="parameter-description-label" flex="1" value="Parameters:"/>
+					<label id="spacer" />
+
+					<tree id="pool-parameter-tree" flex="1" rows="10" editable="false" seltype="single" disabled="true" onselect="dataHandler.poolingRowChange()">
 						<treecols id="column-list">
 						  	<treecol id="select-col"  type="checkbox" flex="1" editable="true" />  
-							<treecol id="parameter-col" label="Name" flex="10" editable="false" />
-							<treecol id="default-col" label="Default Value" flex="8" editable="false" />
-							<treecol id="value-col" label="Value" flex="8" editable="true" />
+							<treecol id="parameter-col" label="Name" flex="7" editable="false" />
+							<treecol id="default-col" label="Default Value" flex="5" editable="false" />
+							<treecol id="value-col" label="Value" flex="5" editable="true" />
 						</treecols>
 	
 						<treechildren id="main-treechildren">
@@ -333,11 +329,11 @@
 							</treeitem>
 						</treechildren>
 					</tree>
+					<label id="spacer" value=" " />
+					<label id="pooling-description-label" flex="1" value="Description:"/>
+					<label id="pooling-description" flex="10" />
+					<label id="spacer" flex="1" />
 				</groupbox>
-					<groupbox flex="1">
-						<caption label="Description:"/>
-						<label id="pooling-description" flex="4" />
-					</groupbox>
 
 			</vbox>
 	<!--  ###############################################################################  -->
@@ -348,25 +344,26 @@
 	<!--     START - CLUSTER SETTINGS BOX: The panel that holds the clustering options 
 			 for the database.                                                             -->
 	<!--  ###############################################################################  -->
-			<vbox>
+			<groupbox id="place-holder-box-2" orient="vertical" flex="1">
 				<checkbox id="use-cluster-check" label="Enable Clustering" checked="false" 
 				command="dataHandler.onClusterCheck()"/>
-				<groupbox id="place-holder-box-2" orient="vertical" flex="1">
-					<caption label="Cluster Parameters" />
-					<tree id="cluster-parameter-tree" flex="1" editable="true" seltype="cell" disabled="true">
-	
-						<treecols id="cluster-column-list">
-						  	<treecol id="partition-col" label="Partition ID" flex="2" editable="true" />  
-							<treecol id="host-col" label="Host Name" flex="2" editable="true" />
-							<treecol id="port-col" label="Port" flex="1" editable="true" />
-							<treecol id="database-col" label="Database Name" flex="2" editable="true" />
-							<treecol id="user-col" label="User Name" flex="2" editable="true" />
-							<treecol id="password-col" label="Password" flex="2" editable="true" />
-						</treecols>
-					</tree>
+				<label id="spacer" />
+				<label id="parameter-description-label" value="Parameters:"/>
+				<label id="spacer" />
 
-				</groupbox>				
-			</vbox>
+				<tree id="cluster-parameter-tree" flex="1" editable="true" seltype="cell" disabled="true">
+
+					<treecols id="cluster-column-list">
+					  	<treecol id="partition-col" label="Partition ID" flex="2" editable="true" />  
+						<treecol id="host-col" label="Host Name" flex="2" editable="true" />
+						<treecol id="port-col" label="Port" flex="1" editable="true" />
+						<treecol id="database-col" label="Database Name" flex="2" editable="true" />
+						<treecol id="user-col" label="User Name" flex="2" editable="true" />
+						<treecol id="password-col" label="Password" flex="2" editable="true" />
+					</treecols>
+				</tree>
+
+			</groupbox>				
 	<!--  ###############################################################################  -->
 	<!--     END - CLUSTER SETTINGS BOX                                                    -->
 	<!--  ###############################################################################  -->
@@ -375,7 +372,18 @@
 	<!--  ###############################################################################  -->
 	<!--     END - DECK                                                                    -->
 	<!--  ###############################################################################  -->
+	
 	</hbox>
+	
+	<!--  ###############################################################################  -->
+	<!--     TEST BUTTON BOX: A box for the test button.                                   -->
+	<!--  ###############################################################################  -->
+		<hbox id="test-button-box">
+			<label id="spacer-label" flex="10" />
+			<button id="test-button" label="Test" flex="1" onclick="dataHandler.testDatabaseConnection()" />
+			<label id="spacer-label" flex="10" />
+			
+		</hbox>
 	
 	<!--  ###############################################################################  -->
 	<!--     BUTTON BOX: Holds the OK, Cancel buttons.                                     -->
