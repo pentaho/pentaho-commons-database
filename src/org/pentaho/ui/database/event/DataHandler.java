@@ -1,7 +1,10 @@
 package org.pentaho.ui.database.event;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -9,6 +12,7 @@ import org.pentaho.di.core.database.BaseDatabaseMeta;
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
+import org.pentaho.di.core.database.PartitionDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
 import org.pentaho.ui.util.Launch;
 import org.pentaho.ui.util.Launch.Status;
@@ -19,6 +23,7 @@ import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTree;
+import org.pentaho.ui.xul.containers.XulTreeItem;
 import org.pentaho.ui.xul.containers.XulTreeRow;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 
@@ -106,34 +111,40 @@ public class DataHandler extends XulEventHandler {
 
   // MySQL specific
   private XulCheckbox resultStreamingCursorCheck;
-  
-  private XulCheckbox poolingCheck;
-  
-  private XulCheckbox clusteringCheck;
-  
-  private XulTextbox poolSizeBox;
-  
-  private XulTextbox maxPoolSizeBox;
 
-  private XulLabel poolSizeLabel;
-  
-  private XulLabel maxPoolSizeLabel;
-  
-  private XulTree poolParameterTree;
+  // ==== Options Panel ==== //
+
+  private XulTree optionsParameterTree;
+
+  // ==== Clustering Panel ==== //
+
+  private XulCheckbox clusteringCheck;
 
   private XulTree clusterParameterTree;
-  
-  private XulTree optionsParameterTree;
-  
+
   // ==== Advanced Panel ==== //
-  
+
   XulCheckbox quoteIdentifiersCheck;
 
   XulCheckbox lowerCaseIdentifiersCheck;
-  
+
   XulCheckbox upperCaseIdentifiersCheck;
-  
+
   XulTextbox sqlBox;
+
+  // ==== Pooling Panel ==== //
+
+  private XulLabel poolSizeLabel;
+
+  private XulLabel maxPoolSizeLabel;
+
+  private XulCheckbox poolingCheck;
+
+  private XulTextbox poolSizeBox;
+
+  private XulTextbox maxPoolSizeBox;
+
+  private XulTree poolParameterTree;
 
   public DataHandler() {
   }
@@ -152,8 +163,6 @@ public class DataHandler extends XulEventHandler {
     // well when using relative layouting
 
     connectionBox.setRows(connectionBox.getRows());
-     
-    poolParameterTree.setRows(poolParameterTree.getRows());
 
     Object key = connectionBox.getSelectedItem();
 
@@ -167,11 +176,11 @@ public class DataHandler extends XulEventHandler {
       key = connectionMap.firstKey();
       connectionBox.setSelectedItem(key);
     }
-    
+
     // HACK: Need to force selection of first panel
 
-    if (dialogDeck != null){
-      dialogDeck.setSelectedIndex(dialogDeck.getSelectedIndex());
+    if (dialogDeck != null) {
+      setDeckChildIndex();
     }
 
   }
@@ -215,68 +224,73 @@ public class DataHandler extends XulEventHandler {
       accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(acc[0]));
     }
   }
-  
-  public void editOptions(){
-  }    
-  
-  public void getOptionHelp(){
-    
+
+  public void editOptions() {
+  }
+
+  public void getOptionHelp() {
+
     String message = null;
     DatabaseMeta database = new DatabaseMeta();
 
     getInfo(database);
     String url = database.getExtraOptionsHelpText();
-    
-    if ((url == null) || (url.trim().length()==0)){
+
+    if ((url == null) || (url.trim().length() == 0)) {
       message = "No help information available for this connection type.";
       XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
       messageBox.open();
       return;
     }
-    
+
     Status status = Launch.openURL(url);
 
-    if (status.equals(Status.Failed)){
-      message = "Unable to launch browser. Please visit " + url + " for help with this connection's optional parameters.";
+    if (status.equals(Status.Failed)) {
+      message = "Unable to launch browser. Please visit " + url
+          + " for help with this connection's optional parameters.";
       XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
       messageBox.open();
     }
 
   }
-  
-  public void setDeckChildIndex(){
-    
+
+  public void setDeckChildIndex() {
+
     getControls();
     int selected = deckOptionsBox.getSelectedIndex();
+    if (selected < 0) {
+      selected = 0;
+      deckOptionsBox.setSelectedIndex(0);
+    }
     dialogDeck.setSelectedIndex(selected);
-    
+
   }
 
-  public void onPoolingCheck(){
-    if (poolingCheck != null){
+  public void onPoolingCheck() {
+    if (poolingCheck != null) {
       boolean dis = !poolingCheck.isChecked();
-      if (poolSizeBox != null){
+      if (poolSizeBox != null) {
         poolSizeBox.setDisabled(dis);
       }
-      if (maxPoolSizeBox != null){
+      if (maxPoolSizeBox != null) {
         maxPoolSizeBox.setDisabled(dis);
       }
-      if (poolSizeLabel != null){
+      if (poolSizeLabel != null) {
         poolSizeLabel.setDisabled(dis);
       }
-      if (maxPoolSizeLabel != null){
+      if (maxPoolSizeLabel != null) {
         maxPoolSizeLabel.setDisabled(dis);
       }
-      if (poolParameterTree != null){
+      if (poolParameterTree != null) {
         poolParameterTree.setDisabled(dis);
       }
     }
   }
-  
-  public void onClusterCheck(){
-    if (clusteringCheck != null){
+
+  public void onClusterCheck() {
+    if (clusteringCheck != null) {
       boolean dis = !clusteringCheck.isChecked();
-      if (clusterParameterTree != null){
+      if (clusterParameterTree != null) {
         clusterParameterTree.setDisabled(dis);
       }
     }
@@ -284,11 +298,11 @@ public class DataHandler extends XulEventHandler {
 
   @Override
   public Object getData() {
-    
-    if (databaseMeta == null){
+
+    if (databaseMeta == null) {
       databaseMeta = new DatabaseMeta();
     }
-    if (!xulDomContainer.isClosed()){
+    if (!xulDomContainer.isClosed()) {
       this.getInfo(databaseMeta);
     }
     return databaseMeta;
@@ -296,12 +310,12 @@ public class DataHandler extends XulEventHandler {
 
   @Override
   public void setData(Object data) {
-    if (data instanceof DatabaseMeta){
-      databaseMeta = (DatabaseMeta)data;
+    if (data instanceof DatabaseMeta) {
+      databaseMeta = (DatabaseMeta) data;
     }
     setInfo(databaseMeta);
   }
-  
+
   public void onCancel() {
     this.xulDomContainer.close();
   }
@@ -341,8 +355,8 @@ public class DataHandler extends XulEventHandler {
     } else {
       message = database.testConnection();
     }
-      XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
-      messageBox.open();
+    XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
+    messageBox.open();
   }
 
   private void getInfo(DatabaseMeta meta) {
@@ -449,54 +463,128 @@ public class DataHandler extends XulEventHandler {
     if (serverNameBox != null) {
       meta.setServername(serverNameBox.getValue());
     }
-    
+
     // Option parameters: 
 
-    if (optionsParameterTree != null){
-      Object[][]values = optionsParameterTree.getValues();
+    if (optionsParameterTree != null) {
+      Object[][] values = optionsParameterTree.getValues();
       for (int i = 0; i < values.length; i++) {
-        
-        String parameter = (String)values[i][0];
-        String value = (String)values[i][1];
 
-        if (value == null){
+        String parameter = (String) values[i][0];
+        String value = (String) values[i][1];
+
+        if (value == null) {
           value = "";
         }
-        
+
         int dbType = meta.getDatabaseType();
 
         // Only if parameter are supplied, we will add to the map...
-        if ((parameter != null) && (parameter.trim().length() > 0)){
-            if (value.trim().length() <= 0){
-              value = DatabaseMeta.EMPTY_OPTIONS_STRING;
-            }
-            String typedParameter = BaseDatabaseMeta.ATTRIBUTE_PREFIX_EXTRA_OPTION + 
-                                    DatabaseMeta.getDatabaseTypeCode(dbType) + 
-                                    "." + parameter; //$NON-NLS-1$
-            meta.getAttributes().put(typedParameter, value);
+        if ((parameter != null) && (parameter.trim().length() > 0)) {
+          if (value.trim().length() <= 0) {
+            value = DatabaseMeta.EMPTY_OPTIONS_STRING;
+          }
+          String typedParameter = BaseDatabaseMeta.ATTRIBUTE_PREFIX_EXTRA_OPTION
+              + DatabaseMeta.getDatabaseTypeCode(dbType) + "." + parameter; //$NON-NLS-1$
+          meta.getAttributes().put(typedParameter, value);
         }
-        
+
       }
     }
-    
+
     // Advanced panel settings:
-    
-    if (quoteIdentifiersCheck != null){
+
+    if (quoteIdentifiersCheck != null) {
       meta.setQuoteAllFields(quoteIdentifiersCheck.isChecked());
     }
-    
-    if (lowerCaseIdentifiersCheck != null){
+
+    if (lowerCaseIdentifiersCheck != null) {
       meta.setForcingIdentifiersToLowerCase(lowerCaseIdentifiersCheck.isChecked());
     }
-    
-    if (upperCaseIdentifiersCheck != null){
+
+    if (upperCaseIdentifiersCheck != null) {
       meta.setForcingIdentifiersToUpperCase(upperCaseIdentifiersCheck.isChecked());
     }
-    
-    if (sqlBox != null){
+
+    if (sqlBox != null) {
       meta.setConnectSQL(sqlBox.getValue());
     }
-    
+
+    // Cluster panel settings
+    if (clusteringCheck != null) {
+      meta.setPartitioned(clusteringCheck.isChecked());
+    }
+
+    if ((clusterParameterTree != null) && (meta.isPartitioned())) {
+
+      Object[][] values = clusterParameterTree.getValues();
+      List<PartitionDatabaseMeta> pdms = new ArrayList<PartitionDatabaseMeta>();
+      for (int i = 0; i < values.length; i++) {
+
+        String partitionId = (String) values[i][0];
+
+        if ((partitionId == null) || (partitionId.trim().length() <= 0)) {
+          continue;
+        }
+
+        String hostname = (String) values[i][1];
+        String port = (String) values[i][2];
+        String dbName = (String) values[i][3];
+        String username = (String) values[i][4];
+        String password = (String) values[i][5];
+        PartitionDatabaseMeta pdm = new PartitionDatabaseMeta(partitionId, hostname, port, dbName);
+        pdm.setUsername(username);
+        pdm.setPassword(password);
+        pdms.add(pdm);
+      }
+      PartitionDatabaseMeta[] pdmArray = new PartitionDatabaseMeta[pdms.size()];
+      meta.setPartitioningInformation(pdms.toArray(pdmArray));
+    }
+
+    if (poolingCheck != null) {
+      meta.setUsingConnectionPool(poolingCheck.isChecked());
+    }
+
+    if (meta.isUsingConnectionPool()) {
+      if (poolSizeBox != null) {
+        try {
+          int initialPoolSize = Integer.parseInt(poolSizeBox.getValue());
+          meta.setInitialPoolSize(initialPoolSize);
+        } catch (NumberFormatException e) {
+          // TODO log exception and move on ...
+        }
+      }
+
+      if (maxPoolSizeBox != null) {
+        try {
+          int maxPoolSize = Integer.parseInt(maxPoolSizeBox.getValue());
+          meta.setMaximumPoolSize(maxPoolSize);
+        } catch (NumberFormatException e) {
+          // TODO log exception and move on ...
+        }
+      }
+
+      if (poolParameterTree != null) {
+        Object[][] values = poolParameterTree.getValues();
+        Properties properties = new Properties();
+        for (int i = 0; i < values.length; i++) {
+
+          boolean isChecked = Boolean.valueOf((String) values[i][0]);
+
+          if (!isChecked) {
+            continue;
+          }
+
+          String parameter = (String) values[i][1];
+          String value = (String) values[i][3];
+          if ((parameter != null) && (parameter.trim().length() > 0) && (value != null) && (value.trim().length() > 0)) {
+            properties.setProperty(parameter, value);
+          }
+
+        }
+        meta.setConnectionPoolingProperties(properties);
+      }
+    }
 
   }
 
@@ -581,63 +669,136 @@ public class DataHandler extends XulEventHandler {
       customUrlBox.setValue(meta.getAttributes().getProperty(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_URL));
     }
     if (customDriverClassBox != null) {
-      customDriverClassBox.setValue(meta.getAttributes().getProperty(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_DRIVER_CLASS));
+      customDriverClassBox
+          .setValue(meta.getAttributes().getProperty(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_DRIVER_CLASS));
     }
 
     // Server Name:  (Informix)
     if (serverNameBox != null) {
       serverNameBox.setValue(meta.getServername());
     }
-    
+
     // Options Parameters:
+
     setOptionsData(meta.getExtraOptions());
 
     // Advanced panel settings:
-    
-    if (quoteIdentifiersCheck != null){
+
+    if (quoteIdentifiersCheck != null) {
       quoteIdentifiersCheck.setChecked(meta.isQuoteAllFields());
     }
-    
-    if (lowerCaseIdentifiersCheck != null){
+
+    if (lowerCaseIdentifiersCheck != null) {
       lowerCaseIdentifiersCheck.setChecked(meta.isForcingIdentifiersToLowerCase());
     }
-    
-    if (upperCaseIdentifiersCheck != null){
+
+    if (upperCaseIdentifiersCheck != null) {
       upperCaseIdentifiersCheck.setChecked(meta.isForcingIdentifiersToUpperCase());
     }
-    
-    if (sqlBox != null){
-      sqlBox.setValue(meta.getConnectSQL()==null?"":meta.getConnectSQL());
+
+    if (sqlBox != null) {
+      sqlBox.setValue(meta.getConnectSQL() == null ? "" : meta.getConnectSQL());
+    }
+
+    // Clustering panel settings
+
+    if (clusteringCheck != null) {
+      clusteringCheck.setChecked(meta.isPartitioned());
+    }
+
+    if (meta.isPartitioned()) {
+      setClusterData(meta.getPartitioningInformation());
+    }
+
+    // Pooling panel settings 
+
+    if (poolingCheck != null) {
+      poolingCheck.setChecked(meta.isUsingConnectionPool());
+    }
+
+    if (meta.isUsingConnectionPool()) {
+      if (poolSizeBox != null) {
+        poolSizeBox.setValue(Integer.toString(meta.getInitialPoolSize()));
+      }
+
+      if (maxPoolSizeBox != null) {
+        maxPoolSizeBox.setValue(Integer.toString(meta.getMaximumPoolSize()));
+      }
+
+      setPoolProperties(meta.getConnectionPoolingProperties());
+    }
+
+    setDeckChildIndex();
+    onPoolingCheck();
+    onClusterCheck();
+  }
+
+  private void setPoolProperties(Properties properties) {
+    if (poolParameterTree != null) {
+      Object[][] values = poolParameterTree.getValues();
+      for (int i = 0; i < values.length; i++) {
+
+        String parameter = (String) values[i][1];
+        boolean isChecked = properties.containsKey(parameter);
+
+        if (!isChecked) {
+          continue;
+        }
+        XulTreeItem item = poolParameterTree.getRootChildren().getItem(i);
+        item.getRow().addCellText(0, "true"); // checks the checkbox
+
+        String value = properties.getProperty(parameter);
+        item.getRow().addCellText(3, value);
+
+      }
+    }
+
+  }
+
+  private void setOptionsData(Map<String, String> extraOptions) {
+
+    if (optionsParameterTree != null) {
+      Iterator<String> keys = extraOptions.keySet().iterator();
+      while (keys.hasNext()) {
+
+        String parameter = keys.next();
+        String value = extraOptions.get(parameter);
+        if ((value == null) || (value.trim().length() <= 0) || (value.equals(DatabaseMeta.EMPTY_OPTIONS_STRING))) {
+          value = ""; //$NON-NLS-1$
+        }
+
+        // If the parameter starts with a database type code we add it...
+        // For example MySQL.defaultFetchSize
+
+        int dotIndex = parameter.indexOf('.');
+        if (dotIndex >= 0) {
+          String parameterOption = parameter.substring(dotIndex + 1);
+
+          XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
+          row.addCellText(0, parameterOption);
+          row.addCellText(1, value);
+
+        }
+      }
     }
   }
 
-  private void setOptionsData(Map <String, String> extraOptions){
-    
-    // The extra options as well...
-      Iterator<String> keys = extraOptions.keySet().iterator();
-      while (keys.hasNext()){
-        
-          String parameter = keys.next();
-          String value = extraOptions.get(parameter);
-          if ((value == null) || 
-              (value.trim().length() <= 0) ||
-              (value.equals(DatabaseMeta.EMPTY_OPTIONS_STRING))){
-            value = ""; //$NON-NLS-1$
-          }
+  private void setClusterData(PartitionDatabaseMeta[] clusterInformation) {
 
-          // If the paremeter starts with a database type code we add it...
-          // For example MySQL.defaultFetchSize
+    if ((clusterInformation != null) && (clusterParameterTree != null)) {
 
-          int dotIndex = parameter.indexOf('.'); 
-          if (dotIndex >= 0){
-              String parameterOption = parameter.substring(dotIndex + 1);
+      for (int i = 0; i < clusterInformation.length; i++) {
 
-              XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
-              row.addCellText(0, parameterOption);
-              row.addCellText(1, value);
-              
-          }
+        PartitionDatabaseMeta meta = clusterInformation[i];
+        XulTreeRow row = clusterParameterTree.getRootChildren().addNewRow();
+        row.addCellText(0, meta.getPartitionId() == null ? "" : meta.getPartitionId()); //$NON-NLS-1$
+        row.addCellText(1, meta.getHostname() == null ? "" : meta.getHostname()); //$NON-NLS-1$
+        row.addCellText(2, meta.getPort() == null ? "" : meta.getPort()); //$NON-NLS-1$
+        row.addCellText(3, meta.getDatabaseName() == null ? "" : meta.getDatabaseName()); //$NON-NLS-1$
+        row.addCellText(4, meta.getUsername() == null ? "" : meta.getUsername()); //$NON-NLS-1$
+        row.addCellText(5, meta.getPassword() == null ? "" : meta.getPassword()); //$NON-NLS-1$
       }
+    }
   }
 
   private void getControls() {
@@ -646,7 +807,7 @@ public class DataHandler extends XulEventHandler {
     // each one for null before using.
 
     dialogDeck = (XulDeck) document.getElementById("dialog-panel-deck"); //$NON-NLS-1$
-    deckOptionsBox = (XulListbox)document.getElementById("deck-options-list"); //$NON-NLS-1$
+    deckOptionsBox = (XulListbox) document.getElementById("deck-options-list"); //$NON-NLS-1$
     connectionBox = (XulListbox) document.getElementById("connection-type-list"); //$NON-NLS-1$
     accessBox = (XulListbox) document.getElementById("access-type-list"); //$NON-NLS-1$
     connectionNameBox = (XulTextbox) document.getElementById("connection-name-text"); //$NON-NLS-1$
@@ -675,12 +836,10 @@ public class DataHandler extends XulEventHandler {
     poolParameterTree = (XulTree) document.getElementById("pool-parameter-tree"); //$NON-NLS-1$
     clusterParameterTree = (XulTree) document.getElementById("cluster-parameter-tree"); //$NON-NLS-1$
     optionsParameterTree = (XulTree) document.getElementById("options-parameter-tree"); //$NON-NLS-1$
-    quoteIdentifiersCheck = (XulCheckbox)document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
-    lowerCaseIdentifiersCheck = (XulCheckbox)document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
-    upperCaseIdentifiersCheck = (XulCheckbox)document.getElementById("force-upper-case-check"); //$NON-NLS-1$;
-    sqlBox = (XulTextbox)document.getElementById("sql-text"); //$NON-NLS-1$;
+    quoteIdentifiersCheck = (XulCheckbox) document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
+    lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
+    upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-upper-case-check"); //$NON-NLS-1$;
+    sqlBox = (XulTextbox) document.getElementById("sql-text"); //$NON-NLS-1$;
   }
-  
-  
 
 }

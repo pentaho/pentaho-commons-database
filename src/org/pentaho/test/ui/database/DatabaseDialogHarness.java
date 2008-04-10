@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.di.core.database.PartitionDatabaseMeta;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.containers.XulWindow;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
@@ -113,7 +114,7 @@ public class DatabaseDialogHarness {
         while (keys.hasNext()){
             String parameter = keys.next();
             String value = database.getExtraOptions().get(parameter);
-            message = message.concat(carriageReturn).concat(parameter).concat(": ").concat(value);
+            message = message.concat(carriageReturn).concat(parameter).concat(": ").concat(value).concat(carriageReturn);
         }
         
         message = message.concat(carriageReturn).concat("SQL: ")
@@ -122,6 +123,31 @@ public class DatabaseDialogHarness {
         .concat("Upper Case Identifiers: ").concat(Boolean.toString(database.isForcingIdentifiersToUpperCase())).concat(carriageReturn)
         .concat("Lower Case Identifiers: ").concat(Boolean.toString(database.isForcingIdentifiersToLowerCase())).concat(carriageReturn);
         
+        message = message.concat(carriageReturn).concat("Is Partitioned: ")
+        .concat(Boolean.toString(database.isPartitioned())).concat(carriageReturn);
+        
+        if (database.isPartitioned()){
+          PartitionDatabaseMeta[] partitions = database.getPartitioningInformation();
+          if (partitions != null){
+            for (int i = 0; i < partitions.length; i++) {
+              PartitionDatabaseMeta pdm = partitions[i];
+              message = message.concat(carriageReturn).concat(Integer.toString(i)).concat(". ID: ")
+              .concat(pdm.getPartitionId()).concat(", Host: ")
+              .concat(pdm.getHostname()).concat(", Db: ")
+              .concat(pdm.getDatabaseName()).concat(", Port: ")
+              .concat(pdm.getPort()).concat(", User: ")
+              .concat(pdm.getUsername()).concat(", Pass: ")
+              .concat(pdm.getPassword()).concat(carriageReturn);
+            }
+          }
+        }
+        Iterator <Object> poolKeys  = database.getConnectionPoolingProperties().keySet().iterator();
+        message = message.concat(carriageReturn).concat("Pooling Parameters:").concat(carriageReturn);
+        while (poolKeys.hasNext()){
+            String parameter = (String)poolKeys.next();
+            String value = database.getConnectionPoolingProperties().getProperty(parameter);
+            message = message.concat(carriageReturn).concat(parameter).concat(": ").concat(value).concat(carriageReturn);
+        }
 
       } catch (Exception e) {
         e.printStackTrace();
