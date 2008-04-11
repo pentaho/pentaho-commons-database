@@ -12,7 +12,7 @@
 	<script id="fragmentHandler" src="org.pentaho.ui.database.event.FragmentHandler" />
 	<script id="dataHandler" src="org.pentaho.ui.database.event.DataHandler" />
 
-
+	<vbox flex="1">
 	<hbox id="all-box" flex="1">
 
 	<!--  ###############################################################################  -->
@@ -378,13 +378,13 @@
 	<!--  ###############################################################################  -->
 	<!--     TEST BUTTON BOX: A box for the test button.                                   -->
 	<!--  ###############################################################################  -->
-		<hbox id="test-button-box">
-			<label id="spacer-label" flex="10" />
-			<button id="test-button" label="Test" flex="1" onclick="dataHandler.testDatabaseConnection()" />
-			<label id="spacer-label" flex="10" />
-			
-		</hbox>
-	
+	<hbox id="test-button-box">
+		<label id="spacer-label" flex="10" />
+		<button id="test-button" label="Test" flex="1" onclick="dataHandler.testDatabaseConnection()" />
+		<label id="spacer-label" flex="10" />
+		
+	</hbox>
+	</vbox>
 	<!--  ###############################################################################  -->
 	<!--     BUTTON BOX: Holds the OK, Cancel buttons.                                     -->
 	<!--  ###############################################################################  -->

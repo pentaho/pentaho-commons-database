@@ -59,7 +59,10 @@ public class DataHandler extends XulEventHandler {
 
   private DatabaseMeta databaseMeta = null;
 
+  private DatabaseMeta cache = null;
+  
   private XulDeck dialogDeck;
+  
 
   private XulListbox deckOptionsBox;
 
@@ -237,7 +240,7 @@ public class DataHandler extends XulEventHandler {
     }
     
     //re populate
-    mergeData(currentData);
+    //mergeData(currentData);
   }
 
   public void editOptions() {
@@ -333,8 +336,8 @@ public class DataHandler extends XulEventHandler {
   }
   
   public void mergeData(Object data) {
-    databaseMeta = (DatabaseMeta)data;
-    setInfo(databaseMeta, true);
+    cache = (DatabaseMeta)data;
+    setInfo(cache, true);
   }
 
   public void onCancel() {
@@ -356,8 +359,8 @@ public class DataHandler extends XulEventHandler {
       XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
       messageBox.open();
     } else {
+      this.getInfo(databaseMeta);
       this.xulDomContainer.close();
-      databaseMeta = database;
     }
   }
 
@@ -380,7 +383,7 @@ public class DataHandler extends XulEventHandler {
     messageBox.open();
   }
 
-  private void getInfo(DatabaseMeta meta) {
+  protected void getInfo(DatabaseMeta meta) {
 
     getControls();
 
@@ -614,6 +617,8 @@ public class DataHandler extends XulEventHandler {
     if (meta == null) {
       return;
     }
+
+    getControls();
 
     // Name:
     connectionNameBox.setValue(meta.getName());
