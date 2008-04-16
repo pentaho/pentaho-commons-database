@@ -9,6 +9,6 @@
 					<label id="username-label" value="Username:" />
 					<textbox id="username-text" />
 					<label id="password-label" value="Password:" />
-					<textbox id="password-text" />
+					<textbox id="password-text" type="password"/>
 					<checkbox id="result-streaming-check" label="Use Result Streaming Cursor" checked="false"/>
 				</groupbox>

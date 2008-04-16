@@ -11,6 +11,6 @@
 					<label id="username-label" value="Username:" />
 					<textbox id="username-text" />
 					<label id="password-label" value="Password:" />
-					<textbox id="password-text" />
+					<textbox id="password-text" type="password"/>
 					<checkbox id="decimal-separator-check" label="Use .. to Separate Schema and Table" checked="false"/>
 				</groupbox>

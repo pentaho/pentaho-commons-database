@@ -75,7 +75,7 @@
 						<label id="username-label" value="Username:" />
 						<textbox id="username-text" />
 						<label id="password-label" value="Password:" />
-						<textbox id="password-text" />
+						<textbox id="password-text" type="password"/>
 					</groupbox>
 				</hbox>
 				
@@ -155,7 +155,7 @@
 					</groupbox>				
 
 					<label id="spacer" />
-					<label id="parameter-description-label" flex="1" value="Parameters:"/>
+					<label id="parameter-description-label" flex="1" value="Parameters:" disabled="true"/>
 					<label id="spacer" />
 
 					<tree id="pool-parameter-tree" flex="1" rows="10" editable="false" seltype="single" disabled="true" onselect="dataHandler.poolingRowChange()">
@@ -330,8 +330,8 @@
 						</treechildren>
 					</tree>
 					<label id="spacer" value=" " />
-					<label id="pooling-description-label" flex="1" value="Description:"/>
-					<label id="pooling-description" flex="10" />
+					<label id="pooling-description-label" flex="1" value="Description:" disabled="true"/>
+					<textbox id="pooling-description" flex="10" readonly="true" multiline="true" disabled="true"/>
 					<label id="spacer" flex="1" />
 				</groupbox>
 

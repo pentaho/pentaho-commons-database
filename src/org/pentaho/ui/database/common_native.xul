@@ -9,7 +9,7 @@
 					<label id="username-label" value="Username:" />
 					<textbox id="username-text" />
 					<label id="password-label" value="Password:" />
-					<textbox id="password-text" />
+					<textbox id="password-text" type="password"/>
 					<!--   <label id="space" flex="1" /> -->
 				</groupbox>
 				

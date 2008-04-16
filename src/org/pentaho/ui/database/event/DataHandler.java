@@ -1,6 +1,7 @@
 package org.pentaho.ui.database.event;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -59,10 +60,9 @@ public class DataHandler extends XulEventHandler {
 
   private DatabaseMeta databaseMeta = null;
 
-  private DatabaseMeta cache = null;
-  
+  private DatabaseMeta cache = new DatabaseMeta();
+
   private XulDeck dialogDeck;
-  
 
   private XulListbox deckOptionsBox;
 
@@ -125,8 +125,12 @@ public class DataHandler extends XulEventHandler {
 
   private XulTree clusterParameterTree;
 
-  private XulLabel poolingDescription;
-  
+  private XulTextbox poolingDescription;
+
+  private XulLabel poolingParameterDescriptionLabel;
+
+  private XulLabel poolingDescriptionLabel;
+
   // ==== Advanced Panel ==== //
 
   XulCheckbox quoteIdentifiersCheck;
@@ -157,8 +161,7 @@ public class DataHandler extends XulEventHandler {
   public void loadConnectionData() {
 
     getControls();
-    
-    
+
     // Add sorted types to the listbox now.
 
     for (String key : connectionMap.keySet()) {
@@ -188,7 +191,7 @@ public class DataHandler extends XulEventHandler {
     if (dialogDeck != null) {
       setDeckChildIndex();
     }
-    
+
     // HACK: reDim the pooling table
     poolParameterTree.setRows(poolParameterTree.getRows());
 
@@ -197,12 +200,9 @@ public class DataHandler extends XulEventHandler {
   //On Database type change
   public void loadAccessData() {
 
-    //cache current settings
-    DatabaseMeta currentData = new DatabaseMeta();
-
-    getInfo(currentData);
-    
     getControls();
+
+    pushCache();
 
     Object key = connectionBox.getSelectedItem();
 
@@ -238,9 +238,9 @@ public class DataHandler extends XulEventHandler {
     if (accessBox.getSelectedItem() == null) {
       accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(acc[0]));
     }
-    
-    //re populate
-    //mergeData(currentData);
+
+    popCache();
+
   }
 
   public void editOptions() {
@@ -303,6 +303,16 @@ public class DataHandler extends XulEventHandler {
       if (poolParameterTree != null) {
         poolParameterTree.setDisabled(dis);
       }
+      if (poolingParameterDescriptionLabel != null) {
+        poolingParameterDescriptionLabel.setDisabled(dis);
+      }
+      if (poolingDescriptionLabel != null) {
+        poolingDescriptionLabel.setDisabled(dis);
+      }
+      if (poolingDescription != null) {
+        poolingDescription.setDisabled(dis);
+      }
+
     }
   }
 
@@ -332,12 +342,15 @@ public class DataHandler extends XulEventHandler {
     if (data instanceof DatabaseMeta) {
       databaseMeta = (DatabaseMeta) data;
     }
-    setInfo(databaseMeta, false);
+    setInfo(databaseMeta);
   }
-  
-  public void mergeData(Object data) {
-    cache = (DatabaseMeta)data;
-    setInfo(cache, true);
+
+  public void pushCache() {
+    getConnectionSpecificInfo(cache);
+  }
+
+  public void popCache() {
+    setConnectionSpecificInfo(cache);
   }
 
   public void onCancel() {
@@ -359,6 +372,9 @@ public class DataHandler extends XulEventHandler {
       XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
       messageBox.open();
     } else {
+      if (databaseMeta == null) {
+        databaseMeta = new DatabaseMeta();
+      }
       this.getInfo(databaseMeta);
       this.xulDomContainer.close();
     }
@@ -393,7 +409,9 @@ public class DataHandler extends XulEventHandler {
     // Before we put all attributes back in, clear the old list to make sure...
     // Warning: the port is an attribute too now.
     // 
-    meta.getAttributes().clear();
+    if (meta.getAttributes() != null) {
+      meta.getAttributes().clear();
+    }
 
     // Name:
     meta.setName(connectionNameBox.getValue());
@@ -410,82 +428,11 @@ public class DataHandler extends XulEventHandler {
       meta.setAccessType(DatabaseMeta.getAccessType((String) access));
     }
 
-    // Hostname:
-    if (hostNameBox != null) {
-      meta.setHostname(hostNameBox.getValue());
-    }
-
-    // Database name:
-    if (databaseNameBox != null) {
-      meta.setDBName(databaseNameBox.getValue());
-    }
+    getConnectionSpecificInfo(meta);
 
     // Port number:
     if (portNumberBox != null) {
       meta.setDBPort(portNumberBox.getValue());
-    }
-
-    // Username:
-    if (userNameBox != null) {
-      meta.setUsername(userNameBox.getValue());
-    }
-
-    // Password:
-    if (passwordBox != null) {
-      meta.setPassword(passwordBox.getValue());
-    }
-
-    // Streaming result cursor:
-    if (resultStreamingCursorCheck != null) {
-      meta.setStreamingResults(resultStreamingCursorCheck.isChecked());
-    }
-
-    // Data tablespace:
-    if (dataTablespaceBox != null) {
-      meta.setDataTablespace(dataTablespaceBox.getValue());
-    }
-
-    // Index tablespace
-    if (indexTablespaceBox != null) {
-      meta.setIndexTablespace(indexTablespaceBox.getValue());
-    }
-
-    // The SQL Server instance name overrides the option.
-    // Empty doesn't clear the option, we have mercy.
-
-    if (serverInstanceBox != null) {
-      if (serverInstanceBox.getValue().trim().length() > 0) {
-        meta.setSQLServerInstance(serverInstanceBox.getValue());
-      }
-    }
-
-    // SQL Server double decimal separator
-    if (doubleDecimalSeparatorCheck != null) {
-      meta.setUsingDoubleDecimalAsSchemaTableSeparator(doubleDecimalSeparatorCheck.isChecked());
-    }
-
-    // SAP Attributes...
-    if (languageBox != null) {
-      meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_LANGUAGE, languageBox.getValue());
-    }
-    if (systemNumberBox != null) {
-      meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_SYSTEM_NUMBER, systemNumberBox.getValue());
-    }
-    if (clientBox != null) {
-      meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_CLIENT, clientBox.getValue());
-    }
-
-    // Generic settings...
-    if (customUrlBox != null) {
-      meta.getAttributes().put(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_URL, customUrlBox.getValue());
-    }
-    if (customDriverClassBox != null) {
-      meta.getAttributes().put(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_DRIVER_CLASS, customDriverClassBox.getValue());
-    }
-
-    // Server Name:  (Informix)
-    if (serverNameBox != null) {
-      meta.setServername(serverNameBox.getValue());
     }
 
     // Option parameters: 
@@ -612,7 +559,7 @@ public class DataHandler extends XulEventHandler {
 
   }
 
-  private void setInfo(DatabaseMeta meta, boolean ignoreType) {
+  private void setInfo(DatabaseMeta meta) {
 
     if (meta == null) {
       return;
@@ -624,86 +571,18 @@ public class DataHandler extends XulEventHandler {
     connectionNameBox.setValue(meta.getName());
 
     // Connection type:
-    if(!ignoreType){
-      connectionBox.setSelectedItem(meta.getDatabaseInterface().getDatabaseTypeDescLong());
-    }
-    
+    connectionBox.setSelectedItem(meta.getDatabaseInterface().getDatabaseTypeDescLong());
+
     // Access type:
     accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(meta.getAccessType()));
 
-    getControls();
-
-    if (hostNameBox != null) {
-      hostNameBox.setValue(meta.getHostname());
-    }
-
-    // Database name:
-    if (databaseNameBox != null) {
-      databaseNameBox.setValue(meta.getDatabaseName());
-    }
+    // this is broken out so we can set the cache information only when caching 
+    // connection values
+    setConnectionSpecificInfo(meta);
 
     // Port number:
-    if (portNumberBox != null && !ignoreType) {
+    if (portNumberBox != null) {
       portNumberBox.setValue(meta.getDatabasePortNumberString());
-    }
-
-    // Username:
-    if (userNameBox != null) {
-      userNameBox.setValue(meta.getUsername());
-    }
-
-    // Password:
-    if (passwordBox != null) {
-      passwordBox.setValue(meta.getPassword());
-    }
-
-    // Streaming result cursor:
-    if (resultStreamingCursorCheck != null) {
-      resultStreamingCursorCheck.setChecked(meta.isStreamingResults());
-    }
-
-    // Data tablespace:
-    if (dataTablespaceBox != null) {
-      dataTablespaceBox.setValue(meta.getDataTablespace());
-    }
-
-    // Index tablespace
-    if (indexTablespaceBox != null) {
-      indexTablespaceBox.setValue(meta.getIndexTablespace());
-    }
-
-    if (serverInstanceBox != null) {
-      serverInstanceBox.setValue(meta.getSQLServerInstance());
-    }
-
-    // SQL Server double decimal separator
-    if (doubleDecimalSeparatorCheck != null) {
-      doubleDecimalSeparatorCheck.setChecked(meta.isUsingDoubleDecimalAsSchemaTableSeparator());
-    }
-
-    // SAP Attributes...
-    if (languageBox != null) {
-      languageBox.setValue(meta.getAttributes().getProperty(SAPR3DatabaseMeta.ATTRIBUTE_SAP_LANGUAGE));
-    }
-    if (systemNumberBox != null) {
-      systemNumberBox.setValue(meta.getAttributes().getProperty(SAPR3DatabaseMeta.ATTRIBUTE_SAP_SYSTEM_NUMBER));
-    }
-    if (clientBox != null) {
-      clientBox.setValue(meta.getAttributes().getProperty(SAPR3DatabaseMeta.ATTRIBUTE_SAP_CLIENT));
-    }
-
-    // Generic settings...
-    if (customUrlBox != null) {
-      customUrlBox.setValue(meta.getAttributes().getProperty(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_URL));
-    }
-    if (customDriverClassBox != null) {
-      customDriverClassBox
-          .setValue(meta.getAttributes().getProperty(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_DRIVER_CLASS));
-    }
-
-    // Server Name:  (Informix)
-    if (serverNameBox != null) {
-      serverNameBox.setValue(meta.getServername());
     }
 
     // Options Parameters:
@@ -829,23 +708,172 @@ public class DataHandler extends XulEventHandler {
     }
   }
 
-  public void poolingRowChange(Integer idx){
-    
-    if(idx != -1){
+  public void poolingRowChange(Integer idx) {
+
+    if (idx != -1) {
 
       DatabaseMeta meta = new DatabaseMeta();
-      
-      if(idx >= BaseDatabaseMeta.poolingParameters.length){
-        idx = BaseDatabaseMeta.poolingParameters.length-1;
+
+      if (idx >= BaseDatabaseMeta.poolingParameters.length) {
+        idx = BaseDatabaseMeta.poolingParameters.length - 1;
       }
-      if(idx < 0){
+      if (idx < 0) {
         idx = 0;
       }
       poolingDescription.setValue(BaseDatabaseMeta.poolingParameters[idx].getDescription());
     }
   }
-  
-  
+
+  private void getConnectionSpecificInfo(DatabaseMeta meta) {
+    // Hostname:
+    if (hostNameBox != null) {
+      meta.setHostname(hostNameBox.getValue());
+    }
+
+    // Database name:
+    if (databaseNameBox != null) {
+      meta.setDBName(databaseNameBox.getValue());
+    }
+
+    // Username:
+    if (userNameBox != null) {
+      meta.setUsername(userNameBox.getValue());
+    }
+
+    // Password:
+    if (passwordBox != null) {
+      meta.setPassword(passwordBox.getValue());
+    }
+
+    // Streaming result cursor:
+    if (resultStreamingCursorCheck != null) {
+      meta.setStreamingResults(resultStreamingCursorCheck.isChecked());
+    }
+
+    // Data tablespace:
+    if (dataTablespaceBox != null) {
+      meta.setDataTablespace(dataTablespaceBox.getValue());
+    }
+
+    // Index tablespace
+    if (indexTablespaceBox != null) {
+      meta.setIndexTablespace(indexTablespaceBox.getValue());
+    }
+
+    // The SQL Server instance name overrides the option.
+    // Empty doesn't clear the option, we have mercy.
+
+    if (serverInstanceBox != null) {
+      if (serverInstanceBox.getValue().trim().length() > 0) {
+        meta.setSQLServerInstance(serverInstanceBox.getValue());
+      }
+    }
+
+    // SQL Server double decimal separator
+    if (doubleDecimalSeparatorCheck != null) {
+      meta.setUsingDoubleDecimalAsSchemaTableSeparator(doubleDecimalSeparatorCheck.isChecked());
+    }
+
+    // SAP Attributes...
+    if (languageBox != null) {
+      meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_LANGUAGE, languageBox.getValue());
+    }
+    if (systemNumberBox != null) {
+      meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_SYSTEM_NUMBER, systemNumberBox.getValue());
+    }
+    if (clientBox != null) {
+      meta.getAttributes().put(SAPR3DatabaseMeta.ATTRIBUTE_SAP_CLIENT, clientBox.getValue());
+    }
+
+    // Generic settings...
+    if (customUrlBox != null) {
+      meta.getAttributes().put(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_URL, customUrlBox.getValue());
+    }
+    if (customDriverClassBox != null) {
+      meta.getAttributes().put(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_DRIVER_CLASS, customDriverClassBox.getValue());
+    }
+
+    // Server Name:  (Informix)
+    if (serverNameBox != null) {
+      meta.setServername(serverNameBox.getValue());
+    }
+
+  }
+
+  private void setConnectionSpecificInfo(DatabaseMeta meta) {
+
+    getControls();
+
+    if (hostNameBox != null) {
+      hostNameBox.setValue(meta.getHostname());
+    }
+
+    // Database name:
+    if (databaseNameBox != null) {
+      databaseNameBox.setValue(meta.getDatabaseName());
+    }
+
+    // Username:
+    if (userNameBox != null) {
+      userNameBox.setValue(meta.getUsername());
+    }
+
+    // Password:
+    if (passwordBox != null) {
+      passwordBox.setValue(meta.getPassword());
+    }
+
+    // Streaming result cursor:
+    if (resultStreamingCursorCheck != null) {
+      resultStreamingCursorCheck.setChecked(meta.isStreamingResults());
+    }
+
+    // Data tablespace:
+    if (dataTablespaceBox != null) {
+      dataTablespaceBox.setValue(meta.getDataTablespace());
+    }
+
+    // Index tablespace
+    if (indexTablespaceBox != null) {
+      indexTablespaceBox.setValue(meta.getIndexTablespace());
+    }
+
+    if (serverInstanceBox != null) {
+      serverInstanceBox.setValue(meta.getSQLServerInstance());
+    }
+
+    // SQL Server double decimal separator
+    if (doubleDecimalSeparatorCheck != null) {
+      doubleDecimalSeparatorCheck.setChecked(meta.isUsingDoubleDecimalAsSchemaTableSeparator());
+    }
+
+    // SAP Attributes...
+    if (languageBox != null) {
+      languageBox.setValue(meta.getAttributes().getProperty(SAPR3DatabaseMeta.ATTRIBUTE_SAP_LANGUAGE));
+    }
+    if (systemNumberBox != null) {
+      systemNumberBox.setValue(meta.getAttributes().getProperty(SAPR3DatabaseMeta.ATTRIBUTE_SAP_SYSTEM_NUMBER));
+    }
+    if (clientBox != null) {
+      clientBox.setValue(meta.getAttributes().getProperty(SAPR3DatabaseMeta.ATTRIBUTE_SAP_CLIENT));
+    }
+
+    // Generic settings...
+    if (customUrlBox != null) {
+      customUrlBox.setValue(meta.getAttributes().getProperty(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_URL));
+    }
+    if (customDriverClassBox != null) {
+      customDriverClassBox
+          .setValue(meta.getAttributes().getProperty(GenericDatabaseMeta.ATRRIBUTE_CUSTOM_DRIVER_CLASS));
+    }
+
+    // Server Name:  (Informix)
+    if (serverNameBox != null) {
+      serverNameBox.setValue(meta.getServername());
+    }
+
+  }
+
   private void getControls() {
 
     // Not all of these controls are created at the same time.. that's OK, for now, just check
@@ -881,7 +909,9 @@ public class DataHandler extends XulEventHandler {
     poolParameterTree = (XulTree) document.getElementById("pool-parameter-tree"); //$NON-NLS-1$
     clusterParameterTree = (XulTree) document.getElementById("cluster-parameter-tree"); //$NON-NLS-1$
     optionsParameterTree = (XulTree) document.getElementById("options-parameter-tree"); //$NON-NLS-1$
-    poolingDescription = (XulLabel) document.getElementById("pooling-description"); //$NON-NLS-1$ 
+    poolingDescription = (XulTextbox) document.getElementById("pooling-description"); //$NON-NLS-1$ 
+    poolingParameterDescriptionLabel = (XulLabel) document.getElementById("parameter-description-label"); //$NON-NLS-1$ 
+    poolingDescriptionLabel = (XulLabel) document.getElementById("pooling-description-label"); //$NON-NLS-1$ 
     quoteIdentifiersCheck = (XulCheckbox) document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
     lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
     upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-upper-case-check"); //$NON-NLS-1$;

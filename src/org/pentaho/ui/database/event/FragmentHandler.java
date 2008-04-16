@@ -81,6 +81,14 @@ public class FragmentHandler extends XulEventHandler {
     String fragment = null;
     InputStream in = null;
 
+    DataHandler dataHandler=null;
+    try {
+      dataHandler = (DataHandler)xulDomContainer.getEventHandler("dataHandler");
+      dataHandler.popCache();
+    } catch (XulException e) {
+      // TODO not a critical function, but should log a problem...
+    }
+
     switch(access){
       case DatabaseMeta.TYPE_ACCESS_JNDI:
         fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_jndi.xul");
@@ -131,7 +139,11 @@ public class FragmentHandler extends XulEventHandler {
         portBox.setValue(Integer.toString(port));
       }
     }
-   
+    
+   if (dataHandler != null){
+     dataHandler.popCache();
+   }
+    
   }
   
   @Override
