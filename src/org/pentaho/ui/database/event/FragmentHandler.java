@@ -84,7 +84,7 @@ public class FragmentHandler extends XulEventHandler {
     DataHandler dataHandler=null;
     try {
       dataHandler = (DataHandler)xulDomContainer.getEventHandler("dataHandler");
-      dataHandler.popCache();
+      dataHandler.pushCache();
     } catch (XulException e) {
       // TODO not a critical function, but should log a problem...
     }
