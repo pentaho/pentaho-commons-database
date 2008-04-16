@@ -92,43 +92,43 @@ public class FragmentHandler extends XulEventHandler {
     switch(access){
       case DatabaseMeta.TYPE_ACCESS_JNDI:
         fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_jndi.xul");
-        in = getClass().getClassLoader().getResourceAsStream(fragment);
+        in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
         if (in == null){
           fragment = packagePath.concat("common_jndi.xul");
         }
-        loadDatabaseOptionsFragment(fragment);
+        loadDatabaseOptionsFragment(fragment.toLowerCase());
         break;
       case DatabaseMeta.TYPE_ACCESS_NATIVE:
         fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_native.xul");
-        in = getClass().getClassLoader().getResourceAsStream(fragment);
+        in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
         if (in == null){
           fragment = packagePath.concat("common_native.xul");
         }
-        loadDatabaseOptionsFragment(fragment);
+        loadDatabaseOptionsFragment(fragment.toLowerCase());
         break;
       case DatabaseMeta.TYPE_ACCESS_OCI:
         fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_oci.xul");
-        in = getClass().getClassLoader().getResourceAsStream(fragment);
+        in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
         if (in == null){
           fragment = packagePath.concat("common_native.xul");
         }
-        loadDatabaseOptionsFragment(fragment);
+        loadDatabaseOptionsFragment(fragment.toLowerCase());
         break;
       case DatabaseMeta.TYPE_ACCESS_ODBC:
         fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_odbc.xul");
-        in = getClass().getClassLoader().getResourceAsStream(fragment);
+        in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
         if (in == null){
           fragment = packagePath.concat("common_odbc.xul");
         }
-        loadDatabaseOptionsFragment(fragment);
+        loadDatabaseOptionsFragment(fragment.toLowerCase());
         break;
       case DatabaseMeta.TYPE_ACCESS_PLUGIN:
         fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_plugin.xul");
-        in = getClass().getClassLoader().getResourceAsStream(fragment);
+        in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
         if (in == null){
           fragment = packagePath.concat("common_native.xul");
         }
-        loadDatabaseOptionsFragment(fragment);
+        loadDatabaseOptionsFragment(fragment.toLowerCase());
         break;
     }
     
