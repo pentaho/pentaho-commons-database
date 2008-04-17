@@ -125,11 +125,7 @@ public class DataHandler extends XulEventHandler {
 
   private XulTree clusterParameterTree;
 
-  private XulTextbox poolingDescription;
-
-  private XulLabel poolingParameterDescriptionLabel;
-
-  private XulLabel poolingDescriptionLabel;
+  private XulLabel clusterParameterDescriptionLabel;
 
   // ==== Advanced Panel ==== //
 
@@ -152,6 +148,12 @@ public class DataHandler extends XulEventHandler {
   private XulTextbox poolSizeBox;
 
   private XulTextbox maxPoolSizeBox;
+
+  private XulTextbox poolingDescription;
+
+  private XulLabel poolingParameterDescriptionLabel;
+
+  private XulLabel poolingDescriptionLabel;
 
   private XulTree poolParameterTree;
 
@@ -321,6 +323,9 @@ public class DataHandler extends XulEventHandler {
       boolean dis = !clusteringCheck.isChecked();
       if (clusterParameterTree != null) {
         clusterParameterTree.setDisabled(dis);
+      }
+      if(clusterParameterDescriptionLabel != null){
+        clusterParameterDescriptionLabel.setDisabled(dis);
       }
     }
   }
@@ -902,6 +907,7 @@ public class DataHandler extends XulEventHandler {
     resultStreamingCursorCheck = (XulCheckbox) document.getElementById("result-streaming-check"); //$NON-NLS-1$
     poolingCheck = (XulCheckbox) document.getElementById("use-pool-check"); //$NON-NLS-1$
     clusteringCheck = (XulCheckbox) document.getElementById("use-cluster-check"); //$NON-NLS-1$
+    clusterParameterDescriptionLabel = (XulLabel) document.getElementById("cluster-parameter-description-label"); //$NON-NLS-1$
     poolSizeLabel = (XulLabel) document.getElementById("pool-size-label"); //$NON-NLS-1$
     poolSizeBox = (XulTextbox) document.getElementById("pool-size-text"); //$NON-NLS-1$
     maxPoolSizeLabel = (XulLabel) document.getElementById("max-pool-size-label"); //$NON-NLS-1$
@@ -910,7 +916,7 @@ public class DataHandler extends XulEventHandler {
     clusterParameterTree = (XulTree) document.getElementById("cluster-parameter-tree"); //$NON-NLS-1$
     optionsParameterTree = (XulTree) document.getElementById("options-parameter-tree"); //$NON-NLS-1$
     poolingDescription = (XulTextbox) document.getElementById("pooling-description"); //$NON-NLS-1$ 
-    poolingParameterDescriptionLabel = (XulLabel) document.getElementById("parameter-description-label"); //$NON-NLS-1$ 
+    poolingParameterDescriptionLabel = (XulLabel) document.getElementById("pool-parameter-description-label"); //$NON-NLS-1$ 
     poolingDescriptionLabel = (XulLabel) document.getElementById("pooling-description-label"); //$NON-NLS-1$ 
     quoteIdentifiersCheck = (XulCheckbox) document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
     lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
