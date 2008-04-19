@@ -1,9 +1,12 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <window id="general-datasource-window"
-	title="Database Connection" orient="vertical"
+	title="Database Connection" 
+	orient="vertical"
 	height="605" width="700"
-	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="dataHandler.loadConnectionData()">
+	onload="dataHandler.loadConnectionData()"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:pen="http://www.pentaho.org/2008/xul"  >
 	
 	
 	<!--  ###############################################################################  -->
@@ -63,19 +66,9 @@
 			 necessary to connect to the database. This is the container that will be 
 			 replaced on change of the access method or connection type.                   -->
 	<!--  ###############################################################################  -->
-					<!--  This is the container that will be replaced on change of the access method  -->
+	<!--  This is the container that will be replaced on change of the access method  -->
 					<groupbox id="database-options-box" orient="vertical" flex="1">
 						<caption label="Settings" />
-						<label id="server-host-name-label" value="Server Host Name:" />
-						<textbox id="server-host-name-text" />
-						<label id="database-name-label" value="Database Name:" />
-						<textbox id="database-name-text" />
-						<label id="port-number-label" value="Port Number:" />
-						<textbox id="port-number-text" />
-						<label id="username-label" value="Username:" />
-						<textbox id="username-text" />
-						<label id="password-label" value="Password:" />
-						<textbox id="password-text" type="password"/>
 					</groupbox>
 				</hbox>
 				
@@ -146,11 +139,11 @@
 						<caption label="Pool Size" />
 						<vbox flex="1">
 							<label id="pool-size-label" value="Initial:" disabled="true"/>
-							<textbox id="pool-size-text" disabled="true"/>
+							<textbox pen:customclass="variabletextbox" id="pool-size-text" disabled="true"/>
 						</vbox>
 						<vbox flex="1">
 							<label id="max-pool-size-label" value="Maximum:" disabled="true"/>
-							<textbox id="max-pool-size-text" disabled="true"/>
+							<textbox  pen:customclass="variabletextbox" id="max-pool-size-text" disabled="true"/>
 						</vbox>
 					</groupbox>				
 

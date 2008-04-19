@@ -1,7 +1,6 @@
 package org.pentaho.ui.database.event;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +57,7 @@ public class DataHandler extends XulEventHandler {
     }
   }
 
-  private DatabaseMeta databaseMeta = null;
+  protected DatabaseMeta databaseMeta = null;
 
   private DatabaseMeta cache = new DatabaseMeta();
 
@@ -72,27 +71,27 @@ public class DataHandler extends XulEventHandler {
 
   private XulTextbox connectionNameBox;
 
-  private XulTextbox hostNameBox;
+  protected XulTextbox hostNameBox;
 
-  private XulTextbox databaseNameBox;
+  protected XulTextbox databaseNameBox;
 
-  private XulTextbox portNumberBox;
+  protected XulTextbox portNumberBox;
 
-  private XulTextbox userNameBox;
+  protected XulTextbox userNameBox;
 
-  private XulTextbox passwordBox;
-
-  // Generic database specific
-  private XulTextbox customDriverClassBox;
+  protected XulTextbox passwordBox;
 
   // Generic database specific
-  private XulTextbox customUrlBox;
+  protected XulTextbox customDriverClassBox;
+
+  // Generic database specific
+  protected XulTextbox customUrlBox;
 
   // Oracle specific
-  private XulTextbox dataTablespaceBox;
+  protected XulTextbox dataTablespaceBox;
 
   // Oracle specific
-  private XulTextbox indexTablespaceBox;
+  protected XulTextbox indexTablespaceBox;
 
   // MS SQL Server specific
   private XulTextbox serverInstanceBox;
@@ -145,9 +144,9 @@ public class DataHandler extends XulEventHandler {
 
   private XulCheckbox poolingCheck;
 
-  private XulTextbox poolSizeBox;
+  protected XulTextbox poolSizeBox;
 
-  private XulTextbox maxPoolSizeBox;
+  protected XulTextbox maxPoolSizeBox;
 
   private XulTextbox poolingDescription;
 
@@ -879,7 +878,7 @@ public class DataHandler extends XulEventHandler {
 
   }
 
-  private void getControls() {
+  protected void getControls() {
 
     // Not all of these controls are created at the same time.. that's OK, for now, just check
     // each one for null before using.

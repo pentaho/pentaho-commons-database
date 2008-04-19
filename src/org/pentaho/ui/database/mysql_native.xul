@@ -1,14 +1,16 @@
-				<groupbox id="database-options-box" orient="vertical" flex="1">
+				<groupbox id="database-options-box" orient="vertical" flex="1"
+					xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+					xmlns:pen="http://www.pentaho.org/2008/xul" >
 					<caption label="Settings" />
 					<label id="server-host-name-label" value="Host Name:" />
-					<textbox id="server-host-name-text" />
+					<textbox pen:customclass="variabletextbox" id="server-host-name-text" />
 					<label id="database-name-label" value="Database Name:" />
-					<textbox id="database-name-text" />
+					<textbox pen:customclass="variabletextbox" id="database-name-text" />
 					<label id="port-number-label" value="Port Number:" />
-					<textbox id="port-number-text" />
+					<textbox pen:customclass="variabletextbox" id="port-number-text" />
 					<label id="username-label" value="Username:" />
-					<textbox id="username-text" />
+					<textbox pen:customclass="variabletextbox" id="username-text" />
 					<label id="password-label" value="Password:" />
-					<textbox id="password-text" type="password"/>
+					<textbox pen:customclass="variabletextbox" id="password-text" type="password"/>
 					<checkbox id="result-streaming-check" label="Use Result Streaming Cursor" checked="false"/>
 				</groupbox>

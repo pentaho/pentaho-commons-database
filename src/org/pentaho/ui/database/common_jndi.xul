@@ -1,5 +1,7 @@
-				<groupbox id="database-options-box" orient="vertical" flex="1">
+				<groupbox id="database-options-box" orient="vertical" flex="1"
+					xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+					xmlns:pen="http://www.pentaho.org/2008/xul" >
 					<caption label="Settings" />
 					<label id="database-name-label" value="JNDI Name:" />
-					<textbox id="database-name-text" />
+					<textbox pen:customclass="variabletextbox" id="database-name-text" />
 				</groupbox>

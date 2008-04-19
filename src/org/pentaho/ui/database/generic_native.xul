@@ -1,7 +1,9 @@
-				<groupbox id="database-options-box" orient="vertical" flex="1">
+				<groupbox id="database-options-box" orient="vertical" flex="1"
+					xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+					xmlns:pen="http://www.pentaho.org/2008/xul" >
 					<caption label="Settings" />
 					<label id="custom-url-label" value="Custom Connection URL:" />
-					<textbox id="custom-url-text" />
+					<textbox pen:customclass="variabletextbox" id="custom-url-text" />
 					<label id="custom-driver-class-label" value="Custom Driver Class Name:" />
-					<textbox id="custom-driver-class-text" />
+					<textbox pen:customclass="variabletextbox" id="custom-driver-class-text" />
 				</groupbox>

@@ -1,9 +1,11 @@
-				<groupbox id="database-options-box" orient="vertical" flex="1">
+				<groupbox id="database-options-box" orient="vertical" flex="1"
+					xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+					xmlns:pen="http://www.pentaho.org/2008/xul" >
 					<caption label="Settings" />
 					<label id="database-name-label" value="ODBC DSN source name:" />
-					<textbox id="database-name-text" />
+					<textbox pen:customclass="variabletextbox" id="database-name-text" />
 					<label id="data-tablespace-label" value="Tablespace for Data:" />
-					<textbox id="data-tablespace-text" />
+					<textbox pen:customclass="variabletextbox" id="data-tablespace-text" />
 					<label id="index-tablespace-label" value="Tablespace for Indices:" />
-					<textbox id="index-tablespace-text" />
+					<textbox pen:customclass="variabletextbox" id="index-tablespace-text" />
 				</groupbox>
