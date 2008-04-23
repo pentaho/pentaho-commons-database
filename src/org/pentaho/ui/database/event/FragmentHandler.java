@@ -8,6 +8,7 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
+import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.impl.XulEventHandler;
@@ -30,7 +31,7 @@ public class FragmentHandler extends XulEventHandler {
   public FragmentHandler() {
   }
   
-  private void loadDatabaseOptionsFragment(String fragmentUri){
+  private void loadDatabaseOptionsFragment(String fragmentUri) throws XulException{
     
     
     XulComponent groupElement = document.getElementById("database-options-box");
@@ -39,6 +40,7 @@ public class FragmentHandler extends XulEventHandler {
 
     Document doc;
     XulDomContainer fragmentContainer = null;
+
     try {
       
       // Get new group box fragment ...
@@ -49,8 +51,8 @@ public class FragmentHandler extends XulEventHandler {
       parentElement.replaceChild(groupElement, newGroup);
       
     } catch (XulException e) {
-      //System.out.println("Error loading Database Fragment: "+e.getMessage());
-      e.printStackTrace(System.out);
+      e.printStackTrace();
+      throw e;
     }
     
     if (fragmentContainer == null){
@@ -91,47 +93,31 @@ public class FragmentHandler extends XulEventHandler {
 
     switch(access){
       case DatabaseMeta.TYPE_ACCESS_JNDI:
-        fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_jndi.xul");
-        in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
-        if (in == null){
-          fragment = packagePath.concat("common_jndi.xul");
-        }
-        loadDatabaseOptionsFragment(fragment.toLowerCase());
+        fragment = getFragment(database, "_jndi.xul", "common_jndi.xul");
         break;
       case DatabaseMeta.TYPE_ACCESS_NATIVE:
-        fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_native.xul");
-        in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
-        if (in == null){
-          fragment = packagePath.concat("common_native.xul");
-        }
-        loadDatabaseOptionsFragment(fragment.toLowerCase());
+        fragment = getFragment(database, "_native.xul", "common_native.xul");
         break;
       case DatabaseMeta.TYPE_ACCESS_OCI:
-        fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_oci.xul");
-        in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
-        if (in == null){
-          fragment = packagePath.concat("common_native.xul");
-        }
-        loadDatabaseOptionsFragment(fragment.toLowerCase());
+        fragment = getFragment(database, "_oci.xul", "common_native.xul");
         break;
       case DatabaseMeta.TYPE_ACCESS_ODBC:
-        fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_odbc.xul");
-        in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
-        if (in == null){
-          fragment = packagePath.concat("common_odbc.xul");
-        }
-        loadDatabaseOptionsFragment(fragment.toLowerCase());
+        fragment = getFragment(database, "_odbc.xul", "common_odbc.xul");
         break;
       case DatabaseMeta.TYPE_ACCESS_PLUGIN:
-        fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat("_plugin.xul");
-        in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
-        if (in == null){
-          fragment = packagePath.concat("common_native.xul");
-        }
-        loadDatabaseOptionsFragment(fragment.toLowerCase());
+        fragment = getFragment(database, "_plugin.xul", "common_native.xul");
         break;
     }
     
+    try {
+      loadDatabaseOptionsFragment(fragment.toLowerCase());
+    } catch (XulException e) {
+      // TODO should be reporting as an error dialog; need error dialog in XUL framework
+      XulMessageBox messageBox = xulDomContainer.createMessageBox(
+                "Unable to load parameter options for database connection type: ".concat(database.getDatabaseTypeDescLong()));
+      messageBox.open();
+    }
+
     XulTextbox portBox = (XulTextbox)document.getElementById("port-number-text");
     if (portBox != null){
       int port = database.getDefaultDatabasePort();
@@ -146,6 +132,15 @@ public class FragmentHandler extends XulEventHandler {
     
   }
   
+  private String getFragment(DatabaseInterface database, String extension, String defaultFragment ){
+    String fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat(extension);
+    InputStream in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
+    if (in == null){
+      fragment = packagePath.concat(defaultFragment);
+    }
+    return fragment;
+  }
+
   @Override
   public Object getData() {
     return null;
