@@ -6,4 +6,8 @@
 					<textbox pen:customclass="variabletextbox" id="custom-url-text" />
 					<label id="custom-driver-class-label" value="Custom Driver Class Name:" />
 					<textbox pen:customclass="variabletextbox" id="custom-driver-class-text" />
+					<label id="username-label" value="Username:" />
+					<textbox pen:customclass="variabletextbox" id="username-text" />
+					<label id="password-label" value="Password:" />
+					<textbox pen:customclass="variabletextbox" id="password-text" type="password"/>
 				</groupbox>
