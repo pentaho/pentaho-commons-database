@@ -100,13 +100,13 @@ public class DataHandler extends XulEventHandler {
   private XulTextbox serverNameBox;
 
   // SAP R/3 specific
-  private XulTextbox languageBox;
+  protected XulTextbox languageBox;
 
   // SAP R/3 specific
-  private XulTextbox systemNumberBox;
+  protected XulTextbox systemNumberBox;
 
   // SAP R/3 specific
-  private XulTextbox clientBox;
+  protected XulTextbox clientBox;
 
   // MS SQL Server specific
   private XulCheckbox doubleDecimalSeparatorCheck;
@@ -116,13 +116,13 @@ public class DataHandler extends XulEventHandler {
 
   // ==== Options Panel ==== //
 
-  private XulTree optionsParameterTree;
+  protected XulTree optionsParameterTree;
 
   // ==== Clustering Panel ==== //
 
   private XulCheckbox clusteringCheck;
 
-  private XulTree clusterParameterTree;
+  protected XulTree clusterParameterTree;
 
   private XulLabel clusterParameterDescriptionLabel;
 
@@ -154,7 +154,7 @@ public class DataHandler extends XulEventHandler {
 
   private XulLabel poolingDescriptionLabel;
 
-  private XulTree poolParameterTree;
+  protected XulTree poolParameterTree;
 
   public DataHandler() {
   }
@@ -244,7 +244,7 @@ public class DataHandler extends XulEventHandler {
 
   }
 
-  public void editOptions() {
+  public void editOptions(Integer index) {
   }
 
   public void getOptionHelp() {
