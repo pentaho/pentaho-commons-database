@@ -7,6 +7,7 @@ import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
+import org.pentaho.ui.xul.XulDomException;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
@@ -53,6 +54,9 @@ public class FragmentHandler extends XulEventHandler {
     } catch (XulException e) {
       e.printStackTrace();
       throw e;
+    } catch (XulDomException e) {
+      e.printStackTrace();
+      throw new XulException(e);
     }
     
     if (fragmentContainer == null){
