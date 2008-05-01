@@ -14,7 +14,6 @@
 	<classpathentry kind="lib" path="lib-ext/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="lib-ext/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib-ext/commons-collections-3.1.jar"/>
-	<classpathentry kind="lib" path="lib-ext/freemarker-2.3.12.jar"/>
 	<classpathentry kind="lib" path="lib-ext/pentaho-xul-framework-1.7.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
