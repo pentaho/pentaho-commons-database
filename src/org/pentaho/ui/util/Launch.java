@@ -27,7 +27,7 @@ public class Launch {
 
     try {
       if (osName.startsWith("Mac OS")) { //$NON-NLS-1$
-        Class fileMgr = Class.forName("com.apple.eio.FileManager"); //$NON-NLS-1$
+        Class <?> fileMgr = Class.forName("com.apple.eio.FileManager"); //$NON-NLS-1$
         Method openURL = fileMgr.getDeclaredMethod("openURL", new Class[] { String.class }); //$NON-NLS-1$
         openURL.invoke(null, new Object[] { url });
       } else if (osName.startsWith("Windows")){ //$NON-NLS-1$

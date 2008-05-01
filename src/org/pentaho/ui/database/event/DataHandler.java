@@ -732,8 +732,6 @@ public class DataHandler extends XulEventHandler {
 
     if (idx != -1) {
 
-      DatabaseMeta meta = new DatabaseMeta();
-
       if (idx >= BaseDatabaseMeta.poolingParameters.length) {
         idx = BaseDatabaseMeta.poolingParameters.length - 1;
       }
