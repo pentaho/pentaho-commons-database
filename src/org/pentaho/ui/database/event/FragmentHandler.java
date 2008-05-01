@@ -2,9 +2,9 @@ package org.pentaho.ui.database.event;
 
 import java.io.InputStream;
 
-import org.dom4j.Document;
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.ui.database.Messages;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulDomException;
@@ -27,7 +27,7 @@ public class FragmentHandler extends XulEventHandler {
   private XulListbox connectionBox;
   private XulListbox accessBox;
 
-  private String packagePath = "org/pentaho/ui/database/";
+  private String packagePath = "org/pentaho/ui/database/"; //$NON-NLS-1$
   
   public FragmentHandler() {
   }
@@ -35,11 +35,9 @@ public class FragmentHandler extends XulEventHandler {
   private void loadDatabaseOptionsFragment(String fragmentUri) throws XulException{
     
     
-    XulComponent groupElement = document.getElementById("database-options-box");
+    XulComponent groupElement = document.getElementById("database-options-box"); //$NON-NLS-1$
     XulComponent parentElement = groupElement.getParent();
 
-
-    Document doc;
     XulDomContainer fragmentContainer = null;
 
     try {
@@ -47,7 +45,7 @@ public class FragmentHandler extends XulEventHandler {
       // Get new group box fragment ...
       // This will effectively set up the SWT parent child relationship...
       
-      fragmentContainer = this.xulDomContainer.loadFragment(fragmentUri);
+      fragmentContainer = this.xulDomContainer.loadFragment(fragmentUri, Messages.getBundle());
       XulComponent newGroup = fragmentContainer.getDocumentRoot().getFirstChild();
       parentElement.replaceChild(groupElement, newGroup);
       
@@ -75,8 +73,8 @@ public class FragmentHandler extends XulEventHandler {
    */
   public void refreshOptions(){
 
-    connectionBox = (XulListbox)document.getElementById("connection-type-list");
-    accessBox = (XulListbox)document.getElementById("access-type-list");
+    connectionBox = (XulListbox)document.getElementById("connection-type-list"); //$NON-NLS-1$
+    accessBox = (XulListbox)document.getElementById("access-type-list"); //$NON-NLS-1$
     
     Object connectionKey = connectionBox.getSelectedItem();
     DatabaseInterface database = DataHandler.connectionMap.get(connectionKey);
@@ -85,11 +83,10 @@ public class FragmentHandler extends XulEventHandler {
     int access = DatabaseMeta.getAccessType((String)accessKey);
     
     String fragment = null;
-    InputStream in = null;
 
     DataHandler dataHandler=null;
     try {
-      dataHandler = (DataHandler)xulDomContainer.getEventHandler("dataHandler");
+      dataHandler = (DataHandler)xulDomContainer.getEventHandler("dataHandler"); //$NON-NLS-1$
       dataHandler.pushCache();
     } catch (XulException e) {
       // TODO not a critical function, but should log a problem...
@@ -97,19 +94,19 @@ public class FragmentHandler extends XulEventHandler {
 
     switch(access){
       case DatabaseMeta.TYPE_ACCESS_JNDI:
-        fragment = getFragment(database, "_jndi.xul", "common_jndi.xul");
+        fragment = getFragment(database, "_jndi.xul", "common_jndi.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_NATIVE:
-        fragment = getFragment(database, "_native.xul", "common_native.xul");
+        fragment = getFragment(database, "_native.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_OCI:
-        fragment = getFragment(database, "_oci.xul", "common_native.xul");
+        fragment = getFragment(database, "_oci.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_ODBC:
-        fragment = getFragment(database, "_odbc.xul", "common_odbc.xul");
+        fragment = getFragment(database, "_odbc.xul", "common_odbc.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_PLUGIN:
-        fragment = getFragment(database, "_plugin.xul", "common_native.xul");
+        fragment = getFragment(database, "_plugin.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
     }
     
@@ -118,11 +115,11 @@ public class FragmentHandler extends XulEventHandler {
     } catch (XulException e) {
       // TODO should be reporting as an error dialog; need error dialog in XUL framework
       XulMessageBox messageBox = xulDomContainer.createMessageBox(
-                "Unable to load parameter options for database connection type: ".concat(database.getDatabaseTypeDescLong()));
+                Messages.getString("FragmentHandler.USER.CANT_LOAD_OPTIONS", database.getDatabaseTypeDescLong())); //$NON-NLS-1$
       messageBox.open();
     }
 
-    XulTextbox portBox = (XulTextbox)document.getElementById("port-number-text");
+    XulTextbox portBox = (XulTextbox)document.getElementById("port-number-text"); //$NON-NLS-1$
     if (portBox != null){
       int port = database.getDefaultDatabasePort();
       if (port > 0){

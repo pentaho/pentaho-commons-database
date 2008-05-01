@@ -14,6 +14,7 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
 import org.pentaho.di.core.database.PartitionDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
+import org.pentaho.ui.database.Messages;
 import org.pentaho.ui.util.Launch;
 import org.pentaho.ui.util.Launch.Status;
 import org.pentaho.ui.xul.XulComponent;
@@ -259,7 +260,7 @@ public class DataHandler extends XulEventHandler {
     String url = database.getExtraOptionsHelpText();
 
     if ((url == null) || (url.trim().length() == 0)) {
-      message = "No help information available for this connection type.";
+      message = Messages.getString("DataHandler.USER_NO_HELP_AVAILABLE"); //$NON-NLS-1$
       XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
       messageBox.open();
       return;
@@ -268,8 +269,7 @@ public class DataHandler extends XulEventHandler {
     Status status = Launch.openURL(url);
 
     if (status.equals(Status.Failed)) {
-      message = "Unable to launch browser. Please visit " + url
-          + " for help with this connection's optional parameters.";
+      message = Messages.getString("DataHandler.USER_UNABLE_TO_LAUNCH_BROWSER", url);  //$NON-NLS-1$
       XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
       messageBox.open();
     }
@@ -365,7 +365,7 @@ public class DataHandler extends XulEventHandler {
   }
   
   private void close(){
-  	XulComponent window = document.getElementById("general-datasource-window");
+  	XulComponent window = document.getElementById("general-datasource-window"); //$NON-NLS-1$
   	
   	if(window == null){ //window must be root
   		window = document.getRootElement();
@@ -465,7 +465,7 @@ public class DataHandler extends XulEventHandler {
         String value = (String) values[i][1];
 
         if (value == null) {
-          value = "";
+          value = ""; //$NON-NLS-1$
         }
 
         int dbType = meta.getDatabaseType();
@@ -624,7 +624,7 @@ public class DataHandler extends XulEventHandler {
     }
 
     if (sqlBox != null) {
-      sqlBox.setValue(meta.getConnectSQL() == null ? "" : meta.getConnectSQL());
+      sqlBox.setValue(meta.getConnectSQL() == null ? "" : meta.getConnectSQL()); //$NON-NLS-1$
     }
 
     // Clustering panel settings
@@ -672,7 +672,7 @@ public class DataHandler extends XulEventHandler {
           continue;
         }
         XulTreeItem item = poolParameterTree.getRootChildren().getItem(i);
-        item.getRow().addCellText(0, "true"); // checks the checkbox
+        item.getRow().addCellText(0, "true"); // checks the checkbox //$NON-NLS-1$
 
         String value = properties.getProperty(parameter);
         item.getRow().addCellText(3, value);

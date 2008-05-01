@@ -1,7 +1,7 @@
 				<groupbox id="database-options-box" orient="vertical" flex="1"
 					xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 					xmlns:pen="http://www.pentaho.org/2008/xul" >
-					<caption label="Settings" />
-					<label id="database-name-label" value="ODBC DSN source name:" />
+					<caption label="${DatabaseDialog.USER_SETTINGS}" />
+					<label id="database-name-label" value="${DatabaseDialog.USER_ODBC_NAME}" />
 					<textbox pen:customclass="variabletextbox" id="database-name-text" />
 				</groupbox>

@@ -1,10 +1,7 @@
 package org.pentaho.test.ui.database;
 
-import java.io.InputStream;
 import java.util.Iterator;
 
-import org.dom4j.Document;
-import org.dom4j.io.SAXReader;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,9 +11,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.PartitionDatabaseMeta;
+import org.pentaho.ui.database.DatabaseConnectionDialog;
 import org.pentaho.ui.xul.XulDomContainer;
+import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.containers.XulWindow;
-import org.pentaho.ui.xul.swt.SwtXulLoader;
 
 public class DatabaseDialogHarness {
 
@@ -25,39 +23,20 @@ public class DatabaseDialogHarness {
   public static void main(String[] args) {
 
     DatabaseDialogHarness harness = new DatabaseDialogHarness();
-    
-    try {
-      InputStream in = DatabaseDialogHarness.class.getClassLoader()
-            .getResourceAsStream("org/pentaho/ui/database/databasedialog.xul");
-      if (in == null) {
-        System.out.println("Invalid Input");
-        return;
-      }
-      
-      SAXReader rdr = new SAXReader();
-      final Document doc = rdr.read(in);
-      
-      harness.showDialog(doc);
-      
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
+    harness.showDialog();
   }
   
-  private void showDialog(final Document doc){
+  private void showDialog(){
 
     XulDomContainer container = null;
     try {
-      container = new SwtXulLoader().loadXul(doc);
-      if (database != null){
-        container.getEventHandler("dataHandler").setData(database);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    } 
+      DatabaseConnectionDialog dcDialog = new DatabaseConnectionDialog();
+      container = dcDialog.getSwtInstance();
+    } catch (XulException e) {
+       e.printStackTrace();
+    }
+
     XulWindow dialog = (XulWindow) container.getDocumentRoot().getRootElement();
-    Shell s = (Shell)dialog.getManagedObject();
     dialog.open();
 
     try {
@@ -77,7 +56,7 @@ public class DatabaseDialogHarness {
     button.addSelectionListener(new SelectionAdapter() {
       public void widgetSelected(SelectionEvent event) {
         try {
-          showDialog(doc);
+          showDialog();
         } catch (Exception e) {
           e.printStackTrace();
         }
