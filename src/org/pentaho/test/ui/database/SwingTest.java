@@ -17,6 +17,9 @@ import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.containers.XulWindow;
 import org.pentaho.ui.xul.swing.SwingXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
+import org.pentaho.ui.database.Messages;
+import org.pentaho.ui.database.DatabaseConnectionDialog;
+
 
 public class SwingTest {
 
@@ -49,7 +52,7 @@ public class SwingTest {
 
 		XulDomContainer container = null;
 		try {
-			container = new SwingXulLoader().loadXul(doc);
+			container = new SwingXulLoader().loadXul(DatabaseConnectionDialog.DIALOG_DEFINITION_FILE, Messages.getBundle());
 			if (database != null) {
 				container.getEventHandler("dataHandler").setData(database);
 			}
