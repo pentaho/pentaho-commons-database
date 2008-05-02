@@ -23,7 +23,7 @@
 			 database attributes panels - General, Advanced, Options, etc.                 -->
 	<!--  ###############################################################################  -->
 
-		<listbox id="deck-options-list" flex="1" onselect="dataHandler.setDeckChildIndex()">
+		<listbox id="deck-options-list" flex="1" onselect="dataHandler.setDeckChildIndex()" width="100">
 			<listitem id="general-item" label="${DatabaseDialog.DbTab.title}" />
 			<listitem id="advanced-item" label="${DatabaseDialog.AdvancedTab.title}" />
 			<listitem id="options-item" label="${DatabaseDialog.label.Options}" />
@@ -35,7 +35,7 @@
 	<!--     START - DIALOG PANEL DECK: The layers of panels that hold the different 
 			 database attributes.                                                          -->
 	<!--  ###############################################################################  -->
-		<deck id="dialog-panel-deck" selectedIndex="3" flex="8">
+		<deck id="dialog-panel-deck" selectedIndex="3" flex="5">
 		
 	<!--  ###############################################################################  -->
 	<!--     START - GENERAL SETTINGS BOX: The General panel on the deck; the general 
@@ -111,6 +111,9 @@
 					  	<treecol id="parameter-col" label="${DatabaseDialog.column.Parameter}" flex="1" editable="true" />  
 						<treecol id="param-value-col" label="${DatabaseDialog.column.Value}" pen:customeditor="variabletextbox" flex="2" editable="true" />
 					</treecols>
+					<treechildren>
+					
+					</treechildren>
 
 				</tree>
 				
@@ -135,7 +138,7 @@
 					<checkbox id="use-pool-check" label="${DatabaseDialog.label.UseConnectionPool}" checked="false" 
 						command="dataHandler.onPoolingCheck()"/>
 
-					<groupbox id="pooling-size-group" orient="horizontal" flex="1">
+					<groupbox id="pooling-size-group" orient="horizontal" flex="1" height="80">
 						<caption label="${DatabaseDialog.USER_POOL_SIZE}" />
 						<vbox flex="1">
 							<label id="pool-size-label" value="${DatabaseDialog.label.InitialPoolSize}" disabled="true"/>
@@ -151,7 +154,7 @@
 					<label id="pool-parameter-description-label" flex="1" value="${DatabaseDialog.USER_PARAMETERS}" disabled="true"/>
 					<label id="spacer" />
 
-					<tree id="pool-parameter-tree" flex="1" rows="10" editable="false" seltype="single" disabled="true" onselect="dataHandler.poolingRowChange()">
+					<tree id="pool-parameter-tree" flex="3" rows="10" editable="false" seltype="single" disabled="true" onselect="dataHandler.poolingRowChange()">
 						<treecols id="column-list">
 						  	<treecol id="select-col"  type="checkbox" flex="1" editable="true" />  
 							<treecol id="parameter-col" label="${DatabaseDialog.column.PoolParameter}" flex="7" editable="false" />
@@ -324,7 +327,7 @@
 					</tree>
 					<label id="spacer" value=" " />
 					<label id="pooling-description-label" flex="1" value="${DatabaseDialog.column.PoolDescription}" disabled="true"/>
-					<textbox id="pooling-description" flex="10" readonly="true" multiline="true" disabled="true"/>
+					<textbox id="pooling-description" flex="2" readonly="true" multiline="true" disabled="true" height="40"/>
 					<label id="spacer" flex="1" />
 				</groupbox>
 
@@ -354,6 +357,9 @@
 						<treecol id="user-col" label="${DatabaseDialog.column.Username}" flex="2" editable="true" />
 						<treecol id="password-col" label="${DatabaseDialog.column.Password}" flex="2" type="password" pen:customeditor="variabletextbox" editable="true" />
 					</treecols>
+					
+					<treechildren>
+					</treechildren>
 				</tree>
 
 			</groupbox>				
