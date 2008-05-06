@@ -29,7 +29,7 @@ import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.containers.XulTreeItem;
 import org.pentaho.ui.xul.containers.XulTreeRow;
 import org.pentaho.ui.xul.containers.XulWindow;
-import org.pentaho.ui.xul.impl.XulEventHandler;
+import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
@@ -43,7 +43,7 @@ import org.pentaho.ui.xul.impl.XulEventHandler;
  * @created Mar 19, 2008
  *
  */
-public class DataHandler extends XulEventHandler {
+public class DataHandler extends AbstractXulEventHandler {
 
   public static final SortedMap<String, DatabaseInterface> connectionMap = new TreeMap<String, DatabaseInterface>();
 

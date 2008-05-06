@@ -12,7 +12,7 @@ import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulListbox;
-import org.pentaho.ui.xul.impl.XulEventHandler;
+import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
 /**
  * Fragment handler deals with the logistics of replacing a portion of the dialog 
@@ -22,7 +22,7 @@ import org.pentaho.ui.xul.impl.XulEventHandler;
  * @author gmoran
  * @created Mar 19, 2008
  */
-public class FragmentHandler extends XulEventHandler {
+public class FragmentHandler extends AbstractXulEventHandler {
   
   private XulListbox connectionBox;
   private XulListbox accessBox;
