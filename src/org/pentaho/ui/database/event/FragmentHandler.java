@@ -148,4 +148,6 @@ public class FragmentHandler extends AbstractXulEventHandler {
 
   public void setData(Object arg0) {
   }
+
+
 }

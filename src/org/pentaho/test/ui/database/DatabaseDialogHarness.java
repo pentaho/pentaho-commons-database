@@ -32,6 +32,9 @@ public class DatabaseDialogHarness {
     try {
       DatabaseConnectionDialog dcDialog = new DatabaseConnectionDialog();
       container = dcDialog.getSwtInstance();
+      if (database != null){
+        container.getEventHandler("dataHandler").setData(database);
+      }
     } catch (XulException e) {
        e.printStackTrace();
     }

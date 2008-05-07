@@ -337,7 +337,8 @@ public class DataHandler extends AbstractXulEventHandler {
     if (databaseMeta == null) {
       databaseMeta = new DatabaseMeta();
     }
-    if (!xulDomContainer.isClosed()) {
+    
+    if (!windowClosed()){
       this.getInfo(databaseMeta);
     }
     return databaseMeta;
@@ -373,6 +374,19 @@ public class DataHandler extends AbstractXulEventHandler {
     } else if(window instanceof XulWindow){
     	((XulWindow) window).close();
     }
+  }
+  
+  private boolean windowClosed(){
+    boolean closedWindow = false; 
+    XulComponent window = document.getElementById("general-datasource-window"); //$NON-NLS-1$
+    
+    if(window == null){ //window must be root
+      window = document.getRootElement();
+    }
+    if(window instanceof XulWindow){
+      closedWindow =  ((XulWindow)window).isClosed();
+    }
+    return closedWindow;
   }
 
   public void onOK() {
