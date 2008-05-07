@@ -332,7 +332,6 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
 
-  @Override
   public Object getData() {
 
     if (databaseMeta == null) {
@@ -344,7 +343,6 @@ public class DataHandler extends AbstractXulEventHandler {
     return databaseMeta;
   }
 
-  @Override
   public void setData(Object data) {
     if (data instanceof DatabaseMeta) {
       databaseMeta = (DatabaseMeta) data;

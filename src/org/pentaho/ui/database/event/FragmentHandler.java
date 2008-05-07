@@ -142,14 +142,10 @@ public class FragmentHandler extends AbstractXulEventHandler {
     return fragment;
   }
 
-  @Override
   public Object getData() {
     return null;
   }
 
-  @Override
   public void setData(Object arg0) {
   }
-
-
 }
