@@ -1,12 +1,6 @@
 #!/bin/sh
 
 #############################
-# Database Dialog Library
-#############################
-
-XULLIB=lib\pentaho-xul-database-1.7.0.jar
-
-#############################
 # External Libraries
 #############################
 
