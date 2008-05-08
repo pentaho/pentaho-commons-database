@@ -325,6 +325,12 @@
 							</treeitem>
 						</treechildren>
 					</tree>
+					
+					<hbox id="help-button-box">
+						<label id="spacer-label" flex="10" />
+						<button id="restore-defaults-button" label="${DatabaseDialog.button.RestoreDefaults}" flex="1" onclick="dataHandler.restoreDefaults()" />
+					</hbox>
+					
 					<label id="spacer" value=" " />
 					<label id="pooling-description-label" flex="1" value="${DatabaseDialog.column.PoolDescription}" disabled="true"/>
 					<textbox id="pooling-description" flex="2" readonly="true" multiline="true" disabled="true" height="40"/>

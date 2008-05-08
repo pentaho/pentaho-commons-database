@@ -15,6 +15,8 @@
 	<classpathentry kind="lib" path="lib-ext/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib-ext/commons-collections-3.1.jar"/>
 	<classpathentry kind="lib" path="lib-ext/pentaho-xul-framework-1.7.0-24839.jar"/>
+	<classpathentry kind="lib" path="lib-ext/commons-dbcp-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib-ext/commons-lang-2.2.jar"/>
+	<classpathentry kind="lib" path="lib-ext/commons-pool-1.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

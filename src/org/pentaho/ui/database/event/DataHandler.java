@@ -572,7 +572,12 @@ public class DataHandler extends AbstractXulEventHandler {
         Properties properties = new Properties();
         for (int i = 0; i < values.length; i++) {
 
-          boolean isChecked = Boolean.valueOf((String) values[i][0]);
+          boolean isChecked = false;
+          if (values[i][0] instanceof Boolean){
+            isChecked = ((Boolean)values[i][0]).booleanValue();
+          }else{
+            isChecked = Boolean.valueOf((String) values[i][0]);
+          }
 
           if (!isChecked) {
             continue;

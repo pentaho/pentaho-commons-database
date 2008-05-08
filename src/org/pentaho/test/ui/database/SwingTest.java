@@ -4,21 +4,13 @@ import java.io.InputStream;
 
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.ui.database.DatabaseConnectionDialog;
+import org.pentaho.ui.database.Messages;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.containers.XulWindow;
 import org.pentaho.ui.xul.swing.SwingXulLoader;
-import org.pentaho.ui.xul.swt.SwtXulLoader;
-import org.pentaho.ui.database.Messages;
-import org.pentaho.ui.database.DatabaseConnectionDialog;
 
 
 public class SwingTest {
@@ -31,9 +23,9 @@ public class SwingTest {
 
 		try {
 			InputStream in = DatabaseDialogHarness.class.getClassLoader()
-					.getResourceAsStream("org/pentaho/ui/database/databasedialog.xul");
+					.getResourceAsStream("org/pentaho/ui/database/databasedialog.xul"); //$NON-NLS-1$
 			if (in == null) {
-				System.out.println("Invalid Input");
+				System.out.println("Invalid Input"); //$NON-NLS-1$
 				return;
 			}
 
@@ -54,7 +46,7 @@ public class SwingTest {
 		try {
 			container = new SwingXulLoader().loadXul(DatabaseConnectionDialog.DIALOG_DEFINITION_FILE, Messages.getBundle());
 			if (database != null) {
-				container.getEventHandler("dataHandler").setData(database);
+				container.getEventHandler("dataHandler").setData(database); //$NON-NLS-1$
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -63,11 +55,12 @@ public class SwingTest {
 		container.initialize();
 		dialog.open();
 		try{
-			Object data = container.getEventHandler("dataHandler").getData();
+			@SuppressWarnings("unused")
+      Object data = container.getEventHandler("dataHandler").getData(); //$NON-NLS-1$
 			int i=0;
 			i++;
 		} catch(XulException e){
-			System.out.println("Error getting data");
+			System.out.println("Error getting data"); //$NON-NLS-1$
 		}
 	}
 
