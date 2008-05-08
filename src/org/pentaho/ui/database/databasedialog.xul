@@ -84,7 +84,7 @@
 			<groupbox id="advanced-group-box" orient="vertical">
 				<groupbox id="identifier-group-box" orient="vertical">
 					<caption label="${DatabaseDialog.USER_IDENTIFIERS}" />
-					<checkbox id="${DatabaseDialog.label.AdvancedQuoteAllFields}" label="Quote all in database" checked="false" />
+					<checkbox id="quote-identifiers-check" label="${DatabaseDialog.label.AdvancedQuoteAllFields}" checked="false" />
 					<checkbox id="force-lower-case-check" label="${DatabaseDialog.label.AdvancedForceIdentifiersLowerCase}" checked="false" />
 					<checkbox id="force-upper-case-check" label="${DatabaseDialog.label.AdvancedForceIdentifiersUpperCase}" checked="false" />
 				</groupbox>
@@ -327,7 +327,7 @@
 					</tree>
 					
 					<hbox id="help-button-box">
-						<label id="spacer-label" flex="10" />
+						<label id="spacer-label" flex="7" />
 						<button id="restore-defaults-button" label="${DatabaseDialog.button.RestoreDefaults}" flex="1" onclick="dataHandler.restoreDefaults()" />
 					</hbox>
 					
