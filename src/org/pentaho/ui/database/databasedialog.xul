@@ -150,191 +150,30 @@
 						</vbox>
 					</groupbox>				
 
-					<label id="spacer" />
+				 	<label id="spacer" /> 
 					<label id="pool-parameter-description-label" flex="1" value="${DatabaseDialog.USER_PARAMETERS}" disabled="true"/>
-					<label id="spacer" />
 
-					<tree id="pool-parameter-tree" flex="3" rows="10" editable="false" seltype="single" disabled="true" onselect="dataHandler.poolingRowChange()">
+					<tree id="pool-parameter-tree" flex="3" rows="5" editable="false" seltype="single" disabled="true" onselect="dataHandler.poolingRowChange()">
 						<treecols id="column-list">
-						  	<treecol id="select-col"  type="checkbox" flex="1" editable="true" />  
-							<treecol id="parameter-col" label="${DatabaseDialog.column.PoolParameter}" flex="7" editable="false" />
-							<treecol id="default-col" label="${DatabaseDialog.column.PoolDefault}" flex="5" editable="false" />
-							<treecol id="value-col" label="${DatabaseDialog.column.PoolValue}" flex="5" pen:customeditor="variabletextbox" editable="true" />
+						  	<treecol id="select-col"  fixed="true" type="checkbox" flex="1" editable="true" />  
+							<treecol id="parameter-col" fixed="true" label="${DatabaseDialog.column.PoolParameter}" flex="7" editable="false" />
+							<treecol id="value-col" fixed="true" label="${DatabaseDialog.column.PoolValue}" flex="7" pen:customeditor="variabletextbox" editable="true" />
 						</treecols>
 	
 						<treechildren id="main-treechildren">
-							<treeitem id="defaultAutoCommit-item">
-								<treerow id="defaultAutoCommit-row">
-									<treecell id="selected-1" />
-									<treecell id="name-1" label="defaultAutoCommit" />
-									<treecell id="default-1" label="true" />
-									<treecell id="value-1"/>
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="defaultReadOnly" />
-									<treecell label="" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="defaultTransactionIsolation" />
-									<treecell label="" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="defaultCatalog" />
-									<treecell label="" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="initialSize" />
-									<treecell label="0" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="maxActive" />
-									<treecell label="8" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="maxIdle" />
-									<treecell label="8" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="minIdle" />
-									<treecell label="0" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="maxWait" />
-									<treecell label="-1" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="validationQuery" />
-									<treecell label="" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="testOnBorrow" />
-									<treecell label="true" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="testOnReturn" />
-									<treecell label="false" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="testWhileIdle" />
-									<treecell label="false" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="timeBetweenEvictionRunMillis" />
-									<treecell label="" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="poolPreparedStatements" />
-									<treecell label="false" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="maxOpenPreparedStatements" />
-									<treecell label="-1" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="accessToUnderlyingConnectionAllowed" />
-									<treecell label="false" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="removeAbandoned" />
-									<treecell label="false" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="removeAbandonedTimeout" />
-									<treecell label="300" />
-									<treecell />
-								</treerow>
-							</treeitem>
-							<treeitem>
-								<treerow>
-									<treecell />
-									<treecell label="logAbandoned" />
-									<treecell label="false" />
-									<treecell />
-								</treerow>
-							</treeitem>
 						</treechildren>
 					</tree>
 					
 					<hbox id="help-button-box">
-						<label id="spacer-label" flex="7" />
+						<label id="spacer-label" flex="5" />
 						<button id="restore-defaults-button" label="${DatabaseDialog.button.RestoreDefaults}" flex="1" onclick="dataHandler.restoreDefaults()" />
 					</hbox>
 					
-					<label id="spacer" value=" " />
+					<!-- <label id="spacer" />  -->
 					<label id="pooling-description-label" flex="1" value="${DatabaseDialog.column.PoolDescription}" disabled="true"/>
-					<textbox id="pooling-description" flex="2" readonly="true" multiline="true" disabled="true" height="40"/>
-					<label id="spacer" flex="1" />
+					<textbox id="pooling-description" flex="8" readonly="true" multiline="true" disabled="true" height="40"/>
+					<label id="spacer" />
+					
 				</groupbox>
 
 			</vbox>

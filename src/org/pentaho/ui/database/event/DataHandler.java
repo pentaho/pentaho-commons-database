@@ -9,6 +9,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.pentaho.di.core.database.BaseDatabaseMeta;
+import org.pentaho.di.core.database.DatabaseConnectionPoolParameter;
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
@@ -197,6 +198,7 @@ public class DataHandler extends AbstractXulEventHandler {
       setDeckChildIndex();
     }
 
+    setDefaultPoolParameters();
     // HACK: reDim the pooling table
     poolParameterTree.setRows(poolParameterTree.getRows());
 
@@ -584,7 +586,7 @@ public class DataHandler extends AbstractXulEventHandler {
           }
 
           String parameter = (String) values[i][1];
-          String value = (String) values[i][3];
+          String value = (String) values[i][2];
           if ((parameter != null) && (parameter.trim().length() > 0) && (value != null) && (value.trim().length() > 0)) {
             properties.setProperty(parameter, value);
           }
@@ -692,11 +694,37 @@ public class DataHandler extends AbstractXulEventHandler {
         item.getRow().addCellText(0, "true"); // checks the checkbox //$NON-NLS-1$
 
         String value = properties.getProperty(parameter);
-        item.getRow().addCellText(3, value);
+        item.getRow().addCellText(2, value);
 
       }
     }
 
+  }
+  
+  public void restoreDefaults(){
+    if (poolParameterTree != null) {
+      for (int i = 0; i < poolParameterTree.getRootChildren().getItemCount(); i++){
+        XulTreeItem item = poolParameterTree.getRootChildren().getItem(i);
+        String parameterName = item.getRow().getCell(1).getLabel();
+        String defaultValue = DatabaseConnectionPoolParameter.findParameter(parameterName, BaseDatabaseMeta.poolingParameters).getDefaultValue();
+        if ((defaultValue == null) || (defaultValue.trim().length()<=0)){
+          continue;
+        }
+        item.getRow().addCellText(2, defaultValue);
+      }
+    }
+    
+  }
+
+  private void setDefaultPoolParameters() {
+    if (poolParameterTree != null) {
+      for (DatabaseConnectionPoolParameter parameter : BaseDatabaseMeta.poolingParameters){
+        XulTreeRow row = poolParameterTree.getRootChildren().addNewRow();
+        row.addCellText(0, "false");
+        row.addCellText(1, parameter.getParameter());
+        row.addCellText(2, parameter.getDefaultValue());
+      }
+    }
   }
 
   private void setOptionsData(Map<String, String> extraOptions) {
