@@ -281,13 +281,27 @@ public class DataHandler extends AbstractXulEventHandler {
   public void setDeckChildIndex() {
 
     getControls();
-    int selected = deckOptionsBox.getSelectedIndex();
+    
+    // if pooling selected, check the parameter validity before allowing 
+    // a deck panel switch...
+    int originalSelection = dialogDeck.getSelectedIndex();
 
-    if (selected < 0) {
-      selected = 0;
-      deckOptionsBox.setSelectedIndex(0);
+    boolean passed = true;
+    if (originalSelection == 3){
+      passed = checkPoolingParameters();
     }
-    dialogDeck.setSelectedIndex(selected);
+    
+    if (passed) { 
+      int selected = deckOptionsBox.getSelectedIndex();
+      if (selected < 0) {
+        selected = 0;
+        deckOptionsBox.setSelectedIndex(0);
+      }
+      dialogDeck.setSelectedIndex(selected);
+    }else{
+      dialogDeck.setSelectedIndex(originalSelection);
+      deckOptionsBox.setSelectedIndex(originalSelection);
+    }
 
   }
 
@@ -396,6 +410,11 @@ public class DataHandler extends AbstractXulEventHandler {
     DatabaseMeta database = new DatabaseMeta();
     this.getInfo(database);
 
+    boolean passed = checkPoolingParameters();
+    if (!passed){
+      return;
+    }
+    
     String[] remarks = database.checkParameters();
     String message = ""; //$NON-NLS-1$
 
@@ -679,6 +698,50 @@ public class DataHandler extends AbstractXulEventHandler {
     onClusterCheck();
   }
 
+  /**
+   * 
+   * @return the list of parameters that were enabled, but had invalid 
+   * return values (null or empty)
+   */
+  private boolean checkPoolingParameters(){
+    
+    List <String> returnList = new ArrayList <String>();
+    if (poolParameterTree != null) {
+      Object[][] values = poolParameterTree.getValues();
+      for (int i = 0; i < values.length; i++) {
+
+        boolean isChecked = false;
+        if (values[i][0] instanceof Boolean){
+          isChecked = ((Boolean)values[i][0]).booleanValue();
+        }else{
+          isChecked = Boolean.valueOf((String) values[i][0]);
+        }
+
+        if (!isChecked) {
+          continue;
+        }
+
+        String parameter = (String) values[i][1];
+        String value = (String) values[i][2];
+        if ((value == null) || (value.trim().length() <= 0)) {
+          returnList.add(parameter);
+        }
+
+      }
+      if (returnList.size() > 0){
+        String parameters = System.getProperty("line.separator"); //$NON-NLS-1$
+        for (String parameter : returnList){
+          parameters = parameters.concat(parameter).concat(System.getProperty("line.separator")); //$NON-NLS-1$
+        }
+        
+        String message = Messages.getString("DataHandler.USER_INVALID_PARAMETERS").concat(parameters); //$NON-NLS-1$
+        XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
+        messageBox.open();
+      }
+    }
+    return returnList.size() <= 0;
+  }
+
   private void setPoolProperties(Properties properties) {
     if (poolParameterTree != null) {
       Object[][] values = poolParameterTree.getValues();
@@ -784,6 +847,13 @@ public class DataHandler extends AbstractXulEventHandler {
         idx = 0;
       }
       poolingDescription.setValue(BaseDatabaseMeta.poolingParameters[idx].getDescription());
+      
+      
+      XulTreeRow row = poolParameterTree.getRootChildren().getItem(idx).getRow();
+      if (row.getSelectedColumnIndex() == 2){
+        row.addCellText(0, "true"); //$NON-NLS-1$
+      }
+      
     }
   }
 
