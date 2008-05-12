@@ -33,7 +33,7 @@ public class DatabaseDialogHarness {
       DatabaseConnectionDialog dcDialog = new DatabaseConnectionDialog();
       container = dcDialog.getSwtInstance();
       if (database != null){
-        container.getEventHandler("dataHandler").setData(database);
+        container.getEventHandler("dataHandler").setData(database); //$NON-NLS-1$
       }
     } catch (XulException e) {
        e.printStackTrace();

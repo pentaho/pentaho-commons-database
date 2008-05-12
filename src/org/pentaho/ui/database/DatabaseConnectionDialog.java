@@ -52,7 +52,7 @@ public class DatabaseConnectionDialog {
     //Re-parent contents of Window into a Dialog
     //TODO: Remove reparenting once SWT has Dialog Support
     XulWindow window = (XulWindow) fragmentContainer.getDocumentRoot().getRootElement();
-    XulDialog dialog = (XulDialog) document.createElement("dialog");
+    XulDialog dialog = (XulDialog) document.createElement("dialog"); //$NON-NLS-1$
     dialog.setId(window.getId());
 
     for (XulComponent comp : window.getChildNodes()) {

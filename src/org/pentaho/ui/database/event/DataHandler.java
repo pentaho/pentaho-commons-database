@@ -783,7 +783,7 @@ public class DataHandler extends AbstractXulEventHandler {
     if (poolParameterTree != null) {
       for (DatabaseConnectionPoolParameter parameter : BaseDatabaseMeta.poolingParameters){
         XulTreeRow row = poolParameterTree.getRootChildren().addNewRow();
-        row.addCellText(0, "false");
+        row.addCellText(0, "false"); //$NON-NLS-1$
         row.addCellText(1, parameter.getParameter());
         row.addCellText(2, parameter.getDefaultValue());
       }
