@@ -17,6 +17,7 @@
 	<classpathentry kind="lib" path="lib-ext/commons-lang-2.2.jar"/>
 	<classpathentry kind="lib" path="lib-ext/commons-pool-1.3.jar"/>
 	<classpathentry kind="lib" path="lib-ext/kettle-core.jar"/>
-	<classpathentry kind="lib" path="lib-ext/pentaho-xul-framework-1.7.0-25149.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/pentaho-xul"/>
+	<classpathentry kind="lib" path="lib-ext/pentaho-xul-framework-1.7.0-25703.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
