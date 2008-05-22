@@ -52,9 +52,6 @@ public class FragmentHandler extends AbstractXulEventHandler {
     } catch (XulException e) {
       e.printStackTrace();
       throw e;
-    } catch (XulDomException e) {
-      e.printStackTrace();
-      throw new XulException(e);
     }
     
     if (fragmentContainer == null){
@@ -114,9 +111,9 @@ public class FragmentHandler extends AbstractXulEventHandler {
       loadDatabaseOptionsFragment(fragment.toLowerCase());
     } catch (XulException e) {
       // TODO should be reporting as an error dialog; need error dialog in XUL framework
-      XulMessageBox messageBox = xulDomContainer.createMessageBox(
-                Messages.getString("FragmentHandler.USER.CANT_LOAD_OPTIONS", database.getDatabaseTypeDescLong())); //$NON-NLS-1$
-      messageBox.open();
+      showMessage(
+        Messages.getString("FragmentHandler.USER.CANT_LOAD_OPTIONS", database.getDatabaseTypeDescLong())
+      ); //$NON-NLS-1$
     }
 
     XulTextbox portBox = (XulTextbox)document.getElementById("port-number-text"); //$NON-NLS-1$
@@ -149,5 +146,13 @@ public class FragmentHandler extends AbstractXulEventHandler {
   public void setData(Object arg0) {
   }
 
-
+  private void showMessage(String message){
+    try{
+      XulMessageBox box = (XulMessageBox) document.createElement("messagebox");
+      box.setMessage(message);
+      box.open();
+    } catch(XulException e){
+      System.out.println("Error creating messagebox "+e.getMessage());
+    }
+  }
 }

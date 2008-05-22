@@ -19,6 +19,7 @@ import org.pentaho.ui.database.Messages;
 import org.pentaho.ui.util.Launch;
 import org.pentaho.ui.util.Launch.Status;
 import org.pentaho.ui.xul.XulComponent;
+import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulCheckbox;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMessageBox;
@@ -263,8 +264,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
     if ((url == null) || (url.trim().length() == 0)) {
       message = Messages.getString("DataHandler.USER_NO_HELP_AVAILABLE"); //$NON-NLS-1$
-      XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
-      messageBox.open();
+      showMessage(message);
       return;
     }
 
@@ -272,8 +272,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
     if (status.equals(Status.Failed)) {
       message = Messages.getString("DataHandler.USER_UNABLE_TO_LAUNCH_BROWSER", url);  //$NON-NLS-1$
-      XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
-      messageBox.open();
+      showMessage(message);
     }
 
   }
@@ -422,8 +421,7 @@ public class DataHandler extends AbstractXulEventHandler {
       for (int i = 0; i < remarks.length; i++) {
         message = message.concat("* ").concat(remarks[i]).concat(System.getProperty("line.separator")); //$NON-NLS-1$ //$NON-NLS-2$
       }
-      XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
-      messageBox.open();
+      showMessage(message);
     } else {
       if (databaseMeta == null) {
         databaseMeta = new DatabaseMeta();
@@ -448,8 +446,7 @@ public class DataHandler extends AbstractXulEventHandler {
     } else {
       message = database.testConnection();
     }
-    XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
-    messageBox.open();
+    showMessage(message);
   }
 
   protected void getInfo(DatabaseMeta meta) {
@@ -735,8 +732,7 @@ public class DataHandler extends AbstractXulEventHandler {
         }
         
         String message = Messages.getString("DataHandler.USER_INVALID_PARAMETERS").concat(parameters); //$NON-NLS-1$
-        XulMessageBox messageBox = xulDomContainer.createMessageBox(message);
-        messageBox.open();
+        showMessage(message);
       }
     }
     return returnList.size() <= 0;
@@ -1052,4 +1048,13 @@ public class DataHandler extends AbstractXulEventHandler {
     sqlBox = (XulTextbox) document.getElementById("sql-text"); //$NON-NLS-1$;
   }
 
+  private void showMessage(String message){
+    try{
+      XulMessageBox box = (XulMessageBox) document.createElement("messagebox");
+      box.setMessage(message);
+      box.open();
+    } catch(XulException e){
+      System.out.println("Error creating messagebox "+e.getMessage());
+    }
+  }
 }
