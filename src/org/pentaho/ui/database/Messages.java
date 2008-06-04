@@ -5,14 +5,18 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Messages {
-  private static final String BUNDLE_NAME = "org.pentaho.ui.database.messages.messages"; //$NON-NLS-1$
+  private static final String BUNDLE_NAME = "org.pentaho.ui.database.databasedialog"; //$NON-NLS-1$
 
-  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+  private static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
   private Messages() {
   }
 
   public static ResourceBundle getBundle(){
+    if(RESOURCE_BUNDLE == null){
+      RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+    }
+      
     return RESOURCE_BUNDLE;
   }
   
