@@ -392,7 +392,7 @@ public class DataHandler extends AbstractXulEventHandler {
   }
   
   private boolean windowClosed(){
-    boolean closedWindow = false; 
+    boolean closedWindow = true; 
     XulComponent window = document.getElementById("general-datasource-window"); //$NON-NLS-1$
     
     if(window == null){ //window must be root
@@ -1050,7 +1050,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   private void showMessage(String message){
     try{
-      XulMessageBox box = (XulMessageBox) document.createElement("messagebox");
+      XulMessageBox box = (XulMessageBox) document.createElement("messagebox"); //$NON-NLS-1$
       box.setMessage(message);
       box.open();
     } catch(XulException e){

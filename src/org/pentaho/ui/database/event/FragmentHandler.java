@@ -7,7 +7,6 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.ui.database.Messages;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
-import org.pentaho.ui.xul.XulDomException;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
@@ -112,8 +111,8 @@ public class FragmentHandler extends AbstractXulEventHandler {
     } catch (XulException e) {
       // TODO should be reporting as an error dialog; need error dialog in XUL framework
       showMessage(
-        Messages.getString("FragmentHandler.USER.CANT_LOAD_OPTIONS", database.getDatabaseTypeDescLong())
-      ); //$NON-NLS-1$
+        Messages.getString("FragmentHandler.USER.CANT_LOAD_OPTIONS", database.getDatabaseTypeDescLong()) //$NON-NLS-1$
+      ); 
     }
 
     XulTextbox portBox = (XulTextbox)document.getElementById("port-number-text"); //$NON-NLS-1$
@@ -148,7 +147,7 @@ public class FragmentHandler extends AbstractXulEventHandler {
 
   private void showMessage(String message){
     try{
-      XulMessageBox box = (XulMessageBox) document.createElement("messagebox");
+      XulMessageBox box = (XulMessageBox) document.createElement("messagebox"); //$NON-NLS-1$
       box.setMessage(message);
       box.open();
     } catch(XulException e){

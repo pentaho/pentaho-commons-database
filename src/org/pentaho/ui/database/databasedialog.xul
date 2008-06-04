@@ -1,13 +1,16 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<window id="general-datasource-window"
+<dialog id="general-datasource-window"
 	title="${DatabaseDialog.Shell.title}" 
 	orient="vertical"
-	height="605" width="700"
 	onload="dataHandler.loadConnectionData()"
+	buttons="accept, cancel"
+	buttonlabelaccept="${DatabaseDialog.USER_OK}"
+	buttonlabelcancel="${DatabaseDialog.USER_CANCEL}"
+	ondialogaccept="dataHandler.onOK()"
+	ondialogcancel="dataHandler.onCancel()"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	xmlns:pen="http://www.pentaho.org/2008/xul"  >
-	
 	
 	<!--  ###############################################################################  -->
 	<!--     Scripts for event handling                                                    -->
@@ -197,7 +200,7 @@
 					<treecols id="cluster-column-list">
 					  	<treecol id="partition-col" label="${DatabaseDialog.column.PartitionId}" flex="2" editable="true" />  
 						<treecol id="host-col" label="${DatabaseDialog.column.Hostname}" flex="2" editable="true" />
-						<treecol id="port-col" label="${DatabaseDialog.column.Port}" flex="1" editable="true" />
+						<treecol id="port-col" label="${DatabaseDialog.column.Port}" flex="2" editable="true" />
 						<treecol id="database-col" label="${DatabaseDialog.column.DatabaseName}" flex="2" editable="true" />
 						<treecol id="user-col" label="${DatabaseDialog.column.Username}" flex="2" editable="true" />
 						<treecol id="password-col" label="${DatabaseDialog.column.Password}" flex="2" type="password" pen:customeditor="variabletextbox" editable="true" />
@@ -229,14 +232,5 @@
 		
 	</hbox>
 	</vbox>
-	<!--  ###############################################################################  -->
-	<!--     BUTTON BOX: Holds the OK, Cancel buttons.                                     -->
-	<!--  ###############################################################################  -->
-	<hbox id="button-box">
-	<!--  flexing all three controls allows me to control the size of the OK, Cancel buttons -->
-		<label id="spacer-label" flex="10" />
-		<button id="ok-button" label="${DatabaseDialog.USER_OK}" flex="1" onclick="dataHandler.onOK()" />
-		<button id="cancel-button" label="${DatabaseDialog.USER_CANCEL}" flex="1" onclick="dataHandler.onCancel()" />
-	</hbox>
 
-</window>
+</dialog>

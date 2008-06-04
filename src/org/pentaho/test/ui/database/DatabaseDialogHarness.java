@@ -14,6 +14,8 @@ import org.pentaho.di.core.database.PartitionDatabaseMeta;
 import org.pentaho.ui.database.DatabaseConnectionDialog;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
+import org.pentaho.ui.xul.containers.XulDialog;
+import org.pentaho.ui.xul.containers.XulRoot;
 import org.pentaho.ui.xul.containers.XulWindow;
 
 public class DatabaseDialogHarness {
@@ -31,7 +33,7 @@ public class DatabaseDialogHarness {
     XulDomContainer container = null;
     try {
       DatabaseConnectionDialog dcDialog = new DatabaseConnectionDialog();
-      container = dcDialog.getSwtInstance();
+      container = dcDialog.getSwtInstance(new Shell(SWT.NONE));
       if (database != null){
         container.getEventHandler("dataHandler").setData(database); //$NON-NLS-1$
       }
@@ -39,8 +41,13 @@ public class DatabaseDialogHarness {
        e.printStackTrace();
     }
 
-    XulWindow dialog = (XulWindow) container.getDocumentRoot().getRootElement();
-    dialog.open();
+    XulRoot root = (XulRoot) container.getDocumentRoot().getRootElement();
+    if (root instanceof XulDialog){
+      ((XulDialog)root).show();
+    }
+    if (root instanceof XulWindow){
+      ((XulWindow)root).open();
+    }
 
     try {
       database = (DatabaseMeta) container.getEventHandler("dataHandler").getData(); //$NON-NLS-1$

@@ -3,6 +3,7 @@ package org.pentaho.ui.database;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.swt.widgets.Shell;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
@@ -26,7 +27,7 @@ public class DatabaseConnectionDialog {
     extendedClasses.put(key, className);
   }
 
-  public XulDomContainer getSwtInstance() throws XulException {
+  public XulDomContainer getSwtInstance(Shell shell) throws XulException {
 
     XulDomContainer container = null;
     SwtXulLoader loader = new SwtXulLoader();
@@ -35,7 +36,7 @@ public class DatabaseConnectionDialog {
     for (Object key : keyIterable) {
       loader.register((String) key, extendedClasses.get(key));
     }
-
+    loader.setOuterContext(shell);
     container = loader.loadXul(DIALOG_DEFINITION_FILE, Messages.getBundle());
     return container;
   }
