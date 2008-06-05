@@ -6,6 +6,7 @@
 	orient="vertical"
 	onload="dataHandler.loadConnectionData()"
 	buttons="accept, cancel"
+  buttonalign="end"
 	buttonlabelaccept="${DatabaseDialog.USER_OK}"
 	buttonlabelcancel="${DatabaseDialog.USER_CANCEL}"
 	ondialogaccept="dataHandler.onOK()"

@@ -41,37 +41,4 @@ public class DatabaseConnectionDialog {
     return container;
   }
 
-  /* 
-   * Ugly as heck code, but better isolated to one place than proliferated throughout an app that needs this thing.
-   */
-  public static XulDialog getAsDialog(XulWindowContainer currDomContainer) throws XulException {
-    XulDomContainer fragmentContainer = currDomContainer.loadFragment(DatabaseConnectionDialog.DIALOG_DEFINITION_FILE,
-        Messages.getBundle());
-    //TODO: Add convenience method to get at wrapped fragment root.
-    Document document = currDomContainer.getDocumentRoot();
-
-    //Re-parent contents of Window into a Dialog
-    //TODO: Remove reparenting once SWT has Dialog Support
-    XulWindow window = (XulWindow) fragmentContainer.getDocumentRoot().getRootElement();
-    XulDialog dialog = (XulDialog) document.createElement("dialog"); //$NON-NLS-1$
-    dialog.setId(window.getId());
-
-    for (XulComponent comp : window.getChildNodes()) {
-      dialog.addChild(comp);
-      dialog.addComponent(comp);
-    }
-    dialog.setOnload(window.getOnload());
-    dialog.setWidth(window.getWidth());
-    dialog.setHeight(window.getHeight());
-
-    ((AbstractXulComponent) dialog).layout();
-
-    //Merge in Event Handlers
-    currDomContainer.mergeContainer(fragmentContainer);
-
-    //Add to document
-    currDomContainer.getDocumentRoot().getRootElement().addChild(dialog);
-
-    return dialog;
-  }
 }
