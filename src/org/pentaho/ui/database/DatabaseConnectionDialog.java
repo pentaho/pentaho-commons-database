@@ -4,14 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.Shell;
-import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
-import org.pentaho.ui.xul.containers.XulDialog;
-import org.pentaho.ui.xul.containers.XulWindow;
-import org.pentaho.ui.xul.dom.Document;
-import org.pentaho.ui.xul.impl.AbstractXulComponent;
-import org.pentaho.ui.xul.impl.XulWindowContainer;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 
 public class DatabaseConnectionDialog {
