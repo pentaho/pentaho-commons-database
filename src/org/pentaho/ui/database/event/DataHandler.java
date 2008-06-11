@@ -201,7 +201,9 @@ public class DataHandler extends AbstractXulEventHandler {
 
     setDefaultPoolParameters();
     // HACK: reDim the pooling table
-    poolParameterTree.setRows(poolParameterTree.getRows());
+    if(poolParameterTree != null) {
+      poolParameterTree.setRows(poolParameterTree.getRows());
+    }
 
   }
 
@@ -843,7 +845,6 @@ public class DataHandler extends AbstractXulEventHandler {
         idx = 0;
       }
       poolingDescription.setValue(BaseDatabaseMeta.poolingParameters[idx].getDescription());
-      
       
       XulTreeRow row = poolParameterTree.getRootChildren().getItem(idx).getRow();
       if (row.getSelectedColumnIndex() == 2){
