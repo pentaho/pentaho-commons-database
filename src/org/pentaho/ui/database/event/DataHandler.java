@@ -1053,6 +1053,10 @@ public class DataHandler extends AbstractXulEventHandler {
     try{
       XulMessageBox box = (XulMessageBox) document.createElement("messagebox"); //$NON-NLS-1$
       box.setMessage(message);
+      box.setScrollable(true);
+      box.setWidth(600);
+      box.setHeight(500);
+      
       box.open();
     } catch(XulException e){
       System.out.println("Error creating messagebox "+e.getMessage());
