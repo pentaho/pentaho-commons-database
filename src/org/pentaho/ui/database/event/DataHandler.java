@@ -834,7 +834,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
 
-  public void poolingRowChange(Integer idx) {
+  public void poolingRowChange(int idx) {
 
     if (idx != -1) {
 
