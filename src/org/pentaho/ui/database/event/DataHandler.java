@@ -266,7 +266,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
     if ((url == null) || (url.trim().length() == 0)) {
       message = Messages.getString("DataHandler.USER_NO_HELP_AVAILABLE"); //$NON-NLS-1$
-      showMessage(message);
+      showMessage(message, false);
       return;
     }
 
@@ -274,7 +274,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
     if (status.equals(Status.Failed)) {
       message = Messages.getString("DataHandler.USER_UNABLE_TO_LAUNCH_BROWSER", url);  //$NON-NLS-1$
-      showMessage(message);
+      showMessage(message, false);
     }
 
   }
@@ -423,7 +423,7 @@ public class DataHandler extends AbstractXulEventHandler {
       for (int i = 0; i < remarks.length; i++) {
         message = message.concat("* ").concat(remarks[i]).concat(System.getProperty("line.separator")); //$NON-NLS-1$ //$NON-NLS-2$
       }
-      showMessage(message);
+      showMessage(message, false);
     } else {
       if (databaseMeta == null) {
         databaseMeta = new DatabaseMeta();
@@ -448,7 +448,7 @@ public class DataHandler extends AbstractXulEventHandler {
     } else {
       message = database.testConnection();
     }
-    showMessage(message);
+    showMessage(message, message.length() > 300);
   }
 
   protected void getInfo(DatabaseMeta meta) {
@@ -734,7 +734,7 @@ public class DataHandler extends AbstractXulEventHandler {
         }
         
         String message = Messages.getString("DataHandler.USER_INVALID_PARAMETERS").concat(parameters); //$NON-NLS-1$
-        showMessage(message);
+        showMessage(message, false);
       }
     }
     return returnList.size() <= 0;
@@ -1049,14 +1049,15 @@ public class DataHandler extends AbstractXulEventHandler {
     sqlBox = (XulTextbox) document.getElementById("sql-text"); //$NON-NLS-1$;
   }
 
-  private void showMessage(String message){
+  private void showMessage(String message, boolean scroll){
     try{
       XulMessageBox box = (XulMessageBox) document.createElement("messagebox"); //$NON-NLS-1$
       box.setMessage(message);
-      box.setScrollable(true);
-      box.setWidth(600);
-      box.setHeight(500);
-      
+      if(scroll){
+        box.setScrollable(true);
+        box.setWidth(500);
+        box.setHeight(400);
+      }
       box.open();
     } catch(XulException e){
       System.out.println("Error creating messagebox "+e.getMessage());
