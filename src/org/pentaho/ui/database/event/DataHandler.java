@@ -253,7 +253,14 @@ public class DataHandler extends AbstractXulEventHandler {
 
   }
 
-  public void editOptions(Integer index) {
+  public void editOptions(int index) {
+    if( index +1 == optionsParameterTree.getRows()){
+      //editing last row add a new one below
+      XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
+
+      row.addCellText(0, "");
+      row.addCellText(1, "");
+    }
   }
 
   public void getOptionHelp() {
@@ -813,6 +820,18 @@ public class DataHandler extends AbstractXulEventHandler {
 
         }
       }
+      
+      //Add 5 blank rows if none are already there, otherwise, just add one.
+      int numToAdd = 5;
+      if(extraOptions.keySet().size() > 0){
+        numToAdd = 1;
+      }
+      while(numToAdd-- > 0){
+        XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
+        row.addCellText(0, "");   //easy way of putting new cells in the row
+        row.addCellText(1, "");
+      }
+    
     }
   }
 
