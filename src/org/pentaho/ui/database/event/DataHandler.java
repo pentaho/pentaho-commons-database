@@ -28,6 +28,7 @@ import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.containers.XulListbox;
+import org.pentaho.ui.xul.containers.XulRoot;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.containers.XulTreeItem;
 import org.pentaho.ui.xul.containers.XulTreeRow;
@@ -1080,6 +1081,7 @@ public class DataHandler extends AbstractXulEventHandler {
     try{
       XulMessageBox box = (XulMessageBox) document.createElement("messagebox"); //$NON-NLS-1$
       box.setMessage(message);
+      box.setModalParent( ((XulRoot)document.getElementById("general-datasource-window")).getRootObject());
       if(scroll){
         box.setScrollable(true);
         box.setWidth(500);
