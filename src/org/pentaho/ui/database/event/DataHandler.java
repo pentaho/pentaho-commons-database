@@ -8,6 +8,7 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.pentaho.di.core.database.BaseDatabaseMeta;
 import org.pentaho.di.core.database.DatabaseConnectionPoolParameter;
 import org.pentaho.di.core.database.DatabaseInterface;
@@ -256,10 +257,16 @@ public class DataHandler extends AbstractXulEventHandler {
   public void editOptions(int index) {
     if( index +1 == optionsParameterTree.getRows()){
       //editing last row add a new one below
-      XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
 
-      row.addCellText(0, "");
-      row.addCellText(1, "");
+      Object[][] values = optionsParameterTree.getValues();
+      Object[] row = values[values.length-1];
+      if(row != null && (!StringUtils.isEmpty((String)row[0]) || !StringUtils.isEmpty((String)row[1]))){
+        //acutally have something in current last row
+        XulTreeRow newRow = optionsParameterTree.getRootChildren().addNewRow();
+
+        newRow.addCellText(0, "");
+        newRow.addCellText(1, "");
+      }
     }
   }
 
@@ -798,6 +805,7 @@ public class DataHandler extends AbstractXulEventHandler {
   private void setOptionsData(Map<String, String> extraOptions) {
 
     if (optionsParameterTree != null) {
+      optionsParameterTree.getRootChildren().removeAll();
       Iterator<String> keys = extraOptions.keySet().iterator();
       while (keys.hasNext()) {
 
