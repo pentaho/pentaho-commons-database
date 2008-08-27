@@ -251,6 +251,8 @@ public class DataHandler extends AbstractXulEventHandler {
       accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(acc[0]));
     }
 
+    optionsParameterTree.getRootChildren().removeAll();
+    
     popCache();
 
   }
