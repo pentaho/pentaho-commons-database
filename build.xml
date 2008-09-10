@@ -4,6 +4,14 @@
 	
 	<property file="src/build-res/version.properties" />
 	<property file="build.properties" />
+  
+  <property name="svnant.use-javahl"
+            value="false"
+            description="Prefer JNI JavaHL binding over the command line client for native svn support" />
+  <property name="svnant.use-svnkit"
+            value="true"
+            description="Prefer SVNKit binding over the command line client for native svn support (defaults to true)" />
+
     
 	<tstamp>
        <format property="compile.timestamp" pattern="yyyy-MM-dd HH.mm.ss" />
