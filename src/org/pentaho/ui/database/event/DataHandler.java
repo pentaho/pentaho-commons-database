@@ -475,12 +475,13 @@ public class DataHandler extends AbstractXulEventHandler {
     if (this.databaseMeta != null && this.databaseMeta != meta) {
       meta.initializeVariablesFrom(this.databaseMeta);
     }
-    // Before we put all attributes back in, clear the old list to make sure...
-    // Warning: the port is an attribute too now.
-    // 
-    if (meta.getAttributes() != null) {
-      meta.getAttributes().clear();
-    }
+
+    // Let's not remove any (default) options or attributes
+    // We just need to display the correct ones for the database type below...
+    //
+    // In fact, let's just clear the database port...
+    //
+    // TODO: what about the port number?
 
     // Name:
     meta.setName(connectionNameBox.getValue());
@@ -524,11 +525,8 @@ public class DataHandler extends AbstractXulEventHandler {
           if (value.trim().length() <= 0) {
             value = DatabaseMeta.EMPTY_OPTIONS_STRING;
           }
-          String typedParameter = BaseDatabaseMeta.ATTRIBUTE_PREFIX_EXTRA_OPTION
-              + DatabaseMeta.getDatabaseTypeCode(dbType) + "." + parameter; //$NON-NLS-1$
-          meta.getAttributes().put(typedParameter, value);
+          meta.addExtraOption(DatabaseMeta.getDatabaseTypeCode(dbType), parameter, value);
         }
-
       }
     }
 
@@ -818,21 +816,25 @@ public class DataHandler extends AbstractXulEventHandler {
           value = ""; //$NON-NLS-1$
         }
 
-        // If the parameter starts with a database type code we add it...
+        // If the parameter starts with a database type code we show it in the options, otherwise we don't.
         // For example MySQL.defaultFetchSize
+        //
 
         int dotIndex = parameter.indexOf('.');
         if (dotIndex >= 0) {
           String parameterOption = parameter.substring(dotIndex + 1);
-
-          XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
-          row.addCellText(0, parameterOption);
-          row.addCellText(1, value);
-
+          String databaseTypeString = parameter.substring(0,dotIndex);
+          int databaseType = DatabaseMeta.getDatabaseType(databaseTypeString);
+          if (databaseMeta.getDatabaseType()==databaseType) {
+	          XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
+	          row.addCellText(0, parameterOption);
+	          row.addCellText(1, value);
+          }
         }
       }
       
-      //Add 5 blank rows if none are already there, otherwise, just add one.
+      // Add 5 blank rows if none are already there, otherwise, just add one.
+      //
       int numToAdd = 5;
       if(extraOptions.keySet().size() > 0){
         numToAdd = 1;
@@ -842,7 +844,6 @@ public class DataHandler extends AbstractXulEventHandler {
         row.addCellText(0, "");   //easy way of putting new cells in the row
         row.addCellText(1, "");
       }
-    
     }
   }
 
