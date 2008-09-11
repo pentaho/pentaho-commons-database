@@ -252,7 +252,9 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     optionsParameterTree.getRootChildren().removeAll();
-    
+    if(this.databaseMeta != null){
+      setOptionsData(this.databaseMeta.getExtraOptions());
+    }
     popCache();
 
   }
@@ -808,6 +810,15 @@ public class DataHandler extends AbstractXulEventHandler {
     if (optionsParameterTree != null) {
       optionsParameterTree.getRootChildren().removeAll();
       Iterator<String> keys = extraOptions.keySet().iterator();
+      
+
+      Object connection = connectionBox.getSelectedItem();
+      int currentType = -1;
+      
+      if(connection != null){
+        currentType = DatabaseMeta.getDatabaseType((String) connection);
+      }
+      
       while (keys.hasNext()) {
 
         String parameter = keys.next();
@@ -825,7 +836,9 @@ public class DataHandler extends AbstractXulEventHandler {
           String parameterOption = parameter.substring(dotIndex + 1);
           String databaseTypeString = parameter.substring(0,dotIndex);
           int databaseType = DatabaseMeta.getDatabaseType(databaseTypeString);
-          if (databaseMeta.getDatabaseType()==databaseType) {
+          if (databaseMeta.getDatabaseType()==databaseType && currentType == databaseType) {
+            
+            
 	          XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
 	          row.addCellText(0, parameterOption);
 	          row.addCellText(1, value);

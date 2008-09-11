@@ -17,6 +17,7 @@
 	<classpathentry kind="lib" path="lib-ext/commons-pool-1.3.jar"/>
 	<classpathentry kind="lib" path="lib-ext/kettle-core.jar" sourcepath="/Kettle/src-core"/>
 	<classpathentry kind="lib" path="lib-ext/commons-beanutils-1.8.0-BETA.jar"/>
-	<classpathentry kind="lib" path="lib-ext/pentaho-xul-framework-1.7.0-31833.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/pentaho-xul-clean"/>
+	<classpathentry kind="lib" path="lib-ext/pentaho-xul-framework-1.7.0-32189.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
