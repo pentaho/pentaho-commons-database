@@ -251,7 +251,6 @@ public class DataHandler extends AbstractXulEventHandler {
       accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(acc[0]));
     }
 
-    optionsParameterTree.getRootChildren().removeAll();
     if(this.databaseMeta != null){
       setOptionsData(this.databaseMeta.getExtraOptions());
     }
@@ -804,11 +803,44 @@ public class DataHandler extends AbstractXulEventHandler {
       }
     }
   }
+  
+  private void removeTypedOptions(Map<String, String> extraOptions){
+
+    List<Integer> removeList = new ArrayList<Integer>();
+
+    Object[][] values = optionsParameterTree.getValues();
+    for (int i = 0; i < values.length; i++) {
+
+      String parameter = (String) values[i][0];
+      String value = (String) values[i][1];
+
+      // See if it's defined
+      Iterator<String> keys = extraOptions.keySet().iterator();
+      if(extraOptions.keySet().size() > 0){
+        while (keys.hasNext()) {
+          String param = keys.next();
+          String parameterKey = param.substring(param.indexOf('.')+1);
+          if(parameter.equals(parameterKey) || "".equals(parameter)){
+            //match, remove it
+            removeList.add(i);
+          }
+        }
+      } else if("".equals(parameter)){
+        removeList.add(i);
+      }
+    
+    }
+    
+    for(int i= removeList.size()-1; i >=0; i--){
+      optionsParameterTree.getRootChildren().removeItem(removeList.get(i));
+    }
+    
+  }
 
   private void setOptionsData(Map<String, String> extraOptions) {
 
     if (optionsParameterTree != null) {
-      optionsParameterTree.getRootChildren().removeAll();
+      removeTypedOptions(extraOptions);
       Iterator<String> keys = extraOptions.keySet().iterator();
       
 
