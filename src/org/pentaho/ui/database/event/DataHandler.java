@@ -453,6 +453,7 @@ public class DataHandler extends AbstractXulEventHandler {
         databaseMeta = new DatabaseMeta();
       }
       this.getInfo(databaseMeta);
+      databaseMeta.setChanged();
       close();
     }
   }
