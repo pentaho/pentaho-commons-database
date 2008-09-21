@@ -169,6 +169,12 @@ public class DataHandler extends AbstractXulEventHandler {
 
   public void loadConnectionData() {
 
+	// HACK: need to check if onload event was already fired. 
+	// It is called from XulDatabaseDialog from dcDialog.getSwtInstance(shell); AND dialog.show();
+	// Multiple calls lead to multiple numbers of database types.
+	// Therefore we check if the connectionBox was already filled.
+	if(connectionBox!=null) return;
+	
     getControls();
 
     // Add sorted types to the listbox now.
@@ -176,6 +182,7 @@ public class DataHandler extends AbstractXulEventHandler {
     for (String key : connectionMap.keySet()) {
       connectionBox.addItem(key);
     }
+    
 
     // HACK: Need to force height of list control, as it does not behave 
     // well when using relative layouting
@@ -206,7 +213,6 @@ public class DataHandler extends AbstractXulEventHandler {
     if(poolParameterTree != null) {
       poolParameterTree.setRows(poolParameterTree.getRows());
     }
-
   }
 
   //On Database type change
@@ -812,7 +818,6 @@ public class DataHandler extends AbstractXulEventHandler {
     for (int i = 0; i < values.length; i++) {
 
       String parameter = (String) values[i][0];
-      String value = (String) values[i][1];
 
       // See if it's defined
       Iterator<String> keys = extraOptions.keySet().iterator();
