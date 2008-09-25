@@ -4,4 +4,8 @@
 					<caption label="${DatabaseDialog.USER_SETTINGS}" />
 					<label id="database-name-label" value="${DatabaseDialog.USER_ODBC_NAME}" />
 					<textbox pen:customclass="variabletextbox" id="database-name-text" />
+					<label id="username-label" value="${DatabaseDialog.label.Username}" />
+					<textbox pen:customclass="variabletextbox" id="username-text" />
+					<label id="password-label" value="${DatabaseDialog.label.Password}" />
+					<textbox pen:customclass="variabletextbox" id="password-text" type="password"/>
 				</groupbox>

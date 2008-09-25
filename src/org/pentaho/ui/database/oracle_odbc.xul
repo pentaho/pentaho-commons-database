@@ -8,4 +8,8 @@
 					<textbox pen:customclass="variabletextbox" id="data-tablespace-text" />
 					<label id="index-tablespace-label" value="${DatabaseDialog.label.TablespaceForIndexes}" />
 					<textbox pen:customclass="variabletextbox" id="index-tablespace-text" />
+					<label id="username-label" value="${DatabaseDialog.label.Username}" />
+					<textbox pen:customclass="variabletextbox" id="username-text" />
+					<label id="password-label" value="${DatabaseDialog.label.Password}" />
+					<textbox pen:customclass="variabletextbox" id="password-text" type="password"/>
 				</groupbox>
