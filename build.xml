@@ -1,134 +1,30 @@
-<project name="Pentaho XUL Database Dialog" default="dist">
-
-	<description>Pentaho XUL Database Dialog</description>
-	
-	<property file="src/build-res/version.properties" />
-	<property file="build.properties" />
+<!--===========================================================================
+  This is the build file for the pentaho-reporting-engine-classic-ext-kettle project.
   
-  <property name="svnant.use-javahl"
-            value="false"
-            description="Prefer JNI JavaHL binding over the command line client for native svn support" />
-  <property name="svnant.use-svnkit"
-            value="true"
-            description="Prefer SVNKit binding over the command line client for native svn support (defaults to true)" />
-
-    
-	<tstamp>
-       <format property="compile.timestamp" pattern="yyyy-MM-dd HH.mm.ss" />
-    </tstamp>
+  This build file will use the common_build.xml file as the default build
+  process and should only override the tasks that need to differ from
+  the common build file.
+  
+  See common_build.xml for more details
+============================================================================-->
+<project name="pentaho-database" basedir="." default="jar">
 	
-	<!--
-		This section is for auto installation of the subversion ant tasks (svnant project).  
-		See http://subclipse.tigris.org/svnant.html
-	-->
-	<target name="download-svnant">
-		<property name="svnant.jar.dir" value="${basedir}/svnant" />
-		<mkdir dir="${svnant.jar.dir}" />
-		<echo message="installing svnant..." />
-		<get src="http://subclipse.tigris.org/files/documents/906/43359/svnant-1.2.0-RC1.zip" dest="${svnant.jar.dir}/svnant.zip" usetimestamp="true" />
+	<description>
+	  This build file is used to create the API project
+		and works with the common_build.xml file.
+	</description>
 
-		<unzip src="${svnant.jar.dir}/svnant.zip" dest="${svnant.jar.dir}">
-			<patternset>
-				<include name="**/*.jar" />
-			</patternset>
-		</unzip>
-	</target>
+	<!-- Define the default location of the common build file -->
+	<property name="common.build.file" value="./common_build.xml" 
+		description="This is the location of the standardized common_build.xml file"/>
 
-	<target name="install-svnant" depends="download-svnant">
-		<path id="svnant.lib.path">
-			<fileset dir="${svnant.jar.dir}" includes="**/*.jar" />
-		</path>
+	<!-- Import the common_build.xml file which contains all the default tasks -->
+	<import file="${common.build.file}"/>
 
-		<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.lib.path" />
-	</target>
-
-
-	<target name="test-svnant" depends="install-svnant">
-		<svn>
-			<wcVersion path="." />
-		</svn>
-
-		<echo message="Subversion repository url: ${repository.url}" />
-	</target>
-	<!--
-		/end svnant install
-	-->
-	
-	<path id="classpath">
-		<fileset dir="${lib-ext.dir}">
-			<include name="**/*.jar"/>
-		</fileset>
-		<fileset dir="lib-swt/win32">
-			<include name="**/*.jar"/>
-		</fileset>
-		<fileset dir="lib-swt">
-			<include name="*.jar"/>
-		</fileset>
-	</path>
-
-	<target name="init" depends="install-svnant">
-		
-        <propertyfile file="src/build-res/version.properties"  comment="Version Property File">
-          <entry  key="release.build.date" type="string" value="${compile.timestamp}"/>
-          <entry  key="release.build.number" type="int" default="0" operation="+"/>
-        </propertyfile>
-
-		<mkdir dir="${bin.dir}"/>
-		<mkdir dir="dist" />
-	</target>
-
-	<target name="clean">
-		<!-- remove build directory -->
-		<delete dir="${bin.dir}" />
-		<delete dir="${dist.dir}" />
-	</target>
-
-	<target name="clean-dist">
-		<delete dir="dist"/>
-	</target>
-
-	<target name="compile" depends="clean, init">
-		<!-- Compile all java classes -->
-		<javac destdir="${bin.dir}" debug="true" optimize="true" deprecation="true" fork="true" source="1.5" target="1.5">
-			<classpath>
-				<path refid="classpath" />
-			</classpath>
-			<src path="${src.dir}" />
-		</javac>
-		<copy todir="${bin.dir}" flatten="false">
-			<fileset dir="${src.dir}" excludes="**/*.java"/>
-		</copy>
-	</target>
-
-	<target name="svn-revision">
-	    <svn javahl="${svnant.use-javahl}" svnkit="${svnant.use-svnkit}">
-			<status path="." revisionProperty="repository.revision" />
-		</svn>
-		<echo message="Subversion repository revision: ${repository.revision}" />
-	</target>
-
-	<target name="dist" depends="clean, compile, svn-revision" description="Creates a JAR of the XUL Common Database Dialog package.">
-		<jar destfile="dist/pentaho-xul-database-${release.major.number}.${release.minor.number}.${release.milestone.number}-${repository.revision}.jar">
-			<manifest>
-				<attribute name="Implementation-Title" value="${impl.title}" />
-				<attribute name="Implementation-Version" value="${impl.version}" />
-				<attribute name="Implementation-Vendor" value="${impl.vendor}" />
-				<attribute name="Implementation-ProductID" value="${impl.productID}" />
-
-			</manifest>
-			<fileset dir="${bin.dir}">
-			</fileset>
-		</jar>
-	</target>
-
-	<target name="test-dist" depends="dist" description="Creates a package to launch and run the database dialog test harness.">
-		<zip destfile="dist/pentaho-xul-database-TEST-${release.major.number}.${release.minor.number}.${release.milestone.number}-${repository.revision}.zip">
-		   <zipfileset dir="${lib-ext.dir}" prefix="lib-ext"/>
-		   <zipfileset dir="lib-swt/win32" includes="**/*.jar" prefix="lib-swt/win32"/>
-		   <zipfileset dir="lib-swt" includes="*.jar" prefix="lib-swt"/>		
-		   <zipfileset dir="dist" includes="*.jar" prefix="lib"/>
-		   <zipfileset dir="." includes="*.bat" />
-		</zip>
-	</target>
+    <!--
+      AS STATED ABOVE, THE ONLY TASKS THAT SHOULD EXIST IN THIS BUILD FILE ARE
+      THE TASKS THAT NEED TO DIFFER FROM THE DEFAULT IMPLEMENTATION OF THE TASKS
+      FOUND IN common_build.xml.
+    --> 
 
 </project>
