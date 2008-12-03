@@ -8,6 +8,7 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.pentaho.di.core.database.BaseDatabaseMeta;
 import org.pentaho.di.core.database.DatabaseConnectionPoolParameter;
 import org.pentaho.di.core.database.DatabaseInterface;
@@ -18,6 +19,21 @@ import org.pentaho.di.core.database.SAPR3DatabaseMeta;
 import org.pentaho.ui.database.Messages;
 import org.pentaho.ui.util.Launch;
 import org.pentaho.ui.util.Launch.Status;
+import org.pentaho.ui.xul.XulComponent;
+import org.pentaho.ui.xul.XulException;
+import org.pentaho.ui.xul.components.XulCheckbox;
+import org.pentaho.ui.xul.components.XulLabel;
+import org.pentaho.ui.xul.components.XulMessageBox;
+import org.pentaho.ui.xul.components.XulTextbox;
+import org.pentaho.ui.xul.containers.XulDeck;
+import org.pentaho.ui.xul.containers.XulDialog;
+import org.pentaho.ui.xul.containers.XulListbox;
+import org.pentaho.ui.xul.containers.XulRoot;
+import org.pentaho.ui.xul.containers.XulTree;
+import org.pentaho.ui.xul.containers.XulTreeItem;
+import org.pentaho.ui.xul.containers.XulTreeRow;
+import org.pentaho.ui.xul.containers.XulWindow;
+import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
