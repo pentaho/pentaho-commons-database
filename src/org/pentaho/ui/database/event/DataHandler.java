@@ -8,8 +8,6 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.StringUtils;
-import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.BaseDatabaseMeta;
 import org.pentaho.di.core.database.DatabaseConnectionPoolParameter;
 import org.pentaho.di.core.database.DatabaseInterface;
@@ -20,21 +18,6 @@ import org.pentaho.di.core.database.SAPR3DatabaseMeta;
 import org.pentaho.ui.database.Messages;
 import org.pentaho.ui.util.Launch;
 import org.pentaho.ui.util.Launch.Status;
-import org.pentaho.ui.xul.XulComponent;
-import org.pentaho.ui.xul.XulException;
-import org.pentaho.ui.xul.components.XulCheckbox;
-import org.pentaho.ui.xul.components.XulLabel;
-import org.pentaho.ui.xul.components.XulMessageBox;
-import org.pentaho.ui.xul.components.XulTextbox;
-import org.pentaho.ui.xul.containers.XulDeck;
-import org.pentaho.ui.xul.containers.XulDialog;
-import org.pentaho.ui.xul.containers.XulListbox;
-import org.pentaho.ui.xul.containers.XulRoot;
-import org.pentaho.ui.xul.containers.XulTree;
-import org.pentaho.ui.xul.containers.XulTreeItem;
-import org.pentaho.ui.xul.containers.XulTreeRow;
-import org.pentaho.ui.xul.containers.XulWindow;
-import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
@@ -143,8 +126,6 @@ public class DataHandler extends AbstractXulEventHandler {
 
   XulCheckbox upperCaseIdentifiersCheck;
   
-  XulTextbox preferredSchemaName;
-
   XulTextbox sqlBox;
 
   // ==== Pooling Panel ==== //
@@ -555,10 +536,6 @@ public class DataHandler extends AbstractXulEventHandler {
       meta.setForcingIdentifiersToUpperCase(upperCaseIdentifiersCheck.isChecked());
     }
 
-    if (preferredSchemaName != null) {
-      meta.setPreferredSchemaName(preferredSchemaName.getValue());
-    }
-
     if (sqlBox != null) {
         meta.setConnectSQL(sqlBox.getValue());
     }
@@ -689,10 +666,6 @@ public class DataHandler extends AbstractXulEventHandler {
     if (upperCaseIdentifiersCheck != null) {
       upperCaseIdentifiersCheck.setChecked(meta.isForcingIdentifiersToUpperCase());
     }
-
-    if (preferredSchemaName != null) {
-        preferredSchemaName.setValue(Const.NVL(meta.getPreferredSchemaName(), "")); //$NON-NLS-1$
-      }
 
     if (sqlBox != null) {
       sqlBox.setValue(meta.getConnectSQL() == null ? "" : meta.getConnectSQL()); //$NON-NLS-1$
@@ -1137,7 +1110,6 @@ public class DataHandler extends AbstractXulEventHandler {
     quoteIdentifiersCheck = (XulCheckbox) document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
     lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
     upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-upper-case-check"); //$NON-NLS-1$;
-    preferredSchemaName = (XulTextbox) document.getElementById("preferred-schema-name-text"); //$NON-NLS-1$;
     sqlBox = (XulTextbox) document.getElementById("sql-text"); //$NON-NLS-1$;
   }
 
