@@ -92,6 +92,8 @@
 					<checkbox id="quote-identifiers-check" label="${DatabaseDialog.label.AdvancedQuoteAllFields}" checked="false" />
 					<checkbox id="force-lower-case-check" label="${DatabaseDialog.label.AdvancedForceIdentifiersLowerCase}" checked="false" />
 					<checkbox id="force-upper-case-check" label="${DatabaseDialog.label.AdvancedForceIdentifiersUpperCase}" checked="false" />
+					<label id="preferred-schema-name" value="${DatabaseDialog.label.PreferredSchemaName}" />
+						<textbox id="preferred_schema-name-text"/>
 				</groupbox>
 				<label id="spacer-label" value="" />
 				<label id="sql-label" value="${DatabaseDialog.label.Statements}" />

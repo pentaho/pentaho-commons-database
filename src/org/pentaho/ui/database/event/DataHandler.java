@@ -9,6 +9,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.BaseDatabaseMeta;
 import org.pentaho.di.core.database.DatabaseConnectionPoolParameter;
 import org.pentaho.di.core.database.DatabaseInterface;
@@ -141,6 +142,8 @@ public class DataHandler extends AbstractXulEventHandler {
   XulCheckbox lowerCaseIdentifiersCheck;
 
   XulCheckbox upperCaseIdentifiersCheck;
+  
+  XulTextbox preferredSchemaName;
 
   XulTextbox sqlBox;
 
@@ -552,8 +555,12 @@ public class DataHandler extends AbstractXulEventHandler {
       meta.setForcingIdentifiersToUpperCase(upperCaseIdentifiersCheck.isChecked());
     }
 
+    if (preferredSchemaName != null) {
+      meta.setPreferredSchemaName(preferredSchemaName.getValue());
+    }
+
     if (sqlBox != null) {
-      meta.setConnectSQL(sqlBox.getValue());
+        meta.setConnectSQL(sqlBox.getValue());
     }
 
     // Cluster panel settings
@@ -682,6 +689,10 @@ public class DataHandler extends AbstractXulEventHandler {
     if (upperCaseIdentifiersCheck != null) {
       upperCaseIdentifiersCheck.setChecked(meta.isForcingIdentifiersToUpperCase());
     }
+
+    if (preferredSchemaName != null) {
+        preferredSchemaName.setValue(Const.NVL(meta.getPreferredSchemaName(), "")); //$NON-NLS-1$
+      }
 
     if (sqlBox != null) {
       sqlBox.setValue(meta.getConnectSQL() == null ? "" : meta.getConnectSQL()); //$NON-NLS-1$
@@ -1126,6 +1137,7 @@ public class DataHandler extends AbstractXulEventHandler {
     quoteIdentifiersCheck = (XulCheckbox) document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
     lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
     upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-upper-case-check"); //$NON-NLS-1$;
+    preferredSchemaName = (XulTextbox) document.getElementById("preferred-schema-name-text"); //$NON-NLS-1$;
     sqlBox = (XulTextbox) document.getElementById("sql-text"); //$NON-NLS-1$;
   }
 
