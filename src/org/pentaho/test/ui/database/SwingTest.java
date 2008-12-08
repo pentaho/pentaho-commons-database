@@ -1,6 +1,5 @@
 package org.pentaho.test.ui.database;
 
-import java.awt.Dialog;
 import java.io.InputStream;
 
 import org.dom4j.Document;
