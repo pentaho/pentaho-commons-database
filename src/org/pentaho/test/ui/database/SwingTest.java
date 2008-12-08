@@ -1,5 +1,6 @@
 package org.pentaho.test.ui.database;
 
+import java.awt.Dialog;
 import java.io.InputStream;
 
 import org.dom4j.Document;
@@ -9,7 +10,7 @@ import org.pentaho.ui.database.DatabaseConnectionDialog;
 import org.pentaho.ui.database.Messages;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
-import org.pentaho.ui.xul.containers.XulWindow;
+import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.swing.SwingXulLoader;
 
 
@@ -51,9 +52,9 @@ public class SwingTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		XulWindow dialog = (XulWindow) container.getDocumentRoot().getRootElement();
+		XulDialog dialog = (XulDialog) container.getDocumentRoot().getRootElement();
 		container.initialize();
-		dialog.open();
+		dialog.show();
 		try{
 			@SuppressWarnings("unused")
       Object data = container.getEventHandler("dataHandler").getData(); //$NON-NLS-1$
