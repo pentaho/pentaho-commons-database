@@ -141,6 +141,7 @@
             value="${testreports.dir}/html"
             description="Unit test html reports are placed here" />
   <property name="junit.haltonfailure" value="no" description="Fail the build if a test fails" />
+  <property name="headless.unittest" value="true" description="Runs the unit tests in headless mode" />
 
   <!-- Code Coverage properties -->
   <property name="instrumented.classes.dir"
@@ -199,6 +200,9 @@
             value="${dist.dir}/ivy.xml"
             description="The full path to the IVY xml file to deploy with the artifact" />
 
+  <!-- Main-Class manifest property -->
+  <property name="main.class" value="false" description="Set this to the java main class if you want a Main-Class attribute in the manifest" />
+	
   <!-- Build Mode properties -->
   <property name="release" value="false" description="Set this to true if you want to generate a release artifact" />
 
@@ -238,6 +242,9 @@
   <path id="test.classpath">
     <fileset dir="${lib.dir}">
       <include name="*.jar" />
+    </fileset>
+    <fileset dir="${devlib.dir}">
+      <include name="*" />
     </fileset>
     <fileset dir="${testlib.dir}">
       <include name="*.jar" />
@@ -686,7 +693,7 @@
         repository. 
         ====================================================================-->
   <target name="publish-pentaho"
-          depends="dist, publish-pentaho-nojar"
+          depends="dist, dist-source, publish-pentaho-nojar"
           description="Builds and publishes the jar file to a Maven2 repository">
   </target>
 
@@ -1084,15 +1091,33 @@
 	    Creates a jar file from the bin directory
 	    ====================================================================-->
   <target name="jar" depends="compile,set-build.id" description="Jars up the bin directory after a compile">
-    <jar destfile="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar">
-      <manifest>
-        <attribute name="Implementation-Title" value="${impl.title}" />
-        <attribute name="Implementation-Version" value="${project.revision}.${build.id}" />
-        <attribute name="Implementation-Vendor" value="${impl.vendor}" />
-        <attribute name="Implementation-ProductID" value="${impl.productID}" />
-      </manifest>
-      <fileset dir="${classes.dir}" />
-    </jar>
+  	<if>
+      <equals arg1="${main.class}" arg2="false"/>
+      <then>
+      	<!-- main.class is not defined, so we will omit it from the manifest -->
+      	<jar destfile="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar">
+          <manifest>
+            <attribute name="Implementation-Title" value="${impl.title}" />
+            <attribute name="Implementation-Version" value="${project.revision}.${build.id}" />
+            <attribute name="Implementation-Vendor" value="${impl.vendor}" />
+            <attribute name="Implementation-ProductID" value="${impl.productID}" />
+          </manifest>
+          <fileset dir="${classes.dir}" />
+        </jar>
+      </then>
+      <else>
+      	<jar destfile="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar">
+          <manifest>
+            <attribute name="Implementation-Title" value="${impl.title}" />
+            <attribute name="Implementation-Version" value="${project.revision}.${build.id}" />
+            <attribute name="Implementation-Vendor" value="${impl.vendor}" />
+            <attribute name="Implementation-ProductID" value="${impl.productID}" />
+            <attribute name="Main-Class" value="${main.class}" />
+          </manifest>
+          <fileset dir="${classes.dir}" />
+        </jar>
+      </else>
+    </if>
   </target>
 
 
@@ -1182,6 +1207,7 @@
 	    ====================================================================-->
   <target name="test" depends="compile,compile-tests" description="Compiles and runs unit tests">
     <junit printsummary="yes" haltonfailure="${junit.haltonfailure}">
+      <sysproperty key="java.awt.headless" value="${headless.unittest}"/>
       <classpath refid="test.classpath" />
       <formatter type="plain" />
       <batchtest fork="yes" todir="${testbin.dir}">
@@ -1476,10 +1502,9 @@
           depends="init-test-reports,cobertura.install,compile,compile-tests,cobertura.instrument-classes">
     <mkdir dir="${instrumented.classes.dir}" />
     <junit fork="yes" failureProperty="test.failed" haltonfailure="${junit.haltonfailure}">
+      <sysproperty key="java.awt.headless" value="${headless.unittest}"/>
 
-      <!--
-				Specify the name of the coverage data file to use.
-			-->
+      <!-- Specify the name of the coverage data file to use. -->
       <sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data.dir}/cobertura.ser" />
 
       <!--
