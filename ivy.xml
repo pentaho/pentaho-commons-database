@@ -15,8 +15,10 @@
     
     <dependencies defaultconf="default->default">
     	
-    	<dependency org="${ivy.artifact.group}" name="pentaho-xul-framework" rev="${pentaho-xul-framework.revision}" transitive="true" changing="true" />
-    	
+    	<dependency org="${pentaho.group}" name="pentaho-xul-core" rev="${pentaho-xul.revision}" transitive="true" changing="true" />
+      <dependency org="${pentaho.group}" name="pentaho-xul-swing" rev="${pentaho-xul.revision}" transitive="true" changing="true" />
+      <dependency org="${pentaho.group}" name="pentaho-xul-swt" rev="${pentaho-xul.revision}" transitive="true" changing="true" />
+    
     	<dependency org="org.eclipse" name="jface" rev="3.3.0-I20070606-0010" transitive="false" />
     	<dependency org="org.eclipse.core" name="runtime" rev="3.3.100-v20070530" transitive="false" />
     	<dependency org="org.eclipse.equinox" name="common" rev="3.3.0-v20070426" transitive="false" />
