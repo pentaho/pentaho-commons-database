@@ -257,9 +257,17 @@ public class DataHandler extends AbstractXulEventHandler {
       accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(acc[0]));
     }
 
+    Map<String, String> options = null;
     if(this.databaseMeta != null){
-      setOptionsData(this.databaseMeta.getExtraOptions());
+      options = this.databaseMeta.getExtraOptions();
     }
+    setOptionsData(options);
+    PartitionDatabaseMeta[] clusterInfo = null;
+    if(this.databaseMeta != null){
+      clusterInfo = this.databaseMeta.getPartitioningInformation();
+    }
+    setClusterData(clusterInfo);
+    
     popCache();
 
   }
@@ -693,9 +701,7 @@ public class DataHandler extends AbstractXulEventHandler {
       clusteringCheck.setChecked(meta.isPartitioned());
     }
 
-    if (meta.isPartitioned()) {
-      setClusterData(meta.getPartitioningInformation());
-    }
+    setClusterData(meta.getPartitioningInformation());
 
     // Pooling panel settings 
 
@@ -845,7 +851,10 @@ public class DataHandler extends AbstractXulEventHandler {
 
   private void setOptionsData(Map<String, String> extraOptions) {
 
-    if (optionsParameterTree != null) {
+    if (optionsParameterTree == null) {
+      return;
+    }
+    if(extraOptions != null){
       removeTypedOptions(extraOptions);
       Iterator<String> keys = extraOptions.keySet().iterator();
       
@@ -882,17 +891,16 @@ public class DataHandler extends AbstractXulEventHandler {
         }
       }
       
-      // Add 5 blank rows if none are already there, otherwise, just add one.
-      //
-      int numToAdd = 5;
-      if(extraOptions.keySet().size() > 0){
-        numToAdd = 1;
-      }
-      while(numToAdd-- > 0){
-        XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
-        row.addCellText(0, "");   //easy way of putting new cells in the row
-        row.addCellText(1, "");
-      }
+    }
+    // Add 5 blank rows if none are already there, otherwise, just add one.
+    int numToAdd = 5;
+    if(extraOptions != null && extraOptions.keySet().size() > 0){
+      numToAdd = 1;
+    }
+    while(numToAdd-- > 0){
+      XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
+      row.addCellText(0, "");   //easy way of putting new cells in the row
+      row.addCellText(1, "");
     }
   }
 
@@ -911,6 +919,20 @@ public class DataHandler extends AbstractXulEventHandler {
         row.addCellText(4, meta.getUsername() == null ? "" : meta.getUsername()); //$NON-NLS-1$
         row.addCellText(5, meta.getPassword() == null ? "" : meta.getPassword()); //$NON-NLS-1$
       }
+    }
+    // Add 5 blank rows if none are already there, otherwise, just add one.
+    int numToAdd = 5;
+    if(clusterInformation != null && clusterInformation.length > 0){
+      numToAdd = 1;
+    }
+    while(numToAdd-- > 0){
+      XulTreeRow row = clusterParameterTree.getRootChildren().addNewRow();
+      row.addCellText(0, "");   //easy way of putting new cells in the row
+      row.addCellText(1, "");
+      row.addCellText(2, "");
+      row.addCellText(3, "");
+      row.addCellText(4, "");
+      row.addCellText(5, "");
     }
   }
 
