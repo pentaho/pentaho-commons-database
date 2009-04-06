@@ -833,12 +833,16 @@ public class DataHandler extends AbstractXulEventHandler {
           String param = keys.next();
           String parameterKey = param.substring(param.indexOf('.')+1);
           if(parameter.equals(parameterKey) || "".equals(parameter)){
-            //match, remove it
-            removeList.add(i);
+            //match, remove it if not already in the list
+          	if (!removeList.contains(i)) {
+          		removeList.add(i);
+          	}
           }
         }
       } else if("".equals(parameter)){
-        removeList.add(i);
+      	if (!removeList.contains(i)) {
+      		removeList.add(i);
+      	}
       }
     
     }
@@ -906,6 +910,11 @@ public class DataHandler extends AbstractXulEventHandler {
 
   private void setClusterData(PartitionDatabaseMeta[] clusterInformation) {
 
+  	if (clusterParameterTree == null) {
+  		// there's nothing to do 
+  		return;
+  	}
+  	
     if ((clusterInformation != null) && (clusterParameterTree != null)) {
 
       for (int i = 0; i < clusterInformation.length; i++) {
