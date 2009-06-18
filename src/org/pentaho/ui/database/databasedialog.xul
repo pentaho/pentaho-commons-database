@@ -19,7 +19,7 @@
 	<!--  ###############################################################################  -->
 	<script id="fragmentHandler" src="org.pentaho.ui.database.event.FragmentHandler" />
 	<script id="dataHandler" src="org.pentaho.ui.database.event.DataHandler" />
-
+	
 	<vbox flex="1">
 	<hbox id="all-box" flex="1">
 
@@ -28,7 +28,7 @@
 			 database attributes panels - General, Advanced, Options, etc.                 -->
 	<!--  ###############################################################################  -->
 
-		<listbox id="deck-options-list" flex="1" onselect="dataHandler.setDeckChildIndex()" width="100">
+		<listbox id="deck-options-list" flex="1" onselect="dataHandler.setDeckChildIndex()" >
 			<listitem id="general-item" label="${DatabaseDialog.DbTab.title}" />
 			<listitem id="advanced-item" label="${DatabaseDialog.AdvancedTab.title}" />
 			<listitem id="options-item" label="${DatabaseDialog.label.Options}" />
