@@ -2,7 +2,7 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <dialog id="general-datasource-window"
 	title="${DatabaseDialog.Shell.title}" 
-  height="605" width="700"
+  height="650" width="700"
 	orient="vertical"
 	onload="dataHandler.loadConnectionData()"
 	buttons="accept, cancel"
@@ -59,7 +59,7 @@
 				<hbox id="connection-access-list-box" flex="1">
 					<vbox id="type-box" flex="1">
 						<label id="connection-type-label" value="${DatabaseDialog.label.ConnectionType}" />
-						<listbox id="connection-type-list" flex="4" rows="15" onselect="dataHandler.loadAccessData()">
+						<listbox id="connection-type-list" flex="4" rows="11" onselect="dataHandler.loadAccessData()">
 						</listbox>
 						<label id="access-type-label" value="${DatabaseDialog.label.AccessMethod}" />
 						<listbox id="access-type-list" flex="2" rows="5" onselect="fragmentHandler.refreshOptions()">
