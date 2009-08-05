@@ -32,6 +32,7 @@ public class DatabaseConnectionDialog {
     }
     loader.setOuterContext(shell);
     container = loader.loadXul(DIALOG_DEFINITION_FILE, Messages.getBundle());
+    container.initialize();
     return container;
   }
 
