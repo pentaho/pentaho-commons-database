@@ -32,6 +32,7 @@ import org.pentaho.ui.xul.containers.XulTreeItem;
 import org.pentaho.ui.xul.containers.XulTreeRow;
 import org.pentaho.ui.xul.containers.XulWindow;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
+import org.pentaho.ui.xul.stereotype.Bindable;
 
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
@@ -185,6 +186,7 @@ public class DataHandler extends AbstractXulEventHandler {
     this.launch = launch;
   }
   
+  @Bindable
   public void loadConnectionData() {
 
 	// HACK: need to check if onload event was already fired. 
@@ -236,6 +238,7 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   //On Database type change
+  @Bindable
   public void loadAccessData() {
 
     getControls();
@@ -304,6 +307,7 @@ public class DataHandler extends AbstractXulEventHandler {
     return key;
   }
   
+  @Bindable
   public void editOptions(int index) {
     if( index +1 == optionsParameterTree.getRows()){
       //editing last row add a new one below
@@ -324,6 +328,7 @@ public class DataHandler extends AbstractXulEventHandler {
     return str == null || str.trim().length() == 0;
   }
 
+  @Bindable
   public void getOptionHelp() {
 
     String message = null;
@@ -350,6 +355,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
 
+  @Bindable
   public void setDeckChildIndex() {
 
     getControls();
@@ -454,6 +460,7 @@ public class DataHandler extends AbstractXulEventHandler {
     setConnectionSpecificInfo(cache);
   }
 
+  @Bindable
   public void onCancel() {
     close();
     if (listener != null) {
@@ -461,6 +468,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
   
+  @Bindable
   private void close(){
   	XulComponent window = document.getElementById("general-datasource-window"); //$NON-NLS-1$
   	
@@ -487,6 +495,7 @@ public class DataHandler extends AbstractXulEventHandler {
     return closedWindow;
   }
 
+  @Bindable
   public void onOK() {
 
     IDatabaseConnection database = new DatabaseConnection();
@@ -524,6 +533,7 @@ public class DataHandler extends AbstractXulEventHandler {
     
   }
 
+  @Bindable
   public void testDatabaseConnection() {
 
     final IDatabaseConnection database = new DatabaseConnection();
@@ -884,6 +894,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   }
   
+  @Bindable
   public void restoreDefaults() {
     if (poolingParameters != null && poolParameterTree != null) {
       for (int i = 0; i < poolParameterTree.getRootChildren().getItemCount(); i++){
@@ -1051,6 +1062,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
 
+  @Bindable
   public void poolingRowChange(int idx) {
     if (poolingParameters != null) {
       if (idx != -1) {

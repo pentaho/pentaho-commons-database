@@ -13,6 +13,7 @@ import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
+import org.pentaho.ui.xul.stereotype.Bindable;
 
 /**
  * Fragment handler deals with the logistics of replacing a portion of the dialog 
@@ -79,6 +80,7 @@ public class FragmentHandler extends AbstractXulEventHandler implements IFragmen
    * Connection specific definition resources follow the naming 
    * pattern [connection type code]_[access method].xul.  
    */
+  @Bindable
   public void refreshOptions() {
     if (!disableRefresh) {
       refreshOptionsWithCallback(null);

@@ -25,6 +25,7 @@ import org.pentaho.ui.xul.gwt.tags.GwtHbox;
 import org.pentaho.ui.xul.gwt.util.AsyncXulLoader;
 import org.pentaho.ui.xul.gwt.util.IXulLoaderCallback;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
+import org.pentaho.ui.xul.stereotype.Bindable;
 
 /**
  * Fragment handler deals with the logistics of replacing a portion of the dialog 
@@ -119,6 +120,7 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
     
   }
   
+  @Bindable
   public void refreshOptions() {
     if (!disableRefresh) {
       refreshOptionsWithCallback(null);

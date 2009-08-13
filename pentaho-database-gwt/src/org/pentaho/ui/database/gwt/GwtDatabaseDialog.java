@@ -89,7 +89,6 @@ public class GwtDatabaseDialog {
         // register our event handlers
         final GwtXulDomContainer container = (GwtXulDomContainer) runner.getXulDomContainers().get(0);
         messages.setMessageBundle((ResourceBundle) container.getResourceBundles().get(0));
-        EventHandlerWrapper wrapper = GWT.create(DataHandler.class);
         dataHandler.setMessages(messages);
         if (listener != null) {
           dataHandler.setDatabaseDialogListener(listener);
@@ -99,14 +98,11 @@ public class GwtDatabaseDialog {
         dataHandler.setDatabaseTypeHelper(databaseTypeHelper);
         dataHandler.setFragmentHandler(fragmentHandler);
 
-        wrapper.setHandler(dataHandler);
-        container.addEventHandler(wrapper);
+        container.addEventHandler(dataHandler);
         
-        wrapper = GWT.create(GwtFragmentHandler.class);
         fragmentHandler.setMessages(messages);
         fragmentHandler.setDatabaseTypeHelper(databaseTypeHelper);
-        wrapper.setHandler(fragmentHandler);      
-        container.addEventHandler(wrapper);
+        container.addEventHandler(fragmentHandler);
 
         runner.initialize();
         
