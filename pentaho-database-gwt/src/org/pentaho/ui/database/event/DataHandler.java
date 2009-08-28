@@ -48,7 +48,7 @@ import org.pentaho.ui.xul.stereotype.Bindable;
  */
 public class DataHandler extends AbstractXulEventHandler {
 
-  private static final String LINE_SEPARATOR = "\n"; // System.getProperty("line.separator");
+  private static final String LINE_SEPARATOR = "\n"; // System.getProperty("line.separator"); //$NON-NLS-1$
   
   protected DatabaseDialogListener listener;
   protected IMessages messages;
@@ -159,7 +159,7 @@ public class DataHandler extends AbstractXulEventHandler {
   protected XulTree poolParameterTree;
 
   public DataHandler() {
-    setName("dataHandler");
+    setName("dataHandler"); //$NON-NLS-1$
   }
   
   public void setFragmentHandler(IFragmentHandler fragmentHandler) {
@@ -307,11 +307,11 @@ public class DataHandler extends AbstractXulEventHandler {
       Object[][] values = optionsParameterTree.getValues();
       Object[] row = values[values.length-1];
       if(row != null && (!isEmpty((String)row[0]) || !isEmpty((String)row[1]))){
-        //acutally have something in current last row
+        //actually have something in current last row
         XulTreeRow newRow = optionsParameterTree.getRootChildren().addNewRow();
 
-        newRow.addCellText(0, "");
-        newRow.addCellText(1, "");
+        newRow.addCellText(0, ""); //$NON-NLS-1$
+        newRow.addCellText(1, ""); //$NON-NLS-1$
       }
     }
   }
@@ -331,7 +331,8 @@ public class DataHandler extends AbstractXulEventHandler {
 
     if ((url == null) || (url.trim().length() == 0)) {
       message = messages.getString("DataHandler.USER_NO_HELP_AVAILABLE"); //$NON-NLS-1$
-      showMessage(message, false);
+      
+      showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, false); //$NON-NLS-1$
       return;
     }
 
@@ -340,10 +341,13 @@ public class DataHandler extends AbstractXulEventHandler {
   
       if (status.equals(Status.Failed)) {
         message = messages.getString("DataHandler.USER_UNABLE_TO_LAUNCH_BROWSER", url);  //$NON-NLS-1$
-        showMessage(message, false);
+        showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, false); //$NON-NLS-1$
       }
     } else {
-      showMessage("Launch Not Supported", false);
+      showMessage(
+          messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), //$NON-NLS-1$
+          messages.getString("DataHandler.LAUNCH_NOT_SUPPORTED"), //$NON-NLS-1$
+          false);
     }
   }
 
@@ -367,8 +371,9 @@ public class DataHandler extends AbstractXulEventHandler {
       }
       while(numToAdd-- > 0){
         XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
-        row.addCellText(0, "");   //easy way of putting new cells in the row
-        row.addCellText(1, "");
+        //easy way of putting new cells in the row
+        row.addCellText(0, ""); //$NON-NLS-1$
+        row.addCellText(1, ""); //$NON-NLS-1$
       }
       optionsParameterTree.update();
     }
@@ -505,7 +510,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
   
-  private boolean windowClosed(){
+  private boolean windowClosed() {
     boolean closedWindow = true; 
     XulComponent window = document.getElementById("general-datasource-window"); //$NON-NLS-1$
     
@@ -531,15 +536,15 @@ public class DataHandler extends AbstractXulEventHandler {
     
     connectionService.checkParameters(database, new XulServiceCallback<List<String>>() {
       public void error(String message, Throwable error) {
-        showMessage(message, message.length() > 300);
+        showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, message.length() > 300); //$NON-NLS-1$
       }
       public void success(List<String> remarks) {
         String message = ""; //$NON-NLS-1$
         if (remarks.size() != 0) {
           for (int i = 0; i < remarks.size(); i++) {
-            message = message.concat("* ").concat(remarks.get(i)).concat(LINE_SEPARATOR); //$NON-NLS-1$ //$NON-NLS-2$
+            message = message.concat("* ").concat(remarks.get(i)).concat(LINE_SEPARATOR); //$NON-NLS-1$
           }
-          showMessage(message, false);
+          showMessage(messages.getString("DataHandler.CHECK_PARAMS_TITLE"), message, false); //$NON-NLS-1$
         } else {
           if (databaseConnection == null) {
             databaseConnection = new DatabaseConnection();
@@ -564,28 +569,25 @@ public class DataHandler extends AbstractXulEventHandler {
     getInfo(database);
     connectionService.checkParameters(database, new XulServiceCallback<List<String>>() {
       public void error(String message, Throwable error) {
-        showMessage(message, message.length() > 300);
+        showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, message.length() > 300); //$NON-NLS-1$
       }
       public void success(List<String> remarks) {
         String message = ""; //$NON-NLS-1$
         if (remarks.size() != 0) {
           for (int i = 0; i < remarks.size(); i++) {
-            message = message.concat("* ").concat(remarks.get(i)).concat(LINE_SEPARATOR); //$NON-NLS-1$  //$NON-NLS-2$
+            message = message.concat("* ").concat(remarks.get(i)).concat(LINE_SEPARATOR); //$NON-NLS-1$
           }
-          showMessage(message, message.length() > 300);
+          showMessage(messages.getString("DataHandler.TEST_MESSAGE_TITLE"), message, message.length() > 300); //$NON-NLS-1$
         } else {
           connectionService.testConnection(database, new XulServiceCallback<String>() {
-
             public void error(String message, Throwable error) {
-              showMessage(message, message.length() > 300);
+              showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, message.length() > 300); //$NON-NLS-1$
             }
-
             public void success(String message) {
-              showMessage(message, message.length() > 300);            }
+              showMessage(messages.getString("DataHandler.TEST_MESSAGE_TITLE"), message, message.length() > 300);  //$NON-NLS-1$            
             }
-          );
+          });
         }
-        // showMessage(message, message.length() > 300);
       }
     });
   }
@@ -698,7 +700,6 @@ public class DataHandler extends AbstractXulEventHandler {
         pdm.setPassword(password);
         pdms.add(pdm);
       }
-      PartitionDatabaseMeta[] pdmArray = new PartitionDatabaseMeta[pdms.size()];
       meta.setPartitioningInformation(pdms);
     }
 
@@ -886,13 +887,13 @@ public class DataHandler extends AbstractXulEventHandler {
 
       }
       if (returnList.size() > 0){
-        String parameters = LINE_SEPARATOR; //$NON-NLS-1$
+        String parameters = LINE_SEPARATOR;
         for (String parameter : returnList){
-          parameters = parameters.concat(parameter).concat(LINE_SEPARATOR); //$NON-NLS-1$
+          parameters = parameters.concat(parameter).concat(LINE_SEPARATOR);
         }
         
         String message = messages.getString("DataHandler.USER_INVALID_PARAMETERS").concat(parameters); //$NON-NLS-1$
-        showMessage(message, false);
+        showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, false); //$NON-NLS-1$
       }
     }
     return returnList.size() <= 0;
@@ -939,7 +940,7 @@ public class DataHandler extends AbstractXulEventHandler {
   private void setDefaultPoolParameters() {
     connectionService.getPoolingParameters(new XulServiceCallback<DatabaseConnectionPoolParameter[]>() {
       public void error(String message, Throwable error) {
-        showMessage(message, false);
+        showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, false); //$NON-NLS-1$
       }
       public void success(DatabaseConnectionPoolParameter[] retVal) {
         poolingParameters = retVal;
@@ -1015,8 +1016,9 @@ public class DataHandler extends AbstractXulEventHandler {
     }
     while(numToAdd-- > 0){
       XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
-      row.addCellText(0, "");   //easy way of putting new cells in the row
-      row.addCellText(1, "");
+      //easy way of putting new cells in the row
+      row.addCellText(0, ""); //$NON-NLS-1$
+      row.addCellText(1, ""); //$NON-NLS-1$
     }
     
     optionsParameterTree.update();
@@ -1051,12 +1053,13 @@ public class DataHandler extends AbstractXulEventHandler {
     }
     while(numToAdd-- > 0){
       XulTreeRow row = clusterParameterTree.getRootChildren().addNewRow();
-      row.addCellText(0, "");   //easy way of putting new cells in the row
-      row.addCellText(1, "");
-      row.addCellText(2, "");
-      row.addCellText(3, "");
-      row.addCellText(4, "");
-      row.addCellText(5, "");
+      //easy way of putting new cells in the row
+      row.addCellText(0, ""); //$NON-NLS-1$
+      row.addCellText(1, ""); //$NON-NLS-1$
+      row.addCellText(2, ""); //$NON-NLS-1$
+      row.addCellText(3, ""); //$NON-NLS-1$
+      row.addCellText(4, ""); //$NON-NLS-1$
+      row.addCellText(5, ""); //$NON-NLS-1$
     }
   }
 
@@ -1350,11 +1353,12 @@ public class DataHandler extends AbstractXulEventHandler {
     sqlBox = (XulTextbox) document.getElementById("sql-text"); //$NON-NLS-1$;
   }
 
-  private void showMessage(String message, boolean scroll){
+  private void showMessage(String title, String message, boolean scroll){
     try{
       XulMessageBox box = (XulMessageBox) document.createElement("messagebox"); //$NON-NLS-1$
+      box.setTitle(title);
       box.setMessage(message);
-      box.setModalParent( ((XulRoot)document.getElementById("general-datasource-window")).getRootObject());
+      box.setModalParent( ((XulRoot)document.getElementById("general-datasource-window")).getRootObject()); //$NON-NLS-1$
       if(scroll){
         box.setScrollable(true);
         box.setWidth(500);
