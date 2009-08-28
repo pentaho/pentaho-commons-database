@@ -302,7 +302,7 @@ public class HypersonicDatabaseDialect extends AbstractDatabaseDialect {
         dbconn.setDatabasePort(port);
       }
       if (databaseName != null) {
-        dbconn.setDatabaseName(databaseName);
+        setDatabaseNameAndParams(dbconn, databaseName);
       }
     } else {
       

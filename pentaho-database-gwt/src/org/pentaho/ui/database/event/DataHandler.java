@@ -280,17 +280,9 @@ public class DataHandler extends AbstractXulEventHandler {
     if (accessBox.getSelectedItem() == null) {
       accessBox.setSelectedItem(acc.get(0).getName());
     }
-
-    Map<String, String> options = null;
-    if(this.databaseConnection != null){
-      options = this.databaseConnection.getExtraOptions();
-    }
-    setOptionsData(options);
-    List<PartitionDatabaseMeta> clusterInfo = null;
-    if(this.databaseConnection != null){
-      clusterInfo = this.databaseConnection.getPartitioningInformation();
-    }
-    setClusterData(clusterInfo);
+    
+    setOptionsData(databaseConnection != null ? databaseConnection.getExtraOptions() : null);
+    setClusterData(databaseConnection != null ? databaseConnection.getPartitioningInformation() : null);
     
     popCache();
 
@@ -355,6 +347,33 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
 
+  public void addEmptyRowsToOptions() {
+    Object[][] values = optionsParameterTree.getValues();
+    int emptyRows = 0;
+    int nonEmptyRows = 0;
+    for (int i = 0; i < values.length; i++) {
+      String parameter = (String)values[i][0];
+      if ((parameter != null) && (parameter.trim().length() > 0)) {
+        emptyRows = 0;
+        nonEmptyRows++;
+      } else {
+        emptyRows++;
+      }
+    }
+    if (emptyRows == 0) {
+      int numToAdd = 5;
+      if(nonEmptyRows > 0){
+        numToAdd = 1;
+      }
+      while(numToAdd-- > 0){
+        XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
+        row.addCellText(0, "");   //easy way of putting new cells in the row
+        row.addCellText(1, "");
+      }
+      optionsParameterTree.update();
+    }
+  }
+  
   @Bindable
   public void setDeckChildIndex() {
 
@@ -367,6 +386,10 @@ public class DataHandler extends AbstractXulEventHandler {
     boolean passed = true;
     if (originalSelection == 3){
       passed = checkPoolingParameters();
+    }
+    
+    if (originalSelection == 1) {
+      addEmptyRowsToOptions();
     }
     
     if (passed) { 
@@ -823,6 +846,9 @@ public class DataHandler extends AbstractXulEventHandler {
       setPoolProperties(meta.getConnectionPoolingProperties());
     }
 
+    dialogDeck.setSelectedIndex(0);
+    deckOptionsBox.setSelectedIndex(0);
+
     setDeckChildIndex();
     onPoolingCheck();
     onClusterCheck();
@@ -934,40 +960,11 @@ public class DataHandler extends AbstractXulEventHandler {
     });
   }
   
-  private void removeTypedOptions(Map<String, String> extraOptions){
-
-    List<Integer> removeList = new ArrayList<Integer>();
-
+  private void clearOptions() {
     Object[][] values = optionsParameterTree.getValues();
-    for (int i = 0; i < values.length; i++) {
-
-      String parameter = (String) values[i][0];
-
-      // See if it's defined
-      Iterator<String> keys = extraOptions.keySet().iterator();
-      if(extraOptions.keySet().size() > 0){
-        while (keys.hasNext()) {
-          String param = keys.next();
-          String parameterKey = param.substring(param.indexOf('.')+1);
-          if(parameter.equals(parameterKey) || "".equals(parameter)){
-            //match, remove it if not already in the list
-          	if (!removeList.contains(i)) {
-          		removeList.add(i);
-          	}
-          }
-        }
-      } else if("".equals(parameter)){
-      	if (!removeList.contains(i)) {
-      		removeList.add(i);
-      	}
-      }
-    
+    for (int i = values.length - 1; i >= 0; i--) {
+      optionsParameterTree.getRootChildren().removeItem(i);
     }
-    
-    for(int i= removeList.size()-1; i >=0; i--){
-      optionsParameterTree.getRootChildren().removeItem(removeList.get(i));
-    }
-    
   }
 
   private void setOptionsData(Map<String, String> extraOptions) {
@@ -975,11 +972,9 @@ public class DataHandler extends AbstractXulEventHandler {
     if (optionsParameterTree == null) {
       return;
     }
-    if(extraOptions != null){
-      removeTypedOptions(extraOptions);
+    clearOptions();
+    if(extraOptions != null) {
       Iterator<String> keys = extraOptions.keySet().iterator();
-      
-
       String connection = getSelectedString(connectionBox);
       IDatabaseType currentType = null;
       
@@ -1023,6 +1018,9 @@ public class DataHandler extends AbstractXulEventHandler {
       row.addCellText(0, "");   //easy way of putting new cells in the row
       row.addCellText(1, "");
     }
+    
+    optionsParameterTree.update();
+    
   }
 
   private void setClusterData(List<PartitionDatabaseMeta> clusterInformation) {

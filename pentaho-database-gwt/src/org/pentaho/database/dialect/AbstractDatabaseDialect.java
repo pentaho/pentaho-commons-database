@@ -1,5 +1,8 @@
 package org.pentaho.database.dialect;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.IDatabaseConnection;
@@ -457,6 +460,51 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect {
 
     public abstract String getURL(IDatabaseConnection connection)  throws KettleDatabaseException;
 
+    public String getURLWithExtraOptions(IDatabaseConnection connection) throws KettleDatabaseException {
+      StringBuffer url = new StringBuffer(getURL(connection));
+      if (supportsOptionsInURL()) {
+          // OK, now add all the options...
+          String optionIndicator = getExtraOptionIndicator();
+          String optionSeparator = getExtraOptionSeparator();
+          String valueSeparator = getExtraOptionValueSeparator();
+          
+          Map<String, String> map = connection.getExtraOptions();
+          if (map.size()>0) {
+              Iterator<String> iterator = map.keySet().iterator();
+              boolean first=true;
+              while (iterator.hasNext()) {
+                  String typedParameter=(String)iterator.next();
+                  int dotIndex = typedParameter.indexOf('.');
+                  if (dotIndex>=0) {
+                      String typeCode = typedParameter.substring(0,dotIndex);
+                      String parameter = typedParameter.substring(dotIndex+1);
+                      String value = map.get(typedParameter);
+                      
+                      // Only add to the URL if it's the same database type code...
+                      //
+                      if (connection.getDatabaseType().getShortName().equals(typeCode)) {
+                          if (first && url.indexOf(valueSeparator) == -1) { 
+                            url.append(optionIndicator);
+                          } else {
+                            url.append(optionSeparator);
+                          }
+
+                          url.append(parameter);
+                          if (!Const.isEmpty(value)) {
+                              url.append(valueSeparator).append(value);
+                          }
+                          first=false;
+                      }
+                  }
+              }
+          }
+      } else {
+          // We need to put all these options in a Properties file later (Oracle & Co.)
+          // This happens at connect time...
+      }
+      return url.toString();
+    }
+    
     // public abstract String getSQLQueryColumnFields(String columnname, String tableName);
     
     public abstract String getAddColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon);
@@ -493,30 +541,28 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect {
       String str = jdbcUrl.substring(getNativeJdbcPre().length());
       String hostname = null;
       String port = null;
-      String databaseName = null;
+      String databaseNameAndParams = null;
       
       // hostname:port/dbname
       // hostname:port
       // hostname/dbname
       // dbname
       
-      // TODO: Support Parameters
-
       if (str.indexOf(":") >= 0) {
         hostname = str.substring(0, str.indexOf(":"));
         str = str.substring(str.indexOf(":") + 1);
         if (str.indexOf("/") >= 0) {
           port = str.substring(0, str.indexOf("/")); 
-          databaseName = str.substring(str.indexOf("/")+1);
+          databaseNameAndParams = str.substring(str.indexOf("/")+1);
         } else {
           port = str;
         }
       } else {
         if (str.indexOf("/") >= 0) {
           hostname = str.substring(0, str.indexOf("/"));
-          databaseName = str.substring(str.indexOf("/")+1);
+          databaseNameAndParams = str.substring(str.indexOf("/")+1);
         } else {
-          databaseName = str;
+          databaseNameAndParams = str;
         }
       }
       if (hostname != null) {
@@ -525,10 +571,34 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect {
       if (port != null) {
         dbconn.setDatabasePort(port);
       }
-      if (databaseName != null) {
-        dbconn.setDatabaseName(databaseName);
+      
+      // parse parameters out of URL
+      if (databaseNameAndParams != null) {
+        setDatabaseNameAndParams(dbconn, databaseNameAndParams);
       }
       return dbconn;
+    }
+    
+    protected void setDatabaseNameAndParams(DatabaseConnection dbconn, String databaseNameAndParams) {
+      if (supportsOptionsInURL()) {
+        int paramIndex = databaseNameAndParams.indexOf(getExtraOptionIndicator());
+        if (paramIndex >= 0) {
+          String params = databaseNameAndParams.substring(paramIndex + 1);
+          databaseNameAndParams = databaseNameAndParams.substring(0, paramIndex);
+          String paramData[] = params.split(getExtraOptionSeparator());
+          for (String param : paramData) {
+            String nameAndValue[] = param.split(getExtraOptionValueSeparator());
+            if (nameAndValue[0] != null && nameAndValue[0].trim().length() > 0) {
+              if (nameAndValue.length == 1) {
+                dbconn.addExtraOption(dbconn.getDatabaseType().getShortName(), nameAndValue[0], "");
+              } else {
+                dbconn.addExtraOption(dbconn.getDatabaseType().getShortName(), nameAndValue[0], nameAndValue[1]);
+              }
+            }
+          }
+        }
+      }
+      dbconn.setDatabaseName(databaseNameAndParams);      
     }
     
     public String getDriverClass(IDatabaseConnection connection)

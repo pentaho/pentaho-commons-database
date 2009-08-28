@@ -68,6 +68,7 @@ public class GwtDatabaseDialogExample implements EntryPoint, DatabaseDialogListe
   }
 
   public void onDialogCancel() {
+    this.connection = null;
     label.setText("Cancel Pressed");
   }
 

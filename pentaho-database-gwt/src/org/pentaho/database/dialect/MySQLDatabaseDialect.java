@@ -337,4 +337,53 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
   {
       return new String[] { "mysql-connector-java-3.1.14-bin.jar" };
   }
+  
+  /**
+   * @return The extra option separator in database URL for this platform (usually this is semicolon ; ) 
+   */
+  @Override
+  public String getExtraOptionSeparator() {
+      return "&";
+  }
+  
+  /**
+   * @return This indicator separates the normal URL from the options
+   */
+  @Override
+  public String getExtraOptionIndicator() {
+      return "?";
+  }
+  
+  /**
+   * @return true if the database supports transactions.
+   */
+  @Override
+  public boolean supportsTransactions() {
+    return false;
+  }
+
+  /**
+   * @return true if the database supports bitmap indexes
+   */
+  @Override
+  public boolean supportsBitmapIndex() {
+    return false;
+  }
+
+  /**
+   * @return true if the database supports views
+   */
+  @Override
+  public boolean supportsViews() {
+    return true;
+  }
+  
+  /**
+   * @return true if the database supports synonyms
+   */
+  @Override
+  public boolean supportsSynonyms() {
+    return false;
+  }
+
 }

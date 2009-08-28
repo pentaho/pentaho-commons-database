@@ -300,6 +300,8 @@ public interface IDatabaseDialect {
   
   String getURL(IDatabaseConnection connection)  throws KettleDatabaseException;
   
+  String getURLWithExtraOptions(IDatabaseConnection connection) throws KettleDatabaseException;
+  
   // String getSQLQueryColumnFields(String columnname, String tableName);
   
   boolean supportsOptionsInURL();

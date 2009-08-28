@@ -187,6 +187,15 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
         return "jdbc:odbc:"+connection.getDatabaseName();
     }
   }
+  
+  /**
+   * The Generic datasource should not attempt to append options to the url.
+   */
+  @Override
+  public boolean supportsOptionsInURL()
+  {
+      return false;
+  }
 
   @Override
   public String[] getUsedLibraries() {

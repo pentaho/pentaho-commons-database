@@ -450,6 +450,7 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
       dbconn.setDatabasePort(port);
     }
     if (databaseName != null) {
+      // note, oracle does not support url attributes
       dbconn.setDatabaseName(databaseName);
     }
     return dbconn;

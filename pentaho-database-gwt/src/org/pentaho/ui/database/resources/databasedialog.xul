@@ -110,11 +110,11 @@
 				<label id="parameter-description-label" value="${DatabaseDialog.USER_PARAMETERS}"/>
 				<label id="spacer" />
 
-				<tree id="options-parameter-tree" flex="1" editable="true" onedit="dataHandler.editOptions()" seltype="cell">
+				<tree id="options-parameter-tree" flex="1" height="400" editable="true" onedit="dataHandler.editOptions()" seltype="cell">
 
 					<treecols id="option-column-list">
-					  	<treecol id="parameter-col" label="${DatabaseDialog.column.Parameter}" flex="1" editable="true" />  
-						<treecol id="param-value-col" label="${DatabaseDialog.column.Value}" pen:customeditor="variabletextbox" flex="2" editable="true" />
+					  	<treecol id="parameter-col" label="${DatabaseDialog.column.Parameter}" flex="1" editable="true" type="text"/>  
+						<treecol id="param-value-col" label="${DatabaseDialog.column.Value}" pen:customeditor="variabletextbox" flex="2" editable="true" type="text"/>
 					</treecols>
 					<treechildren>
 					
