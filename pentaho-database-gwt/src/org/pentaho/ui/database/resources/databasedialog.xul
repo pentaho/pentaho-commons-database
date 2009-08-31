@@ -105,12 +105,14 @@
 	<!--     START - OPTIONS SETTINGS BOX: The panel that holds the options for the
 			 database.                                                                     -->
 	<!--  ###############################################################################  -->
-			<groupbox id="options-group-box" orient="vertical" flex="1">
+			<groupbox id="options-group-box" orient="vertical">
 
 				<label id="parameter-description-label" value="${DatabaseDialog.USER_PARAMETERS}"/>
 				<label id="spacer" />
-
-				<tree id="options-parameter-tree" flex="1" height="400" editable="true" onedit="dataHandler.editOptions()" seltype="cell">
+				
+				<!-- SCROLL_TABLE_FIX: scrolltable "grows" when width is set to 100% -->
+				
+				<tree id="options-parameter-tree" flex="1" height="380" width="510" editable="true" onedit="dataHandler.editOptions()" seltype="cell">
 
 					<treecols id="option-column-list">
 					  	<treecol id="parameter-col" label="${DatabaseDialog.column.Parameter}" flex="1" editable="true" type="text"/>  
