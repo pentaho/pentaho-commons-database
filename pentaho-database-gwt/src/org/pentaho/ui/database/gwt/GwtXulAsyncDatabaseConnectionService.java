@@ -5,6 +5,8 @@ import java.util.List;
 import org.pentaho.database.model.DatabaseConnectionPoolParameter;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
+import org.pentaho.gwt.widgets.login.client.AuthenticatedGwtServiceUtil;
+import org.pentaho.gwt.widgets.login.client.IAuthenticatedGwtCommand;
 import org.pentaho.ui.database.services.IXulAsyncDatabaseConnectionService;
 import org.pentaho.ui.xul.XulServiceCallback;
 
@@ -46,19 +48,30 @@ public class GwtXulAsyncDatabaseConnectionService implements IXulAsyncDatabaseCo
   }
 
   
-  public void checkParameters(final IDatabaseConnection connection, final XulServiceCallback<List<String>> callback) {
-    SERVICE.checkParameters(connection, new AsyncCallback<List<String>>() {
+  public void checkParameters(final IDatabaseConnection connection, final XulServiceCallback<List<String>> callback) { 
+    AuthenticatedGwtServiceUtil.invokeCommand(new IAuthenticatedGwtCommand() {
+      public void execute(AsyncCallback callback) {
+        SERVICE.checkParameters(connection, callback);
+      }
+    }, new AsyncCallback<List<String>>() {
+
       public void onFailure(Throwable arg0) {
         callback.error("error checking parameters: ", arg0);//$NON-NLS-1$
       }
       public void onSuccess(List<String> arg0) {
         callback.success(arg0);
       }
+
     });
   }
 
   public void getPoolingParameters(final XulServiceCallback<DatabaseConnectionPoolParameter[]> callback) {
-    SERVICE.getPoolingParameters(new AsyncCallback<DatabaseConnectionPoolParameter[]>() {
+    AuthenticatedGwtServiceUtil.invokeCommand(new IAuthenticatedGwtCommand() {
+      public void execute(AsyncCallback callback) {
+        SERVICE.getPoolingParameters(callback);
+      }
+    }, new AsyncCallback<DatabaseConnectionPoolParameter[]>() {
+
       public void onFailure(Throwable arg0) {
         callback.error("error getting pooling parameters: ", arg0);//$NON-NLS-1$
       }
@@ -69,7 +82,12 @@ public class GwtXulAsyncDatabaseConnectionService implements IXulAsyncDatabaseCo
   }
 
   public void testConnection(final IDatabaseConnection connection, final XulServiceCallback<String> callback) {
-    SERVICE.testConnection(connection, new AsyncCallback<String>() {
+    AuthenticatedGwtServiceUtil.invokeCommand(new IAuthenticatedGwtCommand() {
+      public void execute(AsyncCallback callback) {
+        SERVICE.testConnection(connection, callback);
+      }
+    }, new AsyncCallback<String>() {
+      
       public void onFailure(Throwable arg0) {
         callback.error("error testing connection: ", arg0);//$NON-NLS-1$
       }
@@ -80,7 +98,12 @@ public class GwtXulAsyncDatabaseConnectionService implements IXulAsyncDatabaseCo
   }
 
   public void getDatabaseTypes(final XulServiceCallback<List<IDatabaseType>> callback) {
-    SERVICE.getDatabaseTypes(new AsyncCallback<List<IDatabaseType>>() {
+    AuthenticatedGwtServiceUtil.invokeCommand(new IAuthenticatedGwtCommand() {
+      public void execute(AsyncCallback callback) {
+        SERVICE.getDatabaseTypes(callback);
+      }
+    }, new AsyncCallback<List<IDatabaseType>>() {
+      
       public void onFailure(Throwable arg0) {
         callback.error("error testing connection: ", arg0);//$NON-NLS-1$
       }
@@ -88,5 +111,6 @@ public class GwtXulAsyncDatabaseConnectionService implements IXulAsyncDatabaseCo
         callback.success(arg0);
       }
     });
+
   }
 }
