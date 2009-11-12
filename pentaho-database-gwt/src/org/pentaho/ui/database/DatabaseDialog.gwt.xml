@@ -2,7 +2,8 @@
   <inherits name='com.google.gwt.user.User'/>
   <!--  what is this? inherits name='com.googlecode.gwtx.Java'/ -->
   <!-- inherits name='com.google.gwt.xml.XML'/ -->
-  <inherits name="org.pentaho.gwt.widgets.Widgets"/> 
+  <inherits name="org.pentaho.gwt.widgets.Widgets"/>
+  <inherits name="org.pentaho.gwt.widgets.login.Login"/> 
   <inherits name="org.pentaho.ui.xul.Gwt"/>
   <inherits name="org.pentaho.database.Model"/>
   <source path="">

@@ -1,9 +1,9 @@
 <module rename-to="DatabaseDialogExample">
+  <inherits name="org.pentaho.gwt.widgets.login.Login"/>
   <inherits name="org.pentaho.ui.database.DatabaseDialog"/>
   <source path="">
         <include name ="**/GwtDatabaseDialogExample.java"/>
   </source>
   <public path="resources"/>
   <entry-point class="org.pentaho.test.ui.database.GwtDatabaseDialogExample"/>
-  <servlet path="/databaseConnectionService" class="org.pentaho.ui.database.gwt.GwtDatabaseConnectionServlet" />
 </module>
