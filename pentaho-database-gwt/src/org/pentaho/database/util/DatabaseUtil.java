@@ -51,8 +51,8 @@ public class DatabaseUtil {
     meta.setInitialPoolSize(conn.getInitialPoolSize());
     meta.setMaximumPoolSize(conn.getMaximumPoolSize());
     
-    if (conn.getSqlServerInstance() != null) {
-      meta.setSQLServerInstance(conn.getSqlServerInstance());
+    if (conn.getSQLServerInstance() != null) {
+      meta.setSQLServerInstance(conn.getSQLServerInstance());
     }
     meta.setForcingIdentifiersToLowerCase(conn.isForcingIdentifiersToLowerCase());
     meta.setForcingIdentifiersToUpperCase(conn.isForcingIdentifiersToUpperCase());

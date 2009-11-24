@@ -226,7 +226,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   /* (non-Javadoc)
    * @see org.pentaho.database.model.IDatabaseConnection#getSQLServerInstance()
    */
-  public String getSqlServerInstance() {
+  public String getSQLServerInstance() {
     return getExtraOptions().get("MSSQL.instance");
   }
   

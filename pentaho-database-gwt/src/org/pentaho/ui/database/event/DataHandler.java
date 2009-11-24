@@ -1121,9 +1121,9 @@ public class DataHandler extends AbstractXulEventHandler {
     // The SQL Server instance name overrides the option.
     // Empty doesn't clear the option, we have mercy.
 
-    if (from.getSqlServerInstance() != null) {
-      if (from.getSqlServerInstance().trim().length() > 0) {
-        to.addExtraOption("MSSQL", "instance", from.getSqlServerInstance());
+    if (from.getSQLServerInstance() != null) {
+      if (from.getSQLServerInstance().trim().length() > 0) {
+        to.addExtraOption("MSSQL", "instance", from.getSQLServerInstance());
         // meta.setSQLServerInstance(serverInstanceBox.getValue());
       }
     }
@@ -1273,7 +1273,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     if (serverInstanceBox != null) {
-      serverInstanceBox.setValue(meta.getSqlServerInstance());
+      serverInstanceBox.setValue(meta.getSQLServerInstance());
     }
 
     // SQL Server double decimal separator

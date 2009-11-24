@@ -54,7 +54,7 @@ public interface IDatabaseConnection extends Serializable {
 
   void setSQLServerInstance(String sqlServerInstance);
 
-  String getSqlServerInstance();
+  String getSQLServerInstance();
 
   void setUsingDoubleDecimalAsSchemaTableSeparator(boolean usingDoubleDecimalAsSchemaTableSeparator);
 
