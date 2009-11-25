@@ -25,6 +25,10 @@ public enum DatabaseAccessType {
     return name;
   }
   
+  public String getValue() {
+    return this.toString();
+  }
+  
   public static DatabaseAccessType getAccessTypeByName(String name) {
     if (typeByName == null) {
       typeByName = new HashMap<String, DatabaseAccessType>();

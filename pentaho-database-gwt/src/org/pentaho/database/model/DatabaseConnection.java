@@ -9,13 +9,13 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   private static final long serialVersionUID = -3816140282186728714L;
 
-  public static final String EMPTY_OPTIONS_STRING = "><EMPTY><";
+  public static final String EMPTY_OPTIONS_STRING = "><EMPTY><"; //$NON-NLS-1$
   
   // part of the generic database connection, move somewhere else 
-  public static final String ATTRIBUTE_CUSTOM_URL          = "CUSTOM_URL"; 
-  public static final String ATTRIBUTE_CUSTOM_DRIVER_CLASS = "CUSTOM_DRIVER_CLASS";
+  public static final String ATTRIBUTE_CUSTOM_URL          = "CUSTOM_URL";  //$NON-NLS-1$
+  public static final String ATTRIBUTE_CUSTOM_DRIVER_CLASS = "CUSTOM_DRIVER_CLASS"; //$NON-NLS-1$
   
-  public static final String ATTRIBUTE_PREFIX_EXTRA_OPTION    = "EXTRA_OPTION_";
+  public static final String ATTRIBUTE_PREFIX_EXTRA_OPTION    = "EXTRA_OPTION_"; //$NON-NLS-1$
   
   String name;
   String databaseName;
@@ -41,6 +41,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   String connectSql;
   boolean usingConnectionPool;
   
+  String accessTypeValue = null;
   DatabaseAccessType accessType = null;
   IDatabaseType driver = null;
   Map<String, String> extraOptions = new HashMap<String, String>();
@@ -60,12 +61,30 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   public void setAccessType(DatabaseAccessType accessType) {
     this.accessType = accessType;
   }
-  
+
   /* (non-Javadoc)
    * @see org.pentaho.database.model.IDatabaseConnection#getAccessType()
    */
   public DatabaseAccessType getAccessType() {
     return accessType;
+  }
+
+  /**
+   * This method is used to set the access type value. This is only used during
+   * marshalling that does not support enums (like Apache Axis)
+   * @param value
+   */
+  public void setAccessTypeValue( String value ) {
+    accessTypeValue = value;
+  }
+  
+  /**
+   * This method is used to set the access type value. This is only used during
+   * marshalling that does not support enums (like Apache Axis)
+   * @param value
+   */
+  public String getAccessTypeValue() {
+    return accessType == null ? accessTypeValue : accessType.toString();
   }
   
   /* (non-Javadoc)
@@ -220,14 +239,14 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
    * @see org.pentaho.database.model.IDatabaseConnection#setSQLServerInstance(java.lang.String)
    */
   public void setSQLServerInstance(String sqlServerInstance) {
-    addExtraOption("MSSQL", "instance", sqlServerInstance);
+    addExtraOption("MSSQL", "instance", sqlServerInstance); //$NON-NLS-1$ //$NON-NLS-2$
   }
   
   /* (non-Javadoc)
    * @see org.pentaho.database.model.IDatabaseConnection#getSQLServerInstance()
    */
   public String getSQLServerInstance() {
-    return getExtraOptions().get("MSSQL.instance");
+    return getExtraOptions().get("MSSQL.instance"); //$NON-NLS-1$
   }
   
   /* (non-Javadoc)
@@ -263,7 +282,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
    * @see org.pentaho.database.model.IDatabaseConnection#addExtraOption(java.lang.String, java.lang.String, java.lang.String)
    */
   public void addExtraOption(String databaseTypeCode, String option, String value) {
-    extraOptions.put(databaseTypeCode + "." + option, value);
+    extraOptions.put(databaseTypeCode + "." + option, value); //$NON-NLS-1$
   }
   
   /* (non-Javadoc)
