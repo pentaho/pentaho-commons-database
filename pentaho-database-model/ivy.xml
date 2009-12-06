@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="${ivy.artifact.group}" module="${ivy.artifact.id}" revision="${project.revision}" />
+    
+    <configurations>
+        <conf name="default"/>
+        <conf name="test" visibility="private"/>
+        <conf name="source"/>
+    	<conf name="runtime"/>
+        <conf name="codegen" visibility="private"/>
+        <conf name="codegen-mac" visibility="private" extends="codegen"/>
+        <conf name="codegen-win" visibility="private" extends="codegen"/>
+        <conf name="codegen-linux" visibility="private" extends="codegen"/>
+    </configurations>
+    
+    <publications>
+	    <artifact name="${ivy.artifact.id}" type="jar" conf="default"/>
+	    <artifact name="${ivy.artifact.id}" m:classifier="sources" type="source" ext="jar" conf="source"/>
+    </publications>   
+    
+    <dependencies defaultconf="default->default">
+    <!--
+		<dependency org="jaxen" name="jaxen" rev="1.1.1" transitive="false" />
+		<dependency org="log4j" name="log4j" rev="1.2.8" transitive="false"/>
+    -->
+        <dependency org="pentaho.kettle" name="kettle-core" rev="${dependency.kettle.revision}" transitive="false"/>
+        <dependency org="pentaho.kettle" name="kettle-db" rev="${dependency.kettle.revision}" transitive="false"/>
+        <!--
+        <dependency org="commons-pool" name="commons-pool" rev="1.3" transitive="false"/>
+        <dependency org="commons-dbcp" name="commons-dbcp" rev="1.2.1" transitive="false"/>
+        <dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.0-BETA" transitive="false"/>
+        <dependency org="hsqldb" name="hsqldb" rev="1.8.0.1" transitive="false"/>
+        <dependency org="mysql" name="mysql-connector-java" rev="5.1.10" transitive="false"/>
+        <dependency org="oracle" name="ojdbc" rev="10.2.0.3.0" transitive="false"/>
+        <dependency org="oracle" name="orai18n" rev="10.2.0.3.0" transitive="false"/>
+        <dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false"/>
+        <dependency org="commons-lang" name="commons-lang" rev="2.2" transitive="false"/>
+        <dependency org="commons-logging" name="commons-logging-api" rev="1.1" transitive="false"/>
+        -->
+        <!--  Testing dependencies -->
+        <dependency org="junit" name="junit" rev="4.3.1" transitive="false" conf="test->default"/>
+        
+        
+    </dependencies>
+</ivy-module>
