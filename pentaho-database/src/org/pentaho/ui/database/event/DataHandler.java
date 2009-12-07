@@ -9,6 +9,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.BaseDatabaseMeta;
 import org.pentaho.di.core.database.DatabaseConnectionPoolParameter;
 import org.pentaho.di.core.database.DatabaseInterface;
@@ -136,11 +137,15 @@ public class DataHandler extends AbstractXulEventHandler {
 
   // ==== Advanced Panel ==== //
 
+  XulCheckbox supportBooleanDataType;
+
   XulCheckbox quoteIdentifiersCheck;
 
   XulCheckbox lowerCaseIdentifiersCheck;
 
   XulCheckbox upperCaseIdentifiersCheck;
+  
+  XulTextbox preferredSchemaName;
   
   XulTextbox sqlBox;
 
@@ -548,6 +553,10 @@ public class DataHandler extends AbstractXulEventHandler {
 
     // Advanced panel settings:
 
+    if (supportBooleanDataType != null) {
+        meta.setSupportsBooleanDataType(supportBooleanDataType.isChecked());
+    }
+
     if (quoteIdentifiersCheck != null) {
       meta.setQuoteAllFields(quoteIdentifiersCheck.isChecked());
     }
@@ -558,6 +567,10 @@ public class DataHandler extends AbstractXulEventHandler {
 
     if (upperCaseIdentifiersCheck != null) {
       meta.setForcingIdentifiersToUpperCase(upperCaseIdentifiersCheck.isChecked());
+    }
+
+    if (preferredSchemaName != null) {
+        meta.setPreferredSchemaName(preferredSchemaName.getValue());
     }
 
     if (sqlBox != null) {
@@ -679,6 +692,10 @@ public class DataHandler extends AbstractXulEventHandler {
 
     // Advanced panel settings:
 
+    if (supportBooleanDataType != null) {
+      supportBooleanDataType.setChecked(meta.supportsBooleanDataType());
+    }
+
     if (quoteIdentifiersCheck != null) {
       quoteIdentifiersCheck.setChecked(meta.isQuoteAllFields());
     }
@@ -689,6 +706,10 @@ public class DataHandler extends AbstractXulEventHandler {
 
     if (upperCaseIdentifiersCheck != null) {
       upperCaseIdentifiersCheck.setChecked(meta.isForcingIdentifiersToUpperCase());
+    }
+
+    if (preferredSchemaName != null) {
+        preferredSchemaName.setValue(Const.NVL(meta.getPreferredSchemaName(), "")); //$NON-NLS-1$^M
     }
 
     if (sqlBox != null) {
@@ -1154,9 +1175,11 @@ public class DataHandler extends AbstractXulEventHandler {
     poolingDescription = (XulTextbox) document.getElementById("pooling-description"); //$NON-NLS-1$ 
     poolingParameterDescriptionLabel = (XulLabel) document.getElementById("pool-parameter-description-label"); //$NON-NLS-1$ 
     poolingDescriptionLabel = (XulLabel) document.getElementById("pooling-description-label"); //$NON-NLS-1$ 
+    supportBooleanDataType = (XulCheckbox) document.getElementById("supports-boolean-data-type"); //$NON-NLS-1$;
     quoteIdentifiersCheck = (XulCheckbox) document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
     lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
     upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-upper-case-check"); //$NON-NLS-1$;
+    preferredSchemaName = (XulTextbox) document.getElementById("preferred-schema-name-text"); //$NON-NLS-1$;
     sqlBox = (XulTextbox) document.getElementById("sql-text"); //$NON-NLS-1$;
   }
 
