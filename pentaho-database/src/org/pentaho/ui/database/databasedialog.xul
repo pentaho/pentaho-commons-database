@@ -94,7 +94,7 @@
 					<checkbox id="force-lower-case-check" label="${DatabaseDialog.label.AdvancedForceIdentifiersLowerCase}" checked="false" />
 					<checkbox id="force-upper-case-check" label="${DatabaseDialog.label.AdvancedForceIdentifiersUpperCase}" checked="false" />
                     <label id="preferred-schema-name" value="${DatabaseDialog.label.PreferredSchemaName}" />
-                        <textbox id="preferred-schema-name-text"/>
+                        <textbox id="preferred-schema-name-text" pen:customclass="variabletextbox" />
 
 				</groupbox>
 				<label id="spacer-label" value="" />
