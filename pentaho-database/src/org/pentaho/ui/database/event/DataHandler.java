@@ -254,8 +254,9 @@ public class DataHandler extends AbstractXulEventHandler {
     accessBox.setRows(accessBox.getRows());
 
     // May not exist for this connection type.
-
-    accessBox.setSelectedItem(accessKey);
+    if (accessKey != null) {  // This check keeps the SwtListbox from complaining about a null value
+      accessBox.setSelectedItem(accessKey);
+    }
 
     // Last resort, set first as default
     if (accessBox.getSelectedItem() == null) {
