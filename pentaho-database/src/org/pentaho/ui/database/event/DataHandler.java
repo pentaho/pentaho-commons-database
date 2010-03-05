@@ -1,6 +1,7 @@
 package org.pentaho.ui.database.event;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,9 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
 import org.pentaho.di.core.database.PartitionDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
+import org.pentaho.di.core.plugins.DatabasePluginType;
+import org.pentaho.di.core.plugins.PluginInterface;
+import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.ui.database.Messages;
 import org.pentaho.ui.util.Launch;
 import org.pentaho.ui.util.Launch.Status;
@@ -51,19 +55,27 @@ import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 public class DataHandler extends AbstractXulEventHandler {
 
   public static final SortedMap<String, DatabaseInterface> connectionMap = new TreeMap<String, DatabaseInterface>();
+  public static final Map<String, String> connectionNametoID = new HashMap<String, String>();
 
   // The connectionMap allows us to keep track of the connection
   // type we are working with and the correlating database interface
 
   static {
-    String[] dbTypeDescriptions = DatabaseMeta.getDBTypeDescLongList();
-    DatabaseInterface[] dbInterfaces = DatabaseMeta.getDatabaseInterfaces();
-
-    // Sort the connection types, and associate them with an instance of each interface...
-
-    for (int i = 0; i < dbTypeDescriptions.length; i++) {
-      connectionMap.put(dbTypeDescriptions[i], dbInterfaces[i]);
+    PluginRegistry registry = PluginRegistry.getInstance();
+    
+    List<PluginInterface> plugins = registry.getPlugins(DatabasePluginType.class);
+    for (PluginInterface plugin : plugins) {
+      try {
+        DatabaseInterface databaseInterface = (DatabaseInterface)registry.loadClass(plugin);
+        databaseInterface.setPluginId(plugin.getIds()[0]);
+        databaseInterface.setName(plugin.getName());
+        connectionMap.put(plugin.getName(), databaseInterface);
+        connectionNametoID.put(plugin.getName(), plugin.getIds()[0]);
+      } catch(Exception e) {
+        throw new RuntimeException("Error creating class for: "+plugin, e);
+      }
     }
+    
   }
 
   protected DatabaseMeta databaseMeta = null;
@@ -540,14 +552,15 @@ public class DataHandler extends AbstractXulEventHandler {
           value = ""; //$NON-NLS-1$
         }
 
-        int dbType = meta.getDatabaseType();
+        String dbType = meta.getPluginId();
 
         // Only if parameter are supplied, we will add to the map...
         if ((parameter != null) && (parameter.trim().length() > 0)) {
           if (value.trim().length() <= 0) {
             value = DatabaseMeta.EMPTY_OPTIONS_STRING;
           }
-          meta.addExtraOption(DatabaseMeta.getDatabaseTypeCode(dbType), parameter, value);
+          
+          meta.addExtraOption(dbType, parameter, value);
         }
       }
     }
@@ -673,10 +686,13 @@ public class DataHandler extends AbstractXulEventHandler {
     connectionNameBox.setValue(meta.getName());
 
     // Connection type:
-    connectionBox.setSelectedItem(meta.getDatabaseInterface().getDatabaseTypeDescLong());
+    connectionBox.setSelectedItem(meta.getDatabaseInterface().getPluginId());
 
     // Access type:
-    accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(meta.getAccessType()));
+    PluginRegistry registry = PluginRegistry.getInstance();
+    
+    PluginInterface dInterface = registry.getPlugin(DatabasePluginType.class, meta.getPluginId());
+    accessBox.setSelectedItem(dInterface.getName());
 
     // this is broken out so we can set the cache information only when caching 
     // connection values
@@ -886,10 +902,10 @@ public class DataHandler extends AbstractXulEventHandler {
       
 
       Object connection = connectionBox.getSelectedItem();
-      int currentType = -1;
+      String currentType = null;
       
       if(connection != null){
-        currentType = DatabaseMeta.getDatabaseType((String) connection);
+        currentType = connectionMap.get(connection.toString()).getPluginId();
       }
       
       while (keys.hasNext()) {
@@ -908,8 +924,8 @@ public class DataHandler extends AbstractXulEventHandler {
         if (dotIndex >= 0) {
           String parameterOption = parameter.substring(dotIndex + 1);
           String databaseTypeString = parameter.substring(0,dotIndex);
-          int databaseType = DatabaseMeta.getDatabaseType(databaseTypeString);
-          if (currentType == databaseType) {
+          String databaseType = databaseTypeString;
+          if (currentType.equals(databaseType)) {
 	          XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
 	          row.addCellText(0, parameterOption);
 	          row.addCellText(1, value);

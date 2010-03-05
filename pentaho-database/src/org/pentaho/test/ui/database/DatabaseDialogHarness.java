@@ -9,8 +9,10 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.PartitionDatabaseMeta;
+import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.ui.database.DatabaseConnectionDialog;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
@@ -24,6 +26,12 @@ public class DatabaseDialogHarness {
 
   public static void main(String[] args) {
 
+    try {
+      KettleEnvironment.init();
+    } catch (KettleException e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
     DatabaseDialogHarness harness = new DatabaseDialogHarness();
     harness.showDialog();
   }

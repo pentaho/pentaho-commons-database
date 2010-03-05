@@ -4,6 +4,8 @@ import java.io.InputStream;
 
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.di.core.plugins.DatabasePluginType;
+import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.ui.database.Messages;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
@@ -72,8 +74,15 @@ public class FragmentHandler extends AbstractXulEventHandler {
     connectionBox = (XulListbox)document.getElementById("connection-type-list"); //$NON-NLS-1$
     accessBox = (XulListbox)document.getElementById("access-type-list"); //$NON-NLS-1$
     
-    Object connectionKey = connectionBox.getSelectedItem();
-    DatabaseInterface database = DataHandler.connectionMap.get(connectionKey);
+    Object connectionKey = DataHandler.connectionNametoID.get(connectionBox.getSelectedItem());
+    String databaseName = null;
+    try{
+      databaseName = PluginRegistry.getInstance().getPlugin(DatabasePluginType.class, ""+connectionKey).getName();
+    } catch(Exception e){
+      e.printStackTrace();
+    }
+    
+    DatabaseInterface database = DataHandler.connectionMap.get(connectionBox.getSelectedItem());
     
     Object accessKey = accessBox.getSelectedItem();
     int access = DatabaseMeta.getAccessType((String)accessKey);
@@ -90,19 +99,19 @@ public class FragmentHandler extends AbstractXulEventHandler {
 
     switch(access){
       case DatabaseMeta.TYPE_ACCESS_JNDI:
-        fragment = getFragment(database, "_jndi.xul", "common_jndi.xul"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment = getFragment(databaseName, "_jndi.xul", "common_jndi.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_NATIVE:
-        fragment = getFragment(database, "_native.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment = getFragment(databaseName, "_native.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_OCI:
-        fragment = getFragment(database, "_oci.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment = getFragment(databaseName, "_oci.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_ODBC:
-        fragment = getFragment(database, "_odbc.xul", "common_odbc.xul"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment = getFragment(databaseName, "_odbc.xul", "common_odbc.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_PLUGIN:
-        fragment = getFragment(database, "_plugin.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment = getFragment(databaseName, "_plugin.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
     }
     
@@ -111,7 +120,7 @@ public class FragmentHandler extends AbstractXulEventHandler {
     } catch (XulException e) {
       // TODO should be reporting as an error dialog; need error dialog in XUL framework
       showMessage(
-        Messages.getString("FragmentHandler.USER.CANT_LOAD_OPTIONS", database.getDatabaseTypeDescLong()) //$NON-NLS-1$
+        Messages.getString("FragmentHandler.USER.CANT_LOAD_OPTIONS", databaseName) //$NON-NLS-1$
       ); 
     }
 
@@ -129,8 +138,8 @@ public class FragmentHandler extends AbstractXulEventHandler {
     
   }
   
-  private String getFragment(DatabaseInterface database, String extension, String defaultFragment ){
-    String fragment = packagePath.concat(database.getDatabaseTypeDesc()).concat(extension);
+  private String getFragment(String database, String extension, String defaultFragment ){
+    String fragment = packagePath.concat(database).concat(extension);
     InputStream in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
     if (in == null){
       fragment = packagePath.concat(defaultFragment);
