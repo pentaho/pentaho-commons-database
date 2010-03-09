@@ -685,14 +685,14 @@ public class DataHandler extends AbstractXulEventHandler {
     // Name:
     connectionNameBox.setValue(meta.getName());
 
+    PluginRegistry registry = PluginRegistry.getInstance();
+    PluginInterface dInterface = registry.getPlugin(DatabasePluginType.class, meta.getPluginId());
+    
     // Connection type:
-    connectionBox.setSelectedItem(meta.getDatabaseInterface().getPluginId());
+    connectionBox.setSelectedItem(dInterface.getName());
 
     // Access type:
-    PluginRegistry registry = PluginRegistry.getInstance();
-    
-    PluginInterface dInterface = registry.getPlugin(DatabasePluginType.class, meta.getPluginId());
-    accessBox.setSelectedItem(dInterface.getName());
+    accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(meta.getAccessType()));
 
     // this is broken out so we can set the cache information only when caching 
     // connection values
