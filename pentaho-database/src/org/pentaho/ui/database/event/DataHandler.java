@@ -18,6 +18,7 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
 import org.pentaho.di.core.database.PartitionDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
+import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.plugins.DatabasePluginType;
 import org.pentaho.di.core.plugins.PluginInterface;
 import org.pentaho.di.core.plugins.PluginRegistry;
@@ -689,7 +690,12 @@ public class DataHandler extends AbstractXulEventHandler {
     PluginInterface dInterface = registry.getPlugin(DatabasePluginType.class, meta.getPluginId());
     
     // Connection type:
-    connectionBox.setSelectedItem(dInterface.getName());
+    int index = new ArrayList<String>(connectionMap.keySet()).indexOf(dInterface.getName());
+    if (index>=0) {
+    	connectionBox.setSelectedIndex(index);
+    } else {
+    	LogChannel.GENERAL.logError("Unable to find database type "+dInterface.getName()+" in our connection map");
+    }
 
     // Access type:
     accessBox.setSelectedItem(DatabaseMeta.getAccessTypeDescLong(meta.getAccessType()));
