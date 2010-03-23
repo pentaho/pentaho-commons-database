@@ -77,7 +77,7 @@ public class FragmentHandler extends AbstractXulEventHandler {
     Object connectionKey = DataHandler.connectionNametoID.get(connectionBox.getSelectedItem());
     String databaseName = null;
     try{
-      databaseName = PluginRegistry.getInstance().getPlugin(DatabasePluginType.class, ""+connectionKey).getName();
+      databaseName = PluginRegistry.getInstance().getPlugin(DatabasePluginType.class, ""+connectionKey).getIds()[0];
     } catch(Exception e){
       e.printStackTrace();
     }
