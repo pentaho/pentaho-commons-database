@@ -99,19 +99,19 @@ public class FragmentHandler extends AbstractXulEventHandler {
 
     switch(access){
       case DatabaseMeta.TYPE_ACCESS_JNDI:
-        fragment = getFragment(databaseName, "_jndi.xul", "common_jndi.xul"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment = getFragment(database, databaseName, "_jndi.xul", "common_jndi.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_NATIVE:
-        fragment = getFragment(databaseName, "_native.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment = getFragment(database, databaseName, "_native.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_OCI:
-        fragment = getFragment(databaseName, "_oci.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment = getFragment(database, databaseName, "_oci.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_ODBC:
-        fragment = getFragment(databaseName, "_odbc.xul", "common_odbc.xul"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment = getFragment(database, databaseName, "_odbc.xul", "common_odbc.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case DatabaseMeta.TYPE_ACCESS_PLUGIN:
-        fragment = getFragment(databaseName, "_plugin.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment = getFragment(database, databaseName, "_plugin.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
     }
     
@@ -138,8 +138,13 @@ public class FragmentHandler extends AbstractXulEventHandler {
     
   }
   
-  private String getFragment(String database, String extension, String defaultFragment ){
-    String fragment = packagePath.concat(database).concat(extension);
+  private String getFragment(DatabaseInterface database, String databaseName, String extension, String defaultFragment ){
+    String fragment;
+    if (database.getXulOverlayFile()!=null) {
+    	fragment = packagePath.concat(database.getXulOverlayFile()).concat(extension);
+    } else {
+    	fragment = packagePath.concat(databaseName).concat(extension);
+    }
     InputStream in = getClass().getClassLoader().getResourceAsStream(fragment.toLowerCase());
     if (in == null){
       fragment = packagePath.concat(defaultFragment);
