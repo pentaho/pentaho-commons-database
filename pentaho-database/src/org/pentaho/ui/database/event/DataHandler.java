@@ -764,7 +764,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
       setPoolProperties(meta.getConnectionPoolingProperties());
     }
-
+    loadAccessData();
     setDeckChildIndex();
     onPoolingCheck();
     onClusterCheck();
