@@ -209,7 +209,7 @@
 						<treecol id="port-col" label="${DatabaseDialog.column.Port}" flex="2" editable="true" />
 						<treecol id="database-col" label="${DatabaseDialog.column.DatabaseName}" flex="2" editable="true" />
 						<treecol id="user-col" label="${DatabaseDialog.column.Username}" flex="2" editable="true" />
-						<treecol id="password-col" label="${DatabaseDialog.column.Password}" flex="2" type="password" pen:customeditor="variabletextbox" editable="true" />
+						<treecol id="password-col" label="${DatabaseDialog.column.Password}" flex="2" editable="true" />
 					</treecols>
 					
 					<treechildren>

@@ -959,25 +959,30 @@ public class DataHandler extends AbstractXulEventHandler {
   		return;
   	}
   	
+  	clusterParameterTree.getRootChildren().removeAll();
+  	
     if ((clusterInformation != null) && (clusterParameterTree != null)) {
 
       for (int i = 0; i < clusterInformation.length; i++) {
 
         PartitionDatabaseMeta meta = clusterInformation[i];
         XulTreeRow row = clusterParameterTree.getRootChildren().addNewRow();
-        row.addCellText(0, meta.getPartitionId() == null ? "" : meta.getPartitionId()); //$NON-NLS-1$
-        row.addCellText(1, meta.getHostname() == null ? "" : meta.getHostname()); //$NON-NLS-1$
-        row.addCellText(2, meta.getPort() == null ? "" : meta.getPort()); //$NON-NLS-1$
-        row.addCellText(3, meta.getDatabaseName() == null ? "" : meta.getDatabaseName()); //$NON-NLS-1$
-        row.addCellText(4, meta.getUsername() == null ? "" : meta.getUsername()); //$NON-NLS-1$
-        row.addCellText(5, meta.getPassword() == null ? "" : meta.getPassword()); //$NON-NLS-1$
+        row.addCellText(0, Const.NVL(meta.getPartitionId(), "")); //$NON-NLS-1$
+        row.addCellText(1, Const.NVL(meta.getHostname(), "")); //$NON-NLS-1$
+        row.addCellText(2, Const.NVL(meta.getPort(), "")); //$NON-NLS-1$
+        row.addCellText(3, Const.NVL(meta.getDatabaseName(), "")); //$NON-NLS-1$
+        row.addCellText(4, Const.NVL(meta.getUsername(), "")); //$NON-NLS-1$
+        row.addCellText(5, Const.NVL(meta.getPassword(), "")); //$NON-NLS-1$
       }
     }
+    
     // Add 5 blank rows if none are already there, otherwise, just add one.
     int numToAdd = 5;
+    /*
     if(clusterInformation != null && clusterInformation.length > 0){
       numToAdd = 1;
     }
+    */
     while(numToAdd-- > 0){
       XulTreeRow row = clusterParameterTree.getRootChildren().addNewRow();
       row.addCellText(0, "");   //easy way of putting new cells in the row
