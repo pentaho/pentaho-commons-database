@@ -703,6 +703,7 @@ public class DataHandler extends AbstractXulEventHandler {
     // this is broken out so we can set the cache information only when caching 
     // connection values
     setConnectionSpecificInfo(meta);
+    loadAccessData();
 
     // Port number:
     if (portNumberBox != null) {
@@ -764,7 +765,6 @@ public class DataHandler extends AbstractXulEventHandler {
 
       setPoolProperties(meta.getConnectionPoolingProperties());
     }
-    loadAccessData();
     setDeckChildIndex();
     onPoolingCheck();
     onClusterCheck();
@@ -1034,6 +1034,10 @@ public class DataHandler extends AbstractXulEventHandler {
     if (passwordBox != null) {
       meta.setPassword(passwordBox.getValue());
     }
+    
+//    if(this.portNumberBox != null){
+//      meta.setDBPort(portNumberBox.getValue());
+//    }
 
     // Streaming result cursor:
     if (resultStreamingCursorCheck != null) {
@@ -1112,6 +1116,10 @@ public class DataHandler extends AbstractXulEventHandler {
     if (passwordBox != null) {
       passwordBox.setValue(meta.getPassword());
     }
+    
+//    if(this.portNumberBox != null){
+//      this.portNumberBox.setValue(meta.getDatabasePortNumberString());
+//    }
 
     // Streaming result cursor:
     if (resultStreamingCursorCheck != null) {
