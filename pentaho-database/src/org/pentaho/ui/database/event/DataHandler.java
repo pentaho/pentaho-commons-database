@@ -1097,7 +1097,9 @@ public class DataHandler extends AbstractXulEventHandler {
 
     // Microsoft SQL Server Use Integrated Security
     if (useIntegratedSecurityCheck != null) {
-      meta.getAttributes().put(MSSQLServerNativeDatabaseMeta.ATTRIBUTE_USE_INTEGRATED_SECURITY, useIntegratedSecurityCheck.isChecked());
+      Boolean useIntegratedSecurity = useIntegratedSecurityCheck.isChecked();
+      meta.getAttributes().put(MSSQLServerNativeDatabaseMeta.ATTRIBUTE_USE_INTEGRATED_SECURITY,
+          useIntegratedSecurity != null ? useIntegratedSecurity.toString(): "false"); //$NON-NLS-1$
     }    
   }
 
@@ -1179,10 +1181,10 @@ public class DataHandler extends AbstractXulEventHandler {
 
     // Microsoft SQL Server Use Integrated Security
     if (useIntegratedSecurityCheck != null) {
-      meta.getAttributes().put(MSSQLServerNativeDatabaseMeta.ATTRIBUTE_USE_INTEGRATED_SECURITY, useIntegratedSecurityCheck.isChecked());
       Object value = meta.getAttributes().get(MSSQLServerNativeDatabaseMeta.ATTRIBUTE_USE_INTEGRATED_SECURITY);
-      if( value != null && value instanceof Boolean) {
-        useIntegratedSecurityCheck.setChecked((Boolean)value);  
+      if( value != null && value instanceof String) {
+        String useIntegratedSecurity = (String) value;
+        useIntegratedSecurityCheck.setChecked(Boolean.parseBoolean(useIntegratedSecurity));  
       } else {
         useIntegratedSecurityCheck.setChecked(false);
       }
