@@ -16,6 +16,7 @@ import org.pentaho.di.core.database.DatabaseConnectionPoolParameter;
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.GenericDatabaseMeta;
+import org.pentaho.di.core.database.MSSQLServerNativeDatabaseMeta;
 import org.pentaho.di.core.database.PartitionDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
 import org.pentaho.di.core.logging.LogChannel;
@@ -157,6 +158,8 @@ public class DataHandler extends AbstractXulEventHandler {
   XulCheckbox lowerCaseIdentifiersCheck;
 
   XulCheckbox upperCaseIdentifiersCheck;
+  
+  XulCheckbox useIntegratedSecurityCheck;
   
   XulTextbox preferredSchemaName;
   
@@ -1092,6 +1095,10 @@ public class DataHandler extends AbstractXulEventHandler {
       meta.setServername(serverNameBox.getValue());
     }
 
+    // Microsoft SQL Server Use Integrated Security
+    if (useIntegratedSecurityCheck != null) {
+      meta.getAttributes().put(MSSQLServerNativeDatabaseMeta.ATTRIBUTE_USE_INTEGRATED_SECURITY, useIntegratedSecurityCheck.isChecked());
+    }    
   }
 
   private void setConnectionSpecificInfo(DatabaseMeta meta) {
@@ -1170,6 +1177,16 @@ public class DataHandler extends AbstractXulEventHandler {
       serverNameBox.setValue(meta.getServername());
     }
 
+    // Microsoft SQL Server Use Integrated Security
+    if (useIntegratedSecurityCheck != null) {
+      meta.getAttributes().put(MSSQLServerNativeDatabaseMeta.ATTRIBUTE_USE_INTEGRATED_SECURITY, useIntegratedSecurityCheck.isChecked());
+      Object value = meta.getAttributes().get(MSSQLServerNativeDatabaseMeta.ATTRIBUTE_USE_INTEGRATED_SECURITY);
+      if( value != null && value instanceof Boolean) {
+        useIntegratedSecurityCheck.setChecked((Boolean)value);  
+      } else {
+        useIntegratedSecurityCheck.setChecked(false);
+      }
+    }  
   }
 
   protected void getControls() {
@@ -1217,6 +1234,7 @@ public class DataHandler extends AbstractXulEventHandler {
     upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-upper-case-check"); //$NON-NLS-1$;
     preferredSchemaName = (XulTextbox) document.getElementById("preferred-schema-name-text"); //$NON-NLS-1$;
     sqlBox = (XulTextbox) document.getElementById("sql-text"); //$NON-NLS-1$;
+    useIntegratedSecurityCheck = (XulCheckbox) document.getElementById("use-integrated-security-check"); //$NON-NLS-1$;
   }
 
   private void showMessage(String message, boolean scroll){
@@ -1232,6 +1250,18 @@ public class DataHandler extends AbstractXulEventHandler {
       box.open();
     } catch(XulException e){
       System.out.println("Error creating messagebox "+e.getMessage());
+    }
+  }
+  
+  public void handleUseSecurityCheckbox() {
+    if(useIntegratedSecurityCheck != null) {
+      if(useIntegratedSecurityCheck.isChecked()) {
+        userNameBox.setDisabled(true);
+        passwordBox.setDisabled(true);
+      } else {
+        userNameBox.setDisabled(false);
+        passwordBox.setDisabled(false);        
+      }
     }
   }
 }
