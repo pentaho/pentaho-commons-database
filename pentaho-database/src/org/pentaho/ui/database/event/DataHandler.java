@@ -934,7 +934,7 @@ public class DataHandler extends AbstractXulEventHandler {
           String parameterOption = parameter.substring(dotIndex + 1);
           String databaseTypeString = parameter.substring(0,dotIndex);
           String databaseType = databaseTypeString;
-          if (currentType.equals(databaseType)) {
+          if (currentType != null && currentType.equals(databaseType)) {
 	          XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
 	          row.addCellText(0, parameterOption);
 	          row.addCellText(1, value);
