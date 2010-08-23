@@ -27,8 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <!--===========================================================================
     == SUBFLOOR ==
     
-    $Rev: 65 $
-    $Date: 2009-05-26 14:56:40 -0400 (Tue, 26 May 2009) $
+    $Rev: 101 $
+    $Date: 2009-12-17 13:22:13 -0500 (Thu, 17 Dec 2009) $
     Project Home: http://code.google.com/p/subfloor/
     
     This file contains the default implementation of the ant tasks to 
@@ -131,9 +131,7 @@ TYPICAL TARGET SEQUENCE
        =================================================================================-->
 
   <!-- Project meta properties -->
-  <property name="impl.vendor"
-            value="Your Company Here"
-            description="Jar file metadata describing the jar's vendor" />
+  <property name="impl.vendor" value="Your Company Here" description="Jar file metadata describing the jar's vendor" />
   <property name="impl.productID"
             value=""
             description="Jar file metadata indicating the product ID (this is not the revision)" />
@@ -161,16 +159,13 @@ TYPICAL TARGET SEQUENCE
   <property name="javac.source" value="1.5" description="Provide source compatibility with specified release" />
   <property name="javac.target" value="1.5" description="Generate class files for specific VM version" />
 
-  <!-- Build Cache properties -->
+  <!-- Third party Ant tasks and tools properties -->
   <property name="build.cache.dir"
             value="${user.home}/.subfloor_build_cache"
             description="Base dir for runtime jars that are required exclusively by the build process" />
   <property name="tmp.build.cache.dir"
             value="${build.cache.dir}/tmp"
             description="Temporary directory where files are prepared for build cache" />
-  <property name="ivy.build.cache.dir"
-            value="${build.cache.dir}/ivy"
-            description="Directory where the IVY jar is placed after it is auto downloaded by the build" />
   <property name="cobertura.build.cache.dir"
             value="${build.cache.dir}/cobertura"
             description="Directory where the Cobertura jar (and dependencies) is placed after it is auto-downloaded by the build" />
@@ -180,13 +175,8 @@ TYPICAL TARGET SEQUENCE
   <property name="pentaho.build.cache.dir"
             value="${build.cache.dir}/pentaho"
             description="Directory where the Pentaho ant tasks jar (and dependencies) is placed after it is auto-downloaded by the build" />
-  <property name="svnant.build.cache.dir"
-            value="${build.cache.dir}/svnant"
-            description="Directory where the SVN ANT install is placed after it is auto downloaded by the build" />
-
-  <!-- SVN Ant Properties -->
   <property name="svnant.url"
-            value="http://subclipse.tigris.org/files/documents/906/43359/svnant-1.2.0-RC1.zip"
+            value="http://subclipse.tigris.org/files/documents/906/46267/svnant-1.3.0.zip"
             description="The URL to the current release of SVN Ant" />
   <property name="svnant.use-javahl"
             value="false"
@@ -194,13 +184,18 @@ TYPICAL TARGET SEQUENCE
   <property name="svnant.use-svnkit"
             value="true"
             description="Prefer SVNKit binding over the command line client for native svn support (defaults to true)" />
+  <property name="ivy.url"
+            value="http://repo2.maven.org/maven2/org/apache/ivy/ivy/2.1.0/ivy-2.1.0.jar"
+            description="The URL to the current release of Apache IVY" />
 
   <!-- Test properties -->
   <property name="testsrc.dir" value="${basedir}/test-src" description="Directory that hosts the test source files" />
   <property name="testlib.dir"
             value="${basedir}/test-lib"
             description="Directory for jar files needed during unit testing" />
-  <property name="testbin.dir" value="${bin.dir}/test" description="Base directory for all compiler generated test output" />
+  <property name="testbin.dir"
+            value="${bin.dir}/test"
+            description="Base directory for all compiler generated test output" />
   <property name="testclasses.dir"
             value="${testbin.dir}/classes"
             description="Classes compiled from project test code are placed here" />
@@ -241,10 +236,8 @@ TYPICAL TARGET SEQUENCE
   <property name="javadoc.packagenames"
             value="org.mypackagename.*"
             description="This property is passed to the packagenames property of the javadoc ant task.  You should customize this for your project." />
-  <property name="javadoc.zip.filename"
-  			value="${ivy.artifact.id}-${project.revision}-javadoc.zip"/>
-  <property name="javadoc.tar.filename"
-  			value="${ivy.artifact.id}-${project.revision}-javadoc.tar.gz"/>
+  <property name="javadoc.zip.filename" value="${ivy.artifact.id}-${project.revision}-javadoc.zip" />
+  <property name="javadoc.tar.filename" value="${ivy.artifact.id}-${project.revision}-javadoc.tar.gz" />
 
   <!-- Distribution and Assembly properties -->
   <property name="dist.dir"
@@ -256,19 +249,16 @@ TYPICAL TARGET SEQUENCE
   <property name="res.dir"
             value="${basedir}/res"
             description="Directory that holds resources not included in the source tree" />
-  <property name="source.zip.filename"
-  			value="${ivy.artifact.id}-${project.revision}-sources.zip"/>
-  <property name="source.tar.filename"
-  			value="${ivy.artifact.id}-${project.revision}-sources.tar.gz"/>
+  <property name="source.zip.filename" value="${ivy.artifact.id}-${project.revision}-sources.zip" />
+  <property name="source.tar.filename" value="${ivy.artifact.id}-${project.revision}-sources.tar.gz" />
 
   <!-- Ivy properties -->
-  <property name="ivy.install.version" value="2.0.0-beta2" description="Specifies the version of IVY to fetch" />
-  <property name="ivy.jar.file"
-            value="${ivy.build.cache.dir}/ivybeta1.jar"
-            description="The full path to the IVY jar file to use during the build.  If the file is not present, the build will attempt to fetch IVY and save the jar as specified by this property" />
   <property name="ivy.settingsurl"
             value="file:${basedir}/ivysettings.xml"
             description="URL to the (common) ivysettings.xml.  This file is required by the build to configure IVY.  Note you must escape the ':' if this property exists in a .properties file" />
+  <property name="ivyfile"
+            value="ivy.xml"
+            description="The name of the IVY xml file defining your project's dependencies" />
   <property name="ivy.artifact.group"
             value="mycompanyname"
             description="IVY metadata describing the originating company or organization" />
@@ -281,15 +271,26 @@ TYPICAL TARGET SEQUENCE
   <property name="ivy.artifact.ivypathname"
             value="${dist.dir}/ivy.xml"
             description="The full path to the IVY xml file to deploy with the artifact" />
+  <property name="ivy.reports.dir"
+            value="${bin.dir}/reports/ivy"
+            description="Base directory that holds all IVY dependency report files" />
+  <property name="ivy.configs" value="*" description="Set of configs used for IVY reporting and checking operations" />
 
   <!-- Load the manifest file (if any) as a properties file -->
-  <property name="dist.manifest.file" value="${dist.dir}/MANIFEST.MF" description="The manifest file that will be generated as part of the build" />
-  <property name="manifest.file" value="${res.dir}/META-INF/MANIFEST.MF" description="The location of the MANIFEST.MF file for this application." />
-  <property file="${manifest.file}" description="Loads the manifest information from the manifest file as a properties file." />
+  <property name="dist.manifest.file"
+            value="${dist.dir}/MANIFEST.MF"
+            description="The manifest file that will be generated as part of the build" />
+  <property name="manifest.file"
+            value="${res.dir}/META-INF/MANIFEST.MF"
+            description="The location of the MANIFEST.MF file for this application." />
+  <property file="${manifest.file}"
+            description="Loads the manifest information from the manifest file as a properties file." />
 
   <!-- Set the project revision number to the value in the manifest file (if it has not
        been specified in the properties file -->
-  <property name="project.revision" value="${Implementation-Version}" description="Sets the version number of the project based on the Implementation-Version found in the manifest file (if one is supplied and nothing is specified in the build.properties)" />
+  <property name="project.revision"
+            value="${Implementation-Version}"
+            description="Sets the version number of the project based on the Implementation-Version found in the manifest file (if one is supplied and nothing is specified in the build.properties)" />
   <fail message="A project revision number has not been determined!">
     <condition>
       <matches string="${project.revision}" pattern="\$\{.*\}" />
@@ -298,7 +299,9 @@ TYPICAL TARGET SEQUENCE
 
   <!-- Set the project title to the value in the manifest file (if it has not
        been specified in the properties file -->
-  <property name="impl.title" value="${Implementation-Title}" description="Sets the title of the project based on the Implementation-Title found in the manifest file (if one is supplied and nothing is specified in the build.properties)" />
+  <property name="impl.title"
+            value="${Implementation-Title}"
+            description="Sets the title of the project based on the Implementation-Title found in the manifest file (if one is supplied and nothing is specified in the build.properties)" />
   <fail message="A project title has not been determined!">
     <condition>
       <matches string="${impl.title}" pattern="\$\{.*\}" />
@@ -343,7 +346,7 @@ TYPICAL TARGET SEQUENCE
   <!-- Setup the classpath used for testing -->
   <path id="test.classpath">
     <fileset dir="${devlib.dir}">
-      <include name="*" />
+      <include name="*.jar" />
     </fileset>
     <fileset dir="${lib.dir}">
       <include name="*.jar" />
@@ -360,16 +363,15 @@ TYPICAL TARGET SEQUENCE
       
       The target that is run if no target is given
       ====================================================================-->
-  <target name="default" depends="clean-all,resolve,dist"/>
-  
-  
+  <target name="default" depends="clean-all,resolve,dist" />
+
+
   <!--=======================================================================
       install-antcontrib
       
       (Fetches and) installs ant-contrib tasks.
       ====================================================================-->
-  <target name="install-antcontrib"
-          depends="antcontrib.download-check">
+  <target name="install-antcontrib" depends="antcontrib.download-check">
     <taskdef resource="net/sf/antcontrib/antlib.xml">
       <classpath>
         <fileset dir="${antcontrib.build.cache.dir}">
@@ -439,62 +441,29 @@ TYPICAL TARGET SEQUENCE
     <mkdir dir="${testlib.dir}" />
   </target>
 
-  <!--=======================================================================
-      svnant.download-check
-      
-      Fetch SVN ANT zip if it is not already present
-      ====================================================================-->
-  <target name="svnant.download-check">
-    <condition property="svnant.available">
-      <and>
-        <available file="${svnant.build.cache.dir}" />
-        <available classname="org.tigris.subversion.svnant.SvnTask">
-          <classpath>
-            <fileset dir="${svnant.build.cache.dir}">
-              <include name="**/*.jar" />
-            </fileset>
-          </classpath>
-        </available>
-      </and>
-    </condition>
-    <antcall target="svnant.download" />
-  </target>
-
-
-  <!--=======================================================================
-      svnant.download
-    
-      Downloads the IVY jar file for use by ant.
-      ====================================================================-->
-  <target name="svnant.download" unless="svnant.available">
-    <mkdir dir="${svnant.build.cache.dir}" />
-    <get src="${svnant.url}" dest="${svnant.build.cache.dir}/svnant.zip" usetimestamp="true" />
-    <unzip src="${svnant.build.cache.dir}/svnant.zip" dest="${svnant.build.cache.dir}">
-      <patternset>
-        <include name="**/*.jar" />
-      </patternset>
-    </unzip>
-  </target>
-
 
   <!--=======================================================================
     install-svnant
     
     (Fetches and) installs the SVN ANT for use by this ant script
     ====================================================================-->
-  <target name="install-svnant"
-          depends="install-antcontrib, svnant.download-check">
+  <target name="install-svnant" depends="install-antcontrib">
     <if>
       <istrue value="${svnant.isinstalled}" />
       <then>
-        <echo message="Skipping SVN ANT install.  IVY has already been configured by the build" />
+        <echo message="Skipping SVN ANT install.  SVN ANT has already been configured by the build" />
       </then>
       <else>
         <echo message="Installing SVN ANT..." />
-        <path id="svnant.lib.path">
-          <fileset dir="${svnant.build.cache.dir}" includes="**/*.jar" />
-        </path>
-        <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.lib.path" />
+        <download-antlib name="svnant"
+                         url="${svnant.url}"
+                         classname="org.tigris.subversion.svnant.SvnTask"
+                         extension="zip" />
+        <typedef resource="org/tigris/subversion/svnant/svnantlib.xml">
+          <classpath>
+            <fileset dir="${build.cache.dir}/svnant" includes="**/*.jar" />
+          </classpath>
+        </typedef>
         <property name="svnant.isinstalled" value="true" />
       </else>
     </if>
@@ -519,8 +488,7 @@ TYPICAL TARGET SEQUENCE
     
         Prints and sets the SVN revision for the repository at the current dir (if svn.revision is not set)
         ====================================================================-->
-  <target name="svn-revision"
-          depends="install-svnant">
+  <target name="svn-revision" depends="install-svnant">
 
     <svn javahl="${svnant.use-javahl}" svnkit="${svnant.use-svnkit}">
       <status path="." revisionProperty="svn.revision" />
@@ -555,82 +523,49 @@ TYPICAL TARGET SEQUENCE
    ===================================================================================-->
   <target name="version-properties" depends="set-build.id">
     <tstamp>
-      <format property="build.time" pattern="yyyy/MM/dd hh:mm aa"/>
+      <format property="build.time" pattern="yyyy/MM/dd hh:mm aa" />
     </tstamp>
-    <propertyfile
-              file="version.properties" comment="Release Build version info">
+    <propertyfile file="version.properties" comment="Release Build version info">
       <entry key="release.major.number" value="${release.major.number}" />
       <entry key="release.minor.number" value="${release.minor.number}" />
       <entry key="release.milestone.number" value="${release.milestone.number}" />
       <entry key="release.candidate.token" value="${release.candidate.token}" />
       <entry key="impl.vendor" value="${impl.vendor}" />
-      <entry key="impl.version" value="${release.major.number}.${release.minor.number}.${release.milestone.number}.${build.id}" />
+      <entry key="impl.version"
+             value="${release.major.number}.${release.minor.number}.${release.milestone.number}.${build.id}" />
       <entry key="impl.title" value="${impl.title}" />
-      <entry key="buildDate" value="${build.time}"/>
-      <entry key="svn.revision" value="${build.id}"/>
-      <entry key="release.build.number" default="0" type="int" operation="+" value="1" pattern="0000"/>
+      <entry key="buildDate" value="${build.time}" />
+      <entry key="svn.revision" value="${build.id}" />
+      <entry key="release.build.number" default="0" type="int" operation="+" value="1" pattern="0000" />
     </propertyfile>
-    <property file="${basedir}/version.properties"/>
+    <property file="${basedir}/version.properties" />
   </target>
 
 
   <!--=======================================================================
-      install-ivy
+      install-ivy 
       
-      (Fetches and) installs the IVY jar for use by this ant script
+      Fetches and installs IVY ant tasks if not already installed 
       ====================================================================-->
-  <target name="install-ivy"
-          depends="install-antcontrib,ivy.download-check">
+  <target name="install-ivy" depends="install-antcontrib">
     <if>
       <istrue value="${ivy.isinstalled}" />
       <then>
         <echo message="Skipping IVY install.  IVY has already been configured by the build" />
       </then>
       <else>
-        <echo message="Installing IVY..." />
-        <path id="ivy.lib.path">
-          <fileset dir="${ivy.build.cache.dir}" includes="*.jar" />
-        </path>
-        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+        <download-antlib name="ivy" url="${ivy.url}" classname="org.apache.ivy.ant.IvyTask" extension="jar" />
+        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
+          <classpath>
+            <fileset dir="${build.cache.dir}/ivy">
+              <include name="*.jar" />
+            </fileset>
+          </classpath>
+        </taskdef>
         <ivy:settings url="${ivy.settingsurl}" />
         <property name="ivy.isinstalled" value="true" />
       </else>
     </if>
-  </target>
-
-
-  <!--=======================================================================
-      ivy.download-check
-      
-      Fetch IVY jar from sourceforge if it is not already present
-      ====================================================================-->
-  <target name="ivy.download-check">
-    <condition property="ivy.available">
-      <and>
-        <available file="${ivy.build.cache.dir}" />
-        <available classname="org.apache.ivy.ant.IvyTask">
-          <classpath>
-            <fileset dir="${ivy.build.cache.dir}">
-              <include name="*.jar" />
-            </fileset>
-          </classpath>
-        </available>
-      </and>
-    </condition>
-    <antcall target="ivy.download" />
-  </target>
-
-
-  <!--=======================================================================
-      ivy.download
-      
-      Downloads the IVY jar file for use by ant.
-      ====================================================================-->
-  <target name="ivy.download" unless="ivy.available">
-    <mkdir dir="${ivy.build.cache.dir}" />
-    <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
-         dest="${ivy.jar.file}"
-         usetimestamp="true" />
   </target>
 
 
@@ -645,7 +580,7 @@ TYPICAL TARGET SEQUENCE
       <istrue value="${release}" />
       <then>
         <sequential>
-          <ivy:artifactproperty conf="*" name="dep.[module]/[artifact]-[revision]" value="[revision]" />
+          <ivy:artifactproperty conf="${ivy.configs}" name="dep.[module]/[artifact]-[revision]" value="[revision]" />
 
           <propertyselector property="violators" match="dep\..*SNAPSHOT.*" select="\0" casesensitive="false" />
 
@@ -676,22 +611,22 @@ TYPICAL TARGET SEQUENCE
   </target>
 
   <target name="resolve-default" depends="resolve-init">
-    <ivy:resolve file="ivy.xml" conf="default" />
+    <ivy:resolve file="${ivyfile}" conf="default" />
     <ivy:retrieve conf="default" pattern="${lib.dir}/[module]-[revision](-[classifier]).[ext]" />
   </target>
 
   <target name="resolve-test" depends="resolve-init">
-    <ivy:resolve file="ivy.xml" conf="test" />
+    <ivy:resolve file="${ivyfile}" conf="test" />
     <ivy:retrieve conf="test" pattern="${testlib.dir}/[module]-[revision](-[classifier]).[ext]" />
   </target>
 
   <target name="resolve-codegen" depends="resolve-init">
-    <ivy:resolve file="ivy.xml" conf="codegen" />
+    <ivy:resolve file="${ivyfile}" conf="codegen" />
     <ivy:retrieve conf="codegen" pattern="${lib.dir}/[module]-[revision](-[classifier]).[ext]" />
   </target>
 
   <target name="resolve-runtime" depends="resolve-init">
-    <ivy:resolve file="ivy.xml" conf="runtime" />
+    <ivy:resolve file="${ivyfile}" conf="runtime" />
     <ivy:retrieve conf="runtime" pattern="${lib.dir}/[module]-[revision](-[classifier]).[ext]" />
   </target>
 
@@ -728,9 +663,9 @@ TYPICAL TARGET SEQUENCE
       WARNING: this is a global action and will affect other IVY projects
       currently referencing a locally published dependency
       ====================================================================-->
-  <target name="ivy-clean-pentaho"
-          depends="install-ivy">
-    <mkdir dir="${ivy.local.default.root}" /> <!-- just in case it doesn't exist -->
+  <target name="ivy-clean-pentaho" depends="install-ivy">
+    <mkdir dir="${ivy.local.default.root}" />
+    <!-- just in case it doesn't exist -->
     <for param="dir">
       <path>
         <dirset dir="${ivy.local.default.root}" includes="*pentaho*" />
@@ -753,13 +688,13 @@ TYPICAL TARGET SEQUENCE
 
 
   <!--=======================================================================
-      report
+      ivy-report
       
-      Allows ivy to report on the dependencies for this project 
+      Generates an IVY dependency report for this project. 
       ====================================================================-->
-  <target name="report" depends="install-ivy">
-    <ivy:resolve file="ivy.xml" />
-    <ivy:report conf="default" />
+  <target name="ivy-report" depends="install-ivy">
+    <ivy:resolve file="${ivyfile}" conf="${ivy.configs}" />
+    <ivy:report xml="true" todir="${ivy.reports.dir}" />
   </target>
 
 
@@ -796,8 +731,7 @@ TYPICAL TARGET SEQUENCE
         Creates and publishes the jar file for this project to a Maven2 
         repository. 
         ====================================================================-->
-  <target name="publish"
-          depends="dist, dist-source, publish-nojar">
+  <target name="publish" depends="dist, dist-source, publish-nojar">
   </target>
 
 
@@ -806,8 +740,7 @@ TYPICAL TARGET SEQUENCE
       
       Publishes the jar file for this project to a Maven2 repository.
       ====================================================================-->
-  <target name="publish-nojar"
-          depends="install-antcontrib,create-pom,ivy.deliver">
+  <target name="publish-nojar" depends="install-antcontrib,create-pom,ivy.deliver">
     <antcall target="maven-publish-dependencies">
       <param name="publish.groupId" value="${ivy.artifact.group}" />
       <param name="publish.artifactId" value="${ivy.artifact.id}" />
@@ -985,7 +918,7 @@ TYPICAL TARGET SEQUENCE
       Creates the POM file for publishing the jar file to a Maven2 repository.
       ====================================================================-->
   <target name="create-pom" depends="install-ivy">
-    <ivy:makepom ivyfile="./ivy.xml" pomfile="${dist.dir}/pom.xml">
+    <ivy:makepom ivyfile="${ivyfile}" pomfile="${dist.dir}/pom.xml">
       <mapping conf="default" scope="compile" />
       <mapping conf="runtime" scope="runtime" />
     </ivy:makepom>
@@ -1042,8 +975,7 @@ TYPICAL TARGET SEQUENCE
       
       Copies the LGPL license file into the binary directory.
       ====================================================================-->
-  <target name="copy-license-lgpl"
-          if="lgpl-license-avail">
+  <target name="copy-license-lgpl" if="lgpl-license-avail">
     <copy todir="${classes.dir}/META-INF">
       <fileset dir="${license.dir}" includes="lgpl-2.1.txt" />
     </copy>
@@ -1056,8 +988,7 @@ TYPICAL TARGET SEQUENCE
       Copies the GPL license file from the parent directory into the 
       binary directory.
       ====================================================================-->
-  <target name="copy-license-gpl"
-          if="gpl-license-avail">
+  <target name="copy-license-gpl" if="gpl-license-avail">
     <copy todir="${classes.dir}/META-INF">
       <fileset dir="${license.dir}" includes="gpl-2.0.txt" />
     </copy>
@@ -1090,7 +1021,7 @@ TYPICAL TARGET SEQUENCE
       
       Prepares to perform the compile.
       ====================================================================-->
-  <target name="compile.pre"/>
+  <target name="compile.pre" />
 
 
   <!--=======================================================================
@@ -1150,9 +1081,7 @@ TYPICAL TARGET SEQUENCE
       NOTE: if the dont.copy.source variable exists, this step will be
             skipped!
       ====================================================================-->
-  <target name="compile.src_copy"
-          depends="init"
-          if="jar.include.source">
+  <target name="compile.src_copy" depends="init" if="jar.include.source">
     <copy todir="${classes.dir}" flatten="false">
       <fileset dir="${src.dir}" />
     </copy>
@@ -1181,7 +1110,7 @@ TYPICAL TARGET SEQUENCE
       
       Performs any needed post-compile tasks
       ====================================================================-->
-  <target name="compile.post"/>
+  <target name="compile.post" />
 
 
   <!--=======================================================================
@@ -1189,7 +1118,9 @@ TYPICAL TARGET SEQUENCE
       
       Creates a jar file from the bin directory
       ====================================================================-->
-  <target name="jar" depends="compile,set-build.id,generate.manifest" description="Jars up the bin directory after a compile">
+  <target name="jar"
+          depends="compile,set-build.id,generate.manifest"
+          description="Jars up the bin directory after a compile">
     <jar destfile="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" manifest="${dist.manifest.file}">
       <fileset dir="${classes.dir}" />
     </jar>
@@ -1221,8 +1152,7 @@ TYPICAL TARGET SEQUENCE
       
       Generates zip and targz distributions of the javadoc
       ====================================================================-->
-  <target name="dist-source"
-          depends="source.jar, source.zip, source.targz" />
+  <target name="dist-source" depends="source.jar, source.zip, source.targz" />
 
 
   <!--=======================================================================
@@ -1240,7 +1170,7 @@ TYPICAL TARGET SEQUENCE
 	    Creates a zip of the project source for distribution
 	    ====================================================================-->
   <target name="source.zip" depends="init">
-    <jar jarfile="${dist.dir}/${source.zip.filename}" basedir="${src.dir}"/>
+    <jar jarfile="${dist.dir}/${source.zip.filename}" basedir="${src.dir}" />
   </target>
 
   <!--=======================================================================
@@ -1249,9 +1179,7 @@ TYPICAL TARGET SEQUENCE
       Creates a gzipped tar of the project source for distribution
       ====================================================================-->
   <target name="source.targz" depends="init">
-    <tar compression="gzip"
-         destfile="${dist.dir}/${source.tar.filename}"
-         basedir="${src.dir}" />
+    <tar compression="gzip" destfile="${dist.dir}/${source.tar.filename}" basedir="${src.dir}" />
   </target>
 
 
@@ -1308,8 +1236,12 @@ TYPICAL TARGET SEQUENCE
       Compiles and runs all the tests for the project
       ====================================================================-->
   <target name="test" depends="compile,compile-tests, init-test-reports" description="Compiles and runs unit tests">
-    <junit maxmemory="${junit.maxmemory}" fork="yes" failureProperty="test.failed" haltonfailure="${junit.haltonfailure}" printsummary="yes">
-      <sysproperty key="java.awt.headless" value="${headless.unittest}"/>
+    <junit maxmemory="${junit.maxmemory}"
+           fork="yes"
+           failureProperty="test.failed"
+           haltonfailure="${junit.haltonfailure}"
+           printsummary="yes">
+      <sysproperty key="java.awt.headless" value="${headless.unittest}" />
       <classpath refid="test.classpath" />
       <formatter type="xml" />
       <batchtest fork="yes" todir="${testreports.xml.dir}">
@@ -1318,7 +1250,7 @@ TYPICAL TARGET SEQUENCE
         </fileset>
       </batchtest>
     </junit>
-      
+
     <junitreport todir="${testreports.html.dir}">
       <fileset dir="${testreports.xml.dir}">
         <include name="TEST-*.xml" />
@@ -1363,8 +1295,7 @@ TYPICAL TARGET SEQUENCE
       Runs a typical continuous integration build including project dist, javadoc, test, 
       and coverage artifacts
       ====================================================================-->
-  <target name="continuous"
-          depends="clean-all,resolve,cobertura,dist-javadoc,dist-source,dist"/>
+  <target name="continuous" depends="clean-all,resolve,cobertura,dist-source,dist" />
 
 
   <!--=======================================================================
@@ -1373,8 +1304,7 @@ TYPICAL TARGET SEQUENCE
       Runs a typical continuous integration build including project dist, javadoc, test, 
       and coverage artifacts
       ====================================================================-->
-  <target name="continuous-testless"
-          depends="clean-all,resolve,dist-javadoc,dist-source,dist"/>
+  <target name="continuous-testless" depends="clean-all,resolve,dist-source,dist" />
 
 
   <!--=======================================================================
@@ -1382,8 +1312,7 @@ TYPICAL TARGET SEQUENCE
       
       Generates javadoc source documentation for this project
       ====================================================================-->
-  <target name="javadoc"
-          depends="javadoc.init, compile">
+  <target name="javadoc" depends="javadoc.init, compile">
     <javadoc destdir="${javadoc.dir}/docs/api"
              access="public"
              source="1.5"
@@ -1411,8 +1340,7 @@ TYPICAL TARGET SEQUENCE
       
       Generates zip and targz distributions of the javadoc
       ====================================================================-->
-  <target name="dist-javadoc"
-          depends="javadoc.zip, javadoc.targz" />
+  <target name="dist-javadoc" depends="javadoc.zip, javadoc.targz" />
 
 
   <!--=======================================================================
@@ -1469,7 +1397,7 @@ TYPICAL TARGET SEQUENCE
       Runs tests in an instrumented environment and produces Cobertura test coverage reports
       ====================================================================-->
   <target name="cobertura"
-          depends="clean-cobertura,cobertura.install,compile,compile-tests,cobertura.instrument-classes,cobertura.test-instrumented,cobertura.xml-report,cobertura.html-report"/>
+          depends="clean-cobertura,cobertura.install,compile,compile-tests,cobertura.instrument-classes,cobertura.test-instrumented,cobertura.xml-report,cobertura.html-report" />
 
 
   <!--=======================================================================
@@ -1548,8 +1476,7 @@ TYPICAL TARGET SEQUENCE
       
       Removes all files created by Cobertura code coverage utility
       ====================================================================-->
-  <target name="clean-cobertura"
-          depends="cobertura.clean-instrumented-classes,cobertura.clean-coverage-reports">
+  <target name="clean-cobertura" depends="cobertura.clean-instrumented-classes,cobertura.clean-coverage-reports">
     <delete dir="${cobertura.data.dir}" />
   </target>
 
@@ -1584,8 +1511,11 @@ TYPICAL TARGET SEQUENCE
   <target name="cobertura.test-instrumented"
           depends="init-test-reports,cobertura.install,compile,compile-tests,cobertura.instrument-classes">
     <mkdir dir="${instrumented.classes.dir}" />
-    <junit fork="yes" maxmemory="${junit.maxmemory}" failureProperty="test.failed" haltonfailure="${junit.haltonfailure}">
-      <sysproperty key="java.awt.headless" value="${headless.unittest}"/>
+    <junit fork="yes"
+           maxmemory="${junit.maxmemory}"
+           failureProperty="test.failed"
+           haltonfailure="${junit.haltonfailure}">
+      <sysproperty key="java.awt.headless" value="${headless.unittest}" />
 
       <!-- Specify the name of the coverage data file to use. -->
       <sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data.dir}/cobertura.ser" />
@@ -1676,8 +1606,7 @@ TYPICAL TARGET SEQUENCE
         Creates the Eclipse .classpath file from the resolved
         classpath from Ant.
       ====================================================================-->
-  <target name="create-dot-classpath"
-          depends="install-pentaho-ant-tasks,init">
+  <target name="create-dot-classpath" depends="install-pentaho-ant-tasks,init">
     <dot-classpath>
       <!-- Include all lib dirs -->
       <classpath>
@@ -1693,5 +1622,63 @@ TYPICAL TARGET SEQUENCE
       </classpath>
     </dot-classpath>
   </target>
+
+  <!--=======================================================================
+	    Macro which will download the specified library. 
+	    
+	    NOTE: any task using this macro must depend on "load-antcontrib"
+	    
+	    parameters:
+			name      - The name of the library (the filename w/o extension)
+			url       - The URL from which the library will be downloaded
+			resource  - The name of the resource which should be loaded
+			            as a task definition 
+			classname - A class file name which can be used to detect if the
+			            property library exists
+			extension - The extension of the library being downloaded 
+			            (defaults to zip)
+	    ====================================================================-->
+  <macrodef name="download-antlib">
+    <attribute name="name" />
+    <attribute name="url" />
+    <attribute name="classname" />
+    <attribute name="extension" default="zip" />
+    <sequential>
+      <mkdir dir="${build.cache.dir}/@{name}/" />
+      <!-- if the library does not exist, we must download it -->
+      <if>
+        <not>
+          <and>
+            <available file="${build.cache.dir}/@{name}" />
+            <available classname="@{classname}">
+              <classpath>
+                <fileset dir="${build.cache.dir}/@{name}">
+                  <include name="**/*.jar" />
+                </fileset>
+              </classpath>
+            </available>
+          </and>
+        </not>
+        <then>
+          <!-- if it is a zip file, unzip it ... otherwise if a jar, just download it -->
+          <if>
+            <equals arg1="zip" arg2="@{extension}" />
+            <then>
+              <!-- download the source file to a temp directory -->
+              <echo message="downloading library @{name} [@{name}.@{extension} from @{url}]" />
+              <mkdir dir="${tmp.build.cache.dir}" />
+              <get src="@{url}" dest="${tmp.build.cache.dir}/@{name}.@{extension}" usetimestamp="true" />
+              <unzip src="${tmp.build.cache.dir}/@{name}.@{extension}"
+                     dest="${build.cache.dir}/@{name}"
+                     overwrite="true" />
+            </then>
+            <else>
+              <get src="@{url}" dest="${build.cache.dir}/@{name}/@{name}.@{extension}" usetimestamp="true" />
+            </else>
+          </if>
+        </then>
+      </if>
+    </sequential>
+  </macrodef>
 
 </project>
