@@ -19,6 +19,7 @@ import org.pentaho.di.core.database.GenericDatabaseMeta;
 import org.pentaho.di.core.database.MSSQLServerNativeDatabaseMeta;
 import org.pentaho.di.core.database.PartitionDatabaseMeta;
 import org.pentaho.di.core.database.SAPR3DatabaseMeta;
+import org.pentaho.di.core.exception.KettlePluginException;
 import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.plugins.DatabasePluginType;
 import org.pentaho.di.core.plugins.PluginInterface;
@@ -73,7 +74,12 @@ public class DataHandler extends AbstractXulEventHandler {
         databaseInterface.setName(plugin.getName());
         connectionMap.put(plugin.getName(), databaseInterface);
         connectionNametoID.put(plugin.getName(), plugin.getIds()[0]);
-      } catch(Exception e) {
+      } 
+      catch (KettlePluginException cnfe) {
+         System.out.println("Could not create connection entry for "+plugin.getName()+".  "+cnfe.getCause().getClass().getName());
+         LogChannel.GENERAL.logError("Could not create connection entry for "+plugin.getName()+".  "+cnfe.getCause().getClass().getName()); 
+       }
+      catch (Exception e) {
         throw new RuntimeException("Error creating class for: "+plugin, e);
       }
     }
