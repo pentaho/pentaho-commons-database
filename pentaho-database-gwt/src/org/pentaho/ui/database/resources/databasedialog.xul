@@ -20,7 +20,7 @@
 	<!-- script id="fragmentHandler" src="org.pentaho.ui.database.event.FragmentHandler" / -->
 	<!-- script id="dataHandler" src="org.pentaho.ui.database.event.DataHandler" / -->
 	
-	<vbox flex="1">
+	<vbox flex="1" id="main-container">
 	<hbox id="all-box" flex="1">
 
 	<!--  ###############################################################################  -->
