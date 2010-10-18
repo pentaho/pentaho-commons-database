@@ -1245,7 +1245,7 @@ public class DataHandler extends AbstractXulEventHandler {
     useIntegratedSecurityCheck = (XulCheckbox) document.getElementById("use-integrated-security-check"); //$NON-NLS-1$;
   }
 
-  private void showMessage(String message, boolean scroll){
+  protected void showMessage(String message, boolean scroll){
     try{
       XulMessageBox box = (XulMessageBox) document.createElement("messagebox"); //$NON-NLS-1$
       box.setMessage(message);
