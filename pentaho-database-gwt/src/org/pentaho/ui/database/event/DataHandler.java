@@ -399,7 +399,7 @@ public class DataHandler extends AbstractXulEventHandler {
     
     if (passed) { 
       int selected = deckOptionsBox.getSelectedIndex();
-      if (selected < 0) {
+      if (selected < 0 && deckOptionsBox.getRowCount() > 0) {
         selected = 0;
         deckOptionsBox.setSelectedIndex(0);
       }

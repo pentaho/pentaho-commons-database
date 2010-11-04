@@ -141,6 +141,9 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
     accessBox = (XulListbox)document.getElementById("access-type-list"); //$NON-NLS-1$
     
     String connectionKey = getSelectedString(connectionBox);
+    if(connectionKey == null){
+      return;
+    }
 //    DatabaseInterface database = DataHandler.connectionMap.get(connectionKey);
     IDatabaseType database = databaseTypeHelper.getDatabaseTypeByName(connectionKey);
     

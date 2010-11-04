@@ -10,9 +10,9 @@ import org.pentaho.di.core.database.PartitionDatabaseMeta;
 public class DatabaseUtil {
   
   public static DatabaseMeta convertToDatabaseMeta(IDatabaseConnection conn) {
-
     DatabaseMeta meta = new DatabaseMeta();
 
+    meta.setDatabaseType(conn.getDatabaseType().getShortName());
     Properties props = new Properties();
     
     for (String key : conn.getExtraOptions().keySet()) {
@@ -29,7 +29,6 @@ public class DatabaseUtil {
     
     meta.setAttributes(props);
 
-    meta.setDatabaseType(conn.getDatabaseType().getShortName());
     meta.setName(conn.getName());
     meta.setAccessType(conn.getAccessType().ordinal());
     meta.setHostname(conn.getHostname());
