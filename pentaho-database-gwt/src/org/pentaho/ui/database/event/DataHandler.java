@@ -36,12 +36,12 @@ import org.pentaho.ui.xul.stereotype.Bindable;
 
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
- * 
+ *
  *  TODO:
- *  2. Needs to be abstracted away from the DatabaseMeta object, so other tools 
+ *  2. Needs to be abstracted away from the DatabaseMeta object, so other tools
  *  in the platform can use the dialog and their preferred database object.
  *  3. Needs exception handling, string resourcing and logging
- *   
+ *
  * @author gmoran
  * @created Mar 19, 2008
  *
@@ -49,7 +49,7 @@ import org.pentaho.ui.xul.stereotype.Bindable;
 public class DataHandler extends AbstractXulEventHandler {
 
   private static final String LINE_SEPARATOR = "\n"; // System.getProperty("line.separator"); //$NON-NLS-1$
-  
+
   protected DatabaseDialogListener listener;
   protected IMessages messages;
   protected ILaunch launch;
@@ -58,7 +58,7 @@ public class DataHandler extends AbstractXulEventHandler {
   protected IFragmentHandler fragmentHandler;
 
   private DatabaseConnectionPoolParameter[] poolingParameters;
-  
+
   protected IDatabaseConnection databaseConnection = null;
 
   private IDatabaseConnection cache = new DatabaseConnection();
@@ -135,7 +135,7 @@ public class DataHandler extends AbstractXulEventHandler {
   XulCheckbox lowerCaseIdentifiersCheck;
 
   XulCheckbox upperCaseIdentifiersCheck;
-  
+
   XulTextbox sqlBox;
 
   // ==== Pooling Panel ==== //
@@ -161,15 +161,15 @@ public class DataHandler extends AbstractXulEventHandler {
   public DataHandler() {
     setName("dataHandler"); //$NON-NLS-1$
   }
-  
+
   public void setFragmentHandler(IFragmentHandler fragmentHandler) {
     this.fragmentHandler = fragmentHandler;
   }
-  
+
   public void setDatabaseTypeHelper(DatabaseTypeHelper databaseTypeHelper) {
     this.databaseTypeHelper = databaseTypeHelper;
   }
-  
+
   public void setDatabaseDialogListener(DatabaseDialogListener listener) {
     this.listener = listener;
   }
@@ -177,24 +177,24 @@ public class DataHandler extends AbstractXulEventHandler {
   public void setAsyncDatabaseConnectionService(IXulAsyncDatabaseConnectionService connectionService) {
     this.connectionService = connectionService;
   }
-  
+
   public void setMessages(IMessages messages) {
     this.messages = messages;
   }
-  
+
   public void setLaunch(ILaunch launch) {
     this.launch = launch;
   }
-  
+
   @Bindable
   public void loadConnectionData() {
 
-	// HACK: need to check if onload event was already fired. 
+	// HACK: need to check if onload event was already fired.
 	// It is called from XulDatabaseDialog from dcDialog.getSwtInstance(shell); AND dialog.show();
 	// Multiple calls lead to multiple numbers of database types.
 	// Therefore we check if the connectionBox was already filled.
 	if(connectionBox!=null) return;
-	
+
     getControls();
 
     // Add sorted types to the listbox now.
@@ -202,9 +202,9 @@ public class DataHandler extends AbstractXulEventHandler {
     for (String key : databaseTypeHelper.getDatabaseTypeNames()) {
       connectionBox.addItem(key);
     }
-    
 
-    // HACK: Need to force height of list control, as it does not behave 
+
+    // HACK: Need to force height of list control, as it does not behave
     // well when using relative layouting
 
     connectionBox.setRows(connectionBox.getRows());
@@ -214,7 +214,7 @@ public class DataHandler extends AbstractXulEventHandler {
     // Nothing selected yet...select first item.
 
     // TODO Implement a connection type preference,
-    // and use that type as the default for 
+    // and use that type as the default for
     // new databases.
 
     if (key == null) {
@@ -231,7 +231,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     setDefaultPoolParameters();
-    
+
     if (databaseConnection != null) {
       setInfo(databaseConnection);
     }
@@ -246,7 +246,7 @@ public class DataHandler extends AbstractXulEventHandler {
     pushCache();
 
     String key = getSelectedString(connectionBox);
-    
+
     // Nothing selected yet...
     if (key == null) {
       key = databaseTypeHelper.getDatabaseTypeNames().get(0);
@@ -267,7 +267,7 @@ public class DataHandler extends AbstractXulEventHandler {
       accessBox.addItem(value.getName());
     }
 
-    // HACK: Need to force height of list control, as it does not behave 
+    // HACK: Need to force height of list control, as it does not behave
     // well when using relative layouting
 
     accessBox.setRows(accessBox.getRows());
@@ -280,10 +280,10 @@ public class DataHandler extends AbstractXulEventHandler {
     if (accessBox.getSelectedItem() == null) {
       accessBox.setSelectedItem(acc.get(0).getName());
     }
-    
+
     setOptionsData(databaseConnection != null ? databaseConnection.getExtraOptions() : null);
     setClusterData(databaseConnection != null ? databaseConnection.getPartitioningInformation() : null);
-    
+
     popCache();
 
   }
@@ -298,7 +298,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
     return key;
   }
-  
+
   @Bindable
   public void editOptions(int index) {
     if( index +1 == optionsParameterTree.getRows()){
@@ -315,7 +315,7 @@ public class DataHandler extends AbstractXulEventHandler {
       }
     }
   }
-  
+
   private boolean isEmpty(String str) {
     return str == null || str.trim().length() == 0;
   }
@@ -331,14 +331,14 @@ public class DataHandler extends AbstractXulEventHandler {
 
     if ((url == null) || (url.trim().length() == 0)) {
       message = messages.getString("DataHandler.USER_NO_HELP_AVAILABLE"); //$NON-NLS-1$
-      
+
       showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, false); //$NON-NLS-1$
       return;
     }
 
     if (launch != null) {
       Status status = launch.openUrl(url, messages);
-  
+
       if (status.equals(Status.Failed)) {
         message = messages.getString("DataHandler.USER_UNABLE_TO_LAUNCH_BROWSER", url);  //$NON-NLS-1$
         showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, false); //$NON-NLS-1$
@@ -378,13 +378,13 @@ public class DataHandler extends AbstractXulEventHandler {
       optionsParameterTree.update();
     }
   }
-  
+
   @Bindable
   public void setDeckChildIndex() {
 
     getControls();
-    
-    // if pooling selected, check the parameter validity before allowing 
+
+    // if pooling selected, check the parameter validity before allowing
     // a deck panel switch...
     int originalSelection = dialogDeck.getSelectedIndex();
 
@@ -392,14 +392,14 @@ public class DataHandler extends AbstractXulEventHandler {
     if (originalSelection == 3){
       passed = checkPoolingParameters();
     }
-    
+
     if (originalSelection == 1) {
       addEmptyRowsToOptions();
     }
-    
-    if (passed) { 
+
+    if (passed) {
       int selected = deckOptionsBox.getSelectedIndex();
-      if (selected < 0) {
+      if (selected < 0 && deckOptionsBox.getRowCount() > 0) {
         selected = 0;
         deckOptionsBox.setSelectedIndex(0);
       }
@@ -459,7 +459,7 @@ public class DataHandler extends AbstractXulEventHandler {
 //    if (databaseMeta == null) {
 //      databaseMeta = new DatabaseConnection();
 //    }
-//    
+//
 //    if (!windowClosed()){
 //      this.getInfo(databaseMeta);
 //    }
@@ -467,13 +467,13 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   public void setData(Object data) {
-    
-    // if a null value is passed in, replace it with an 
+
+    // if a null value is passed in, replace it with an
     // empty database connection
     if (data == null) {
       data = new DatabaseConnection();
     }
-    
+
     if (data instanceof DatabaseConnection) {
       databaseConnection = (IDatabaseConnection) data;
     }
@@ -495,11 +495,11 @@ public class DataHandler extends AbstractXulEventHandler {
       listener.onDialogCancel();
     }
   }
-  
+
   @Bindable
   private void close(){
   	XulComponent window = document.getElementById("general-datasource-window"); //$NON-NLS-1$
-  	
+
   	if(window == null){ //window must be root
   		window = document.getRootElement();
   	}
@@ -509,11 +509,11 @@ public class DataHandler extends AbstractXulEventHandler {
     	((XulWindow) window).close();
     }
   }
-  
+
   private boolean windowClosed() {
-    boolean closedWindow = true; 
+    boolean closedWindow = true;
     XulComponent window = document.getElementById("general-datasource-window"); //$NON-NLS-1$
-    
+
     if(window == null){ //window must be root
       window = document.getRootElement();
     }
@@ -533,7 +533,7 @@ public class DataHandler extends AbstractXulEventHandler {
     if (!passed){
       return;
     }
-    
+
     connectionService.checkParameters(database, new XulServiceCallback<List<String>>() {
       public void error(String message, Throwable error) {
         showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, message.length() > 300); //$NON-NLS-1$
@@ -555,10 +555,10 @@ public class DataHandler extends AbstractXulEventHandler {
           if (listener != null) {
             listener.onDialogAccept(databaseConnection);
           }
-        }      
+        }
       }
     });
-    
+
   }
 
   @Bindable
@@ -584,7 +584,7 @@ public class DataHandler extends AbstractXulEventHandler {
               showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, message.length() > 300); //$NON-NLS-1$
             }
             public void success(String message) {
-              showMessage(messages.getString("DataHandler.TEST_MESSAGE_TITLE"), message, message.length() > 300);  //$NON-NLS-1$            
+              showMessage(messages.getString("DataHandler.TEST_MESSAGE_TITLE"), message, message.length() > 300);  //$NON-NLS-1$
             }
           });
         }
@@ -630,7 +630,7 @@ public class DataHandler extends AbstractXulEventHandler {
       meta.setDatabasePort(portNumberBox.getValue());
     }
 
-    // Option parameters: 
+    // Option parameters:
 
     if (optionsParameterTree != null) {
       Object[][] values = optionsParameterTree.getValues();
@@ -764,13 +764,13 @@ public class DataHandler extends AbstractXulEventHandler {
     getControls();
 
     // TODO: Delete method: copyConnectionSpecificInfo(meta, cache);
-    
+
     // Name:
     connectionNameBox.setValue(meta.getName());
 
     // disable refresh for now
     fragmentHandler.setDisableRefresh(true);
-    
+
     // Connection type:
     if (meta.getDatabaseType() != null) {
       connectionBox.setSelectedItem(meta.getDatabaseType().getName());
@@ -785,7 +785,7 @@ public class DataHandler extends AbstractXulEventHandler {
       accessBox.setSelectedIndex(0);
     }
 
-    // this is broken out so we can set the cache information only when caching 
+    // this is broken out so we can set the cache information only when caching
     // connection values
     fragmentHandler.refreshOptionsWithCallback(new IFragmentHandler.Callback() {
       public void callback() {
@@ -829,7 +829,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
     setClusterData(meta.getPartitioningInformation());
 
-    // Pooling panel settings 
+    // Pooling panel settings
 
     if (poolingCheck != null) {
       poolingCheck.setChecked(meta.isUsingConnectionPool());
@@ -853,16 +853,16 @@ public class DataHandler extends AbstractXulEventHandler {
     setDeckChildIndex();
     onPoolingCheck();
     onClusterCheck();
-    
+
   }
 
   /**
-   * 
-   * @return the list of parameters that were enabled, but had invalid 
+   *
+   * @return the list of parameters that were enabled, but had invalid
    * return values (null or empty)
    */
   private boolean checkPoolingParameters(){
-    
+
     List <String> returnList = new ArrayList <String>();
     if (poolParameterTree != null) {
       Object[][] values = poolParameterTree.getValues();
@@ -891,7 +891,7 @@ public class DataHandler extends AbstractXulEventHandler {
         for (String parameter : returnList){
           parameters = parameters.concat(parameter).concat(LINE_SEPARATOR);
         }
-        
+
         String message = messages.getString("DataHandler.USER_INVALID_PARAMETERS").concat(parameters); //$NON-NLS-1$
         showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, false); //$NON-NLS-1$
       }
@@ -920,7 +920,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
   }
-  
+
   @Bindable
   public void restoreDefaults() {
     if (poolingParameters != null && poolParameterTree != null) {
@@ -934,9 +934,9 @@ public class DataHandler extends AbstractXulEventHandler {
         item.getRow().addCellText(2, defaultValue);
       }
     }
-    
+
   }
-  
+
   private void setDefaultPoolParameters() {
     connectionService.getPoolingParameters(new XulServiceCallback<DatabaseConnectionPoolParameter[]>() {
       public void error(String message, Throwable error) {
@@ -952,7 +952,7 @@ public class DataHandler extends AbstractXulEventHandler {
             row.addCellText(2, parameter.getDefaultValue());
           }
         }
-        
+
         // HACK: reDim the pooling table
         if(poolParameterTree != null) {
           poolParameterTree.setRows(poolParameterTree.getRows());
@@ -960,7 +960,7 @@ public class DataHandler extends AbstractXulEventHandler {
       }
     });
   }
-  
+
   private void clearOptions() {
     Object[][] values = optionsParameterTree.getValues();
     for (int i = values.length - 1; i >= 0; i--) {
@@ -978,11 +978,11 @@ public class DataHandler extends AbstractXulEventHandler {
       Iterator<String> keys = extraOptions.keySet().iterator();
       String connection = getSelectedString(connectionBox);
       IDatabaseType currentType = null;
-      
+
       if(connection != null){
         currentType = databaseTypeHelper.getDatabaseTypeByName(connection);
       }
-      
+
       while (keys.hasNext()) {
 
         String parameter = keys.next();
@@ -1007,7 +1007,7 @@ public class DataHandler extends AbstractXulEventHandler {
           }
         }
       }
-      
+
     }
     // Add 5 blank rows if none are already there, otherwise, just add one.
     int numToAdd = 5;
@@ -1020,18 +1020,18 @@ public class DataHandler extends AbstractXulEventHandler {
       row.addCellText(0, ""); //$NON-NLS-1$
       row.addCellText(1, ""); //$NON-NLS-1$
     }
-    
+
     optionsParameterTree.update();
-    
+
   }
 
   private void setClusterData(List<PartitionDatabaseMeta> clusterInformation) {
 
   	if (clusterParameterTree == null) {
-  		// there's nothing to do 
+  		// there's nothing to do
   		return;
   	}
-  	
+
     if ((clusterInformation != null) && (clusterParameterTree != null)) {
 
       for (int i = 0; i < clusterInformation.size(); i++) {
@@ -1067,7 +1067,7 @@ public class DataHandler extends AbstractXulEventHandler {
   public void poolingRowChange(int idx) {
     if (poolingParameters != null) {
       if (idx != -1) {
-  
+
         if (idx >= poolingParameters.length) {
           idx = poolingParameters.length - 1;
         }
@@ -1075,7 +1075,7 @@ public class DataHandler extends AbstractXulEventHandler {
           idx = 0;
         }
         poolingDescription.setValue(poolingParameters[idx].getDescription());
-        
+
         XulTreeRow row = poolParameterTree.getRootChildren().getItem(idx).getRow();
         if (row.getSelectedColumnIndex() == 2){
           row.addCellText(0, "true"); //$NON-NLS-1$
@@ -1146,16 +1146,16 @@ public class DataHandler extends AbstractXulEventHandler {
     if (from.getAttributes().get(DatabaseConnection.ATTRIBUTE_CUSTOM_URL) != null) {
       to.getAttributes().put(DatabaseConnection.ATTRIBUTE_CUSTOM_URL, from.getAttributes().get(DatabaseConnection.ATTRIBUTE_CUSTOM_URL));
     }
-    
+
     if (from.getAttributes().get(DatabaseConnection.ATTRIBUTE_CUSTOM_DRIVER_CLASS) != null) {
       to.getAttributes().put(DatabaseConnection.ATTRIBUTE_CUSTOM_DRIVER_CLASS, from.getAttributes().get(DatabaseConnection.ATTRIBUTE_CUSTOM_DRIVER_CLASS));
     }
-    
+
     if (from.getInformixServername() != null) {
       to.setInformixServername(from.getInformixServername());
     }
   }
-  
+
   private void getConnectionSpecificInfo(IDatabaseConnection meta) {
     // Hostname:
     if (hostNameBox != null) {
@@ -1196,7 +1196,7 @@ public class DataHandler extends AbstractXulEventHandler {
     // Empty doesn't clear the option, we have mercy.
 
     if (serverInstanceBox != null) {
-      if (serverInstanceBox.getValue() != null && 
+      if (serverInstanceBox.getValue() != null &&
           serverInstanceBox.getValue().trim().length() > 0) {
         meta.addExtraOption("MSSQL", "instance", serverInstanceBox.getValue());
         // meta.setSQLServerInstance(serverInstanceBox.getValue());
@@ -1344,9 +1344,9 @@ public class DataHandler extends AbstractXulEventHandler {
     poolParameterTree = (XulTree) document.getElementById("pool-parameter-tree"); //$NON-NLS-1$
     clusterParameterTree = (XulTree) document.getElementById("cluster-parameter-tree"); //$NON-NLS-1$
     optionsParameterTree = (XulTree) document.getElementById("options-parameter-tree"); //$NON-NLS-1$
-    poolingDescription = (XulTextbox) document.getElementById("pooling-description"); //$NON-NLS-1$ 
-    poolingParameterDescriptionLabel = (XulLabel) document.getElementById("pool-parameter-description-label"); //$NON-NLS-1$ 
-    poolingDescriptionLabel = (XulLabel) document.getElementById("pooling-description-label"); //$NON-NLS-1$ 
+    poolingDescription = (XulTextbox) document.getElementById("pooling-description"); //$NON-NLS-1$
+    poolingParameterDescriptionLabel = (XulLabel) document.getElementById("pool-parameter-description-label"); //$NON-NLS-1$
+    poolingDescriptionLabel = (XulLabel) document.getElementById("pooling-description-label"); //$NON-NLS-1$
     quoteIdentifiersCheck = (XulCheckbox) document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
     lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
     upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-upper-case-check"); //$NON-NLS-1$;
