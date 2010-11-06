@@ -13,7 +13,8 @@ public class DatabaseUtil {
     DatabaseMeta meta = new DatabaseMeta();
 
     meta.setDatabaseType(conn.getDatabaseType().getShortName());
-    Properties props = new Properties();
+
+    Properties props = meta.getDatabaseInterface().getAttributes();
 
     for (String key : conn.getExtraOptions().keySet()) {
       props.put(BaseDatabaseMeta.ATTRIBUTE_PREFIX_EXTRA_OPTION + key, conn.getExtraOptions().get(key));
