@@ -8,6 +8,7 @@ import org.pentaho.database.dialect.GenericDatabaseDialect;
 import org.pentaho.database.dialect.HypersonicDatabaseDialect;
 import org.pentaho.database.dialect.IDatabaseDialect;
 import org.pentaho.database.dialect.MSSQLServerDatabaseDialect;
+import org.pentaho.database.dialect.MSSQLServerNativeDatabaseDialect;
 import org.pentaho.database.dialect.MySQLDatabaseDialect;
 import org.pentaho.database.dialect.OracleDatabaseDialect;
 import org.pentaho.database.dialect.PostgreSQLDatabaseDialect;
@@ -31,6 +32,7 @@ public class DatabaseConnectionService implements IDatabaseConnectionService {
     registerDatabaseDialect(new MySQLDatabaseDialect());
     registerDatabaseDialect(new HypersonicDatabaseDialect());
     registerDatabaseDialect(new MSSQLServerDatabaseDialect());
+    registerDatabaseDialect(new MSSQLServerNativeDatabaseDialect());
     registerDatabaseDialect(new DB2DatabaseDialect());
     registerDatabaseDialect(new PostgreSQLDatabaseDialect());
     

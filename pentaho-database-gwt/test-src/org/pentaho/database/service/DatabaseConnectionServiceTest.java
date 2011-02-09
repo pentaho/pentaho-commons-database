@@ -106,6 +106,73 @@ public class DatabaseConnectionServiceTest {
   }
   
   @Test
+  public void testCreateMSSQLNativeDatabaseConnection() throws Exception {
+    DatabaseConnectionService service = new DatabaseConnectionService();
+    DatabaseTypeHelper helper = new DatabaseTypeHelper(service.getDatabaseTypes());
+    
+    IDatabaseConnection conn = service.createDatabaseConnection(
+        "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://localhost:1234;databaseName=testdb;integratedSecurity=false");
+
+    Assert.assertNotNull(conn);
+    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
+    Assert.assertEquals(helper.getDatabaseTypeByName("MS SQL Server (Native)"), conn.getDatabaseType());
+    Assert.assertEquals("localhost", conn.getHostname());
+    Assert.assertEquals("1234", conn.getDatabasePort());
+    Assert.assertEquals("testdb", conn.getDatabaseName());
+    Assert.assertEquals("false", conn.getExtraOptions().get("MSSQLNative.integratedSecurity"));
+
+    
+    conn = service.createDatabaseConnection(
+        "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://localhost;databaseName=testdb");
+
+    Assert.assertNotNull(conn);
+    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
+    Assert.assertEquals(helper.getDatabaseTypeByName("MS SQL Server (Native)"), conn.getDatabaseType());
+    Assert.assertEquals("localhost", conn.getHostname());
+    Assert.assertEquals(null, conn.getDatabasePort());
+    Assert.assertEquals("testdb", conn.getDatabaseName());
+
+    
+    conn = service.createDatabaseConnection(
+        "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://testdb");
+
+    Assert.assertNotNull(conn);
+    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
+    Assert.assertEquals(helper.getDatabaseTypeByName("MS SQL Server (Native)"), conn.getDatabaseType());
+    Assert.assertEquals("testdb", conn.getHostname());
+    Assert.assertEquals(null, conn.getDatabasePort());
+    Assert.assertEquals(null, conn.getDatabaseName());
+    
+    try {
+      conn = service.createDatabaseConnection(
+          "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jasddbc:mysql://testdb");
+      Assert.fail();
+    } catch (RuntimeException e) {
+      
+    }
+    
+    conn = service.createDatabaseConnection(
+        "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://localhost:1234;databaseName=testdb;autoCommit=true;test=FALSE");
+
+    Assert.assertNotNull(conn);
+    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
+    Assert.assertEquals(helper.getDatabaseTypeByName("MS SQL Server (Native)"), conn.getDatabaseType());
+    Assert.assertEquals("localhost", conn.getHostname());
+    Assert.assertEquals("1234", conn.getDatabasePort());
+    Assert.assertEquals("testdb", conn.getDatabaseName());
+    Assert.assertEquals(2, conn.getExtraOptions().size());
+    Assert.assertEquals("true", conn.getExtraOptions().get("MSSQLNative.autoCommit"));
+    Assert.assertEquals("FALSE", conn.getExtraOptions().get("MSSQLNative.test"));
+    
+    
+    String urlString = service.getDialectService().getDialect(conn).getURLWithExtraOptions(conn);
+    Assert.assertEquals("jdbc:sqlserver://localhost:1234;databaseName=testdb;test=FALSE;autoCommit=true", urlString);
+
+    
+  }
+
+  
+  @Test
   public void testCreateOracleDatabaseConnection() {
     DatabaseConnectionService service = new DatabaseConnectionService();
     DatabaseTypeHelper helper = new DatabaseTypeHelper(service.getDatabaseTypes());
