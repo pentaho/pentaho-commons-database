@@ -112,6 +112,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   // MS SQL Server specific
   private XulCheckbox doubleDecimalSeparatorCheck;
+  private XulCheckbox useIntegratedSecurityCheck;
 
   // MySQL specific
   private XulCheckbox resultStreamingCursorCheck;
@@ -1207,6 +1208,10 @@ public class DataHandler extends AbstractXulEventHandler {
     if (doubleDecimalSeparatorCheck != null) {
       meta.setUsingDoubleDecimalAsSchemaTableSeparator(doubleDecimalSeparatorCheck.isChecked());
     }
+    
+    if (useIntegratedSecurityCheck != null) {
+      meta.getAttributes().put("MSSQLUseIntegratedSecurity", ""+useIntegratedSecurityCheck.isChecked());
+    }
 
     // SAP Attributes...
     if (languageBox != null) {
@@ -1281,6 +1286,10 @@ public class DataHandler extends AbstractXulEventHandler {
       doubleDecimalSeparatorCheck.setChecked(meta.isUsingDoubleDecimalAsSchemaTableSeparator());
     }
 
+    if (useIntegratedSecurityCheck != null) {
+      useIntegratedSecurityCheck.setChecked("true".equals(meta.getAttributes().get("MSSQLUseIntegratedSecurity")));
+    }
+    
     // SAP Attributes...
     if (languageBox != null) {
       languageBox.setValue(meta.getAttributes().get("SAPLanguage"));
@@ -1333,6 +1342,7 @@ public class DataHandler extends AbstractXulEventHandler {
     systemNumberBox = (XulTextbox) document.getElementById("system-number-text"); //$NON-NLS-1$
     clientBox = (XulTextbox) document.getElementById("client-text"); //$NON-NLS-1$
     doubleDecimalSeparatorCheck = (XulCheckbox) document.getElementById("decimal-separator-check"); //$NON-NLS-1$
+    useIntegratedSecurityCheck = (XulCheckbox) document.getElementById("use-integrated-security-check"); //$NON-NLS-1$
     resultStreamingCursorCheck = (XulCheckbox) document.getElementById("result-streaming-check"); //$NON-NLS-1$
     poolingCheck = (XulCheckbox) document.getElementById("use-pool-check"); //$NON-NLS-1$
     clusteringCheck = (XulCheckbox) document.getElementById("use-cluster-check"); //$NON-NLS-1$
@@ -1368,6 +1378,18 @@ public class DataHandler extends AbstractXulEventHandler {
     } catch(XulException e){
       System.out.println("Error creating messagebox "+e.getMessage());
       e.printStackTrace();
+    }
+  }
+  
+  public void handleUseSecurityCheckbox() {
+    if(useIntegratedSecurityCheck != null) {
+      if(useIntegratedSecurityCheck.isChecked()) {
+        userNameBox.setDisabled(true);
+        passwordBox.setDisabled(true);
+      } else {
+        userNameBox.setDisabled(false);
+        passwordBox.setDisabled(false);        
+      }
     }
   }
 }

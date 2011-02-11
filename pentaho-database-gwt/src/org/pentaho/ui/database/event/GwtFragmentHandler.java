@@ -52,6 +52,8 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
     supportedFragments.add("informix_native.xul");
     supportedFragments.add("mssql_jndi.xul");
     supportedFragments.add("mssql_native.xul");
+    supportedFragments.add("mssqlnative_jndi.xul");
+    supportedFragments.add("mssqlnative_native.xul");
     supportedFragments.add("mysql_jndi.xul");
     supportedFragments.add("mysql_native.xul");
     supportedFragments.add("oracle_jndi.xul");

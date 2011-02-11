@@ -3,9 +3,11 @@ package org.pentaho.database.service;
 import org.junit.Assert;
 import org.junit.Test;
 import org.pentaho.database.dialect.GenericDatabaseDialect;
+import org.pentaho.database.dialect.MSSQLServerNativeDatabaseDialect;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.util.DatabaseTypeHelper;
+import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.DatabaseMeta;
 
 @SuppressWarnings("nls")
@@ -13,6 +15,7 @@ public class DatabaseConnectionServiceTest {
   
   @Test
   public void testMSSQL() throws Exception {
+    KettleEnvironment.init(false);
     DatabaseMeta dbmeta = new DatabaseMeta();
     dbmeta.setDatabaseType("MSSQL");
     dbmeta.setHostname("localhost");
@@ -119,7 +122,7 @@ public class DatabaseConnectionServiceTest {
     Assert.assertEquals("localhost", conn.getHostname());
     Assert.assertEquals("1234", conn.getDatabasePort());
     Assert.assertEquals("testdb", conn.getDatabaseName());
-    Assert.assertEquals("false", conn.getExtraOptions().get("MSSQLNative.integratedSecurity"));
+    Assert.assertEquals("false", conn.getAttributes().get(MSSQLServerNativeDatabaseDialect.ATTRIBUTE_USE_INTEGRATED_SECURITY));
 
     
     conn = service.createDatabaseConnection(
@@ -166,7 +169,7 @@ public class DatabaseConnectionServiceTest {
     
     
     String urlString = service.getDialectService().getDialect(conn).getURLWithExtraOptions(conn);
-    Assert.assertEquals("jdbc:sqlserver://localhost:1234;databaseName=testdb;test=FALSE;autoCommit=true", urlString);
+    Assert.assertEquals("jdbc:sqlserver://localhost:1234;databaseName=testdb;integratedSecurity=false;test=FALSE;autoCommit=true", urlString);
 
     
   }

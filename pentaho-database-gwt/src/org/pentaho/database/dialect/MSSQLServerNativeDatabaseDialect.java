@@ -47,8 +47,7 @@ public class MSSQLServerNativeDatabaseDialect extends MSSQLServerDatabaseDialect
     }
     else
     {
-      /*
-      String useIntegratedSecurity = null;
+      String useIntegratedSecurity = "false";
       Object value = connection.getAttributes().get(ATTRIBUTE_USE_INTEGRATED_SECURITY);
       if(value != null && value instanceof String) {
         useIntegratedSecurity = (String) value;
@@ -59,9 +58,7 @@ public class MSSQLServerNativeDatabaseDialect extends MSSQLServerDatabaseDialect
           useIntegratedSecurity = "false";//$NON-NLS-1$
         }
       }
-      */
-      //  +";integratedSecurity="+useIntegratedSecurity;
-      return getNativeJdbcPre() + connection.getHostname()+":"+connection.getDatabasePort()+";databaseName="+connection.getDatabaseName();
+      return getNativeJdbcPre() + connection.getHostname()+":"+connection.getDatabasePort()+";databaseName="+connection.getDatabaseName()+";integratedSecurity="+useIntegratedSecurity;
     }
   }
   
@@ -123,13 +120,17 @@ public class MSSQLServerNativeDatabaseDialect extends MSSQLServerDatabaseDialect
       if (nameAndValue[0] != null && nameAndValue[0].trim().length() > 0) {
         if (nameAndValue.length == 1) {
           if (nameAndValue[0].equals("databaseName")) {
-            dbconn.setDatabaseName(""); 
+            dbconn.setDatabaseName("");
+          } else if (nameAndValue[0].equals("integratedSecurity")) {
+            dbconn.getAttributes().put(ATTRIBUTE_USE_INTEGRATED_SECURITY, "false");
           } else {
             dbconn.addExtraOption(dbconn.getDatabaseType().getShortName(), nameAndValue[0], "");
           }
         } else {
           if (nameAndValue[0].equals("databaseName")) {
             dbconn.setDatabaseName(nameAndValue[1]); 
+          } else if (nameAndValue[0].equals("integratedSecurity")) {
+            dbconn.getAttributes().put(ATTRIBUTE_USE_INTEGRATED_SECURITY, nameAndValue[1]);
           } else {
             dbconn.addExtraOption(dbconn.getDatabaseType().getShortName(), nameAndValue[0], nameAndValue[1]);
           }
