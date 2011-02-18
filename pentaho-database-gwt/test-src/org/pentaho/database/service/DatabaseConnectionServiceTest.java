@@ -6,6 +6,7 @@ import org.pentaho.database.dialect.GenericDatabaseDialect;
 import org.pentaho.database.dialect.MSSQLServerNativeDatabaseDialect;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.IDatabaseConnection;
+import org.pentaho.database.model.IDatabaseType;
 import org.pentaho.database.util.DatabaseTypeHelper;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.DatabaseMeta;
@@ -23,6 +24,32 @@ public class DatabaseConnectionServiceTest {
     System.out.println(dbmeta.getURL());
     dbmeta.setServername("test");//(true);
   }
+  
+  @Test
+  public void testClassExistsCheck() {
+    // validated drivers check
+    boolean mssqlExists = false;
+    DatabaseConnectionService service = new DatabaseConnectionService();
+    for (IDatabaseType type : service.getDatabaseTypes()) {
+      if (type.getShortName().equals("MSSQL")) {
+        mssqlExists = true;
+        break;
+      }
+    }
+    
+    Assert.assertFalse("MSSQL jTDS Driver should not be available, because it is not on the classpath", mssqlExists);
+
+    // skip validation on drivers
+    service = new DatabaseConnectionService(false);
+    for (IDatabaseType type : service.getDatabaseTypes()) {
+      if (type.getShortName().equals("MSSQL")) {
+        mssqlExists = true;
+        break;
+      }
+    }
+    
+    Assert.assertTrue("MSSQL jTDS Driver should be available, because we disabled checking the classpath", mssqlExists);
+}
   
   @Test
   public void testCreateGenericConnection() throws Exception {
