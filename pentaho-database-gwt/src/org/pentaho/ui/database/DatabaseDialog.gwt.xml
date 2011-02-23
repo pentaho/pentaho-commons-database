@@ -16,4 +16,5 @@
   <public path="resources"/>
   <!--  entry-point class="org.pentaho.ui.database.gwt.GwtDatabaseDialogEntryPoint"/ -->
   <!-- servlet path="/databaseConnectionService" class="org.pentaho.ui.database.gwt.GwtDatabaseConnectionServlet" / -->
+  <script src="webcontext.js"/>
 </module>

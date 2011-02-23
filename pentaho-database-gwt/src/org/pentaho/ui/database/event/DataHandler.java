@@ -1392,4 +1392,13 @@ public class DataHandler extends AbstractXulEventHandler {
       }
     }
   }
+
+  @Bindable
+  public void showContextHelp(){
+    jsni_showContextHelp();
+  }
+
+  private native void jsni_showContextHelp()/*-{
+    $wnd.open($wnd.CONTEXT_PATH+"webHelp/Viewer.jsp?topic=webHelp/puc_db_help/admin_guide/concept_adding_a_jdbc_driver.html","webHelp","width=475,height=600,location=no,status=no,toolbar=no");
+  }-*/;
 }

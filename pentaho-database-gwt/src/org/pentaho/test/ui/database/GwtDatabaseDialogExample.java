@@ -56,7 +56,7 @@ public class GwtDatabaseDialogExample implements EntryPoint, DatabaseDialogListe
       }
       public void success(List<IDatabaseType> retVal) {
         databaseTypeHelper = new DatabaseTypeHelper(retVal);
-        dialog = new GwtDatabaseDialog(connService, databaseTypeHelper, "gwtdialog.xul", GwtDatabaseDialogExample.this); //$NON-NLS-1$
+        dialog = new GwtDatabaseDialog(connService, databaseTypeHelper, "testoverlay.xul", GwtDatabaseDialogExample.this); //$NON-NLS-1$
       }
     };
     connService.getDatabaseTypes(callback);
