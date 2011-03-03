@@ -62,8 +62,7 @@
 						<listbox id="connection-type-list" flex="6" rows="11" onselect="dataHandler.loadAccessData()">
 						</listbox>
             <hbox>
-              <spacer flex="1"/>
-              <label id="context_help" value="${DatabaseDialog.label.AddingDatabases}" onclick="dataHandler.showContextHelp()"/>
+              <label flex="1" id="context_help" value="${DatabaseDialog.label.AddingDatabases}" onclick="dataHandler.showContextHelp()"/>
               <image src="help_link.png" height="16" width="16" onclick="dataHandler.showContextHelp()"/>
             </hbox>
 						<label id="access-type-label" value="${DatabaseDialog.label.AccessMethod}" />
