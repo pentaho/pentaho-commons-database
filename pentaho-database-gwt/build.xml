@@ -1,7 +1,7 @@
 <project name="pentaho-database" basedir="." default="default" xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <!-- Import the subfloor-gwt.xml file which contains all the default tasks -->
-  <import file="build-res/subfloor-gwt.xml" />
+  <import file="build-res/subfloor.xml" />
 
   <!-- override the subfloor assemble target to do special plug-in assembly -->
   <!-- TODO: Standalone DatabaseDialog project with JSON calls 
@@ -61,4 +61,8 @@
       <include name="swt.jar" />
     </fileset>
   </path>
+  
+  <target name="resolve"
+          depends="resolve-default, resolve-test, resolve-codegen, ivy.check-releasable"
+          description="Retrieves all the dependent libraries" />
 </project>
