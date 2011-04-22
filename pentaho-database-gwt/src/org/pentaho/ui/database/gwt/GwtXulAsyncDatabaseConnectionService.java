@@ -41,6 +41,14 @@ public class GwtXulAsyncDatabaseConnectionService implements IXulAsyncDatabaseCo
       //this service object in your plugin.xml.  "gwtrpc" is the servlet 
       //that handles plugin gwt rpc requests in the BI Server.
       return  baseUrl + "gwtrpc/databaseConnectionService";
+    } else if (moduleUrl.indexOf("api") > -1) {//$NON-NLS-1$
+      //we are running the client in the context of a BI Server plugin, so 
+      //point the request to the GWT rpc proxy servlet
+      String baseUrl = moduleUrl.substring(0, moduleUrl.indexOf("api"));//$NON-NLS-1$
+      //NOTE: the dispatch URL ("connectionService") must match the bean id for 
+      //this service object in your plugin.xml.  "gwtrpc" is the servlet 
+      //that handles plugin gwt rpc requests in the BI Server.
+      return baseUrl + "gwtrpc/databaseConnectionService";//$NON-NLS-1$
     }
     //we are running this client in hosted mode, so point to the servlet 
     //defined in war/WEB-INF/web.xml
