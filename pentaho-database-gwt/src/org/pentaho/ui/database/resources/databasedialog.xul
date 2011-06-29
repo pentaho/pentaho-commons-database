@@ -235,9 +235,12 @@
 	<!--  ###############################################################################  -->
 	<hbox id="test-button-box">
 		<label id="spacer-label" flex="10" />
-		<button id="test-button" label="${DatabaseDialog.button.Test}" flex="1" onclick="dataHandler.testDatabaseConnection()" />
+		<vbox flex="1">
+			<label id="spacer-label" flex="1" />
+			<button id="test-button" label="${DatabaseDialog.button.Test}" onclick="dataHandler.testDatabaseConnection()"/>	
+			<label id="spacer-label" flex="1" />
+		</vbox>
 		<label id="spacer-label" flex="10" />
-		
 	</hbox>
 	</vbox>
 
