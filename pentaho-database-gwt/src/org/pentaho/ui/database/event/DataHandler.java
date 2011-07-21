@@ -1399,6 +1399,6 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   private native void jsni_showContextHelp()/*-{
-    $wnd.open($wnd.CONTEXT_PATH+"webHelp/Viewer.jsp?topic=webHelp/admin_guide/concept_adding_a_jdbc_driver.html","webHelp","width=475,height=600,location=no,status=no,toolbar=no");
+    $wnd.open($wnd.CONTEXT_PATH+"webHelp/Viewer.jsp?topic=webHelp/concept_adding_a_jdbc_driver.html","webHelp","width=475,height=600,location=no,status=no,toolbar=no");
   }-*/;
 }
