@@ -11,10 +11,7 @@ import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.gwt.GwtXulDomContainer;
 import org.pentaho.ui.xul.gwt.GwtXulRunner;
 import org.pentaho.ui.xul.gwt.util.AsyncXulLoader;
-import org.pentaho.ui.xul.gwt.util.EventHandlerWrapper;
 import org.pentaho.ui.xul.gwt.util.IXulLoaderCallback;
-
-import com.google.gwt.core.client.GWT;
 
 public class GwtDatabaseDialog {
   

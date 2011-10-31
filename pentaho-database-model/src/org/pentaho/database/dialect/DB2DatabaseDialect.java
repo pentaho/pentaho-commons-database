@@ -1,26 +1,28 @@
 package org.pentaho.database.dialect;
 
+import org.pentaho.database.DatabaseDialectException;
+import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
-import org.pentaho.di.core.Const;
-import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.row.ValueMetaInterface;
 
 public class DB2DatabaseDialect extends AbstractDatabaseDialect {
-  private static final IDatabaseType DBTYPE = 
-    new DatabaseType(
-        "IBM DB2",
-        "DB2",
-        DatabaseAccessType.getList(
-            DatabaseAccessType.NATIVE, 
-            DatabaseAccessType.ODBC, 
-            DatabaseAccessType.JNDI
-        ), 
-        50000, 
-        null
-    );
+    private static final IDatabaseType DBTYPE = 
+      new DatabaseType(
+          "IBM DB2",
+          "DB2",
+          DatabaseAccessType.getList(
+              DatabaseAccessType.NATIVE, 
+              DatabaseAccessType.ODBC, 
+              DatabaseAccessType.JNDI
+          ), 
+          50000, 
+          null
+      );    
+    
+  public DB2DatabaseDialect() {
+  }
 
   public IDatabaseType getDatabaseType() {
     return DBTYPE;
@@ -43,7 +45,7 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
   }
   
   @Override
-  public String getURL(IDatabaseConnection connection)
+  public String getURL(IDatabaseConnection connection) throws DatabaseDialectException
     {
     if (connection.getAccessType()==DatabaseAccessType.ODBC) {
       return "jdbc:odbc:"+connection.getDatabaseName();
@@ -86,7 +88,7 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to add a column to the specified table
    */
   @Override
-  public String getAddColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getAddColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     return "ALTER TABLE "+tablename+" ADD COLUMN "+getFieldDefinition(v, tk, pk, use_autoinc, true, false);
   }
@@ -102,9 +104,9 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to drop a column from the specified table
    */
   @Override
-  public String getDropColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getDropColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
-    return "ALTER TABLE "+tablename+" DROP COLUMN "+v.getName()+Const.CR;
+    return "ALTER TABLE "+tablename+" DROP COLUMN "+v.getName()+CR;
   }
 
   /**
@@ -118,16 +120,16 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to modify a column in the specified table
    */
   @Override
-  public String getModifyColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getModifyColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     String retval="";
-    retval+="ALTER TABLE "+tablename+" DROP COLUMN "+v.getName()+Const.CR+";"+Const.CR;
+    retval+="ALTER TABLE "+tablename+" DROP COLUMN "+v.getName()+CR+";"+CR;
     retval+="ALTER TABLE "+tablename+" ADD COLUMN "+getFieldDefinition(v, tk, pk, use_autoinc, true, false);
     return retval;
   }
 
   @Override
-  public String getFieldDefinition(ValueMetaInterface v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
+  public String getFieldDefinition(IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
   {
     String retval="";
     
@@ -140,10 +142,10 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
     int type         = v.getType();
     switch(type)
     {
-    case ValueMetaInterface.TYPE_DATE   : retval+="TIMESTAMP"; break;
-    case ValueMetaInterface.TYPE_BOOLEAN: retval+="CHARACTER(1)"; break;
-    case ValueMetaInterface.TYPE_NUMBER :
-        case ValueMetaInterface.TYPE_BIGNUMBER: 
+    case IValueMeta.TYPE_DATE   : retval+="TIMESTAMP"; break;
+    case IValueMeta.TYPE_BOOLEAN: retval+="CHARACTER(1)"; break;
+    case IValueMeta.TYPE_NUMBER :
+        case IValueMeta.TYPE_BIGNUMBER: 
       if (fieldname.equalsIgnoreCase(tk) && use_autoinc) // Technical key: auto increment field!
       {
         retval+="BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1, NOCACHE)";
@@ -165,7 +167,7 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
         }
       }
       break;
-    case ValueMetaInterface.TYPE_INTEGER: 
+    case IValueMeta.TYPE_INTEGER: 
       if (fieldname.equalsIgnoreCase(tk) && use_autoinc) // Technical key: auto increment field!
       {
         retval+="INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 0, INCREMENT BY 1, NOCACHE)";
@@ -175,8 +177,8 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
         retval+="INTEGER";
       }
       break;      
-    case ValueMetaInterface.TYPE_STRING:
-      if (length>getMaxVARCHARLength() || length>=DatabaseMeta.CLOB_LENGTH)
+    case IValueMeta.TYPE_STRING:
+      if (length>getMaxVARCHARLength() || length>=CLOB_LENGTH)
       {
         retval+="CLOB";
       }
@@ -195,8 +197,8 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
 
       }
             break;
-       case ValueMetaInterface.TYPE_BINARY:
-      if (length>getMaxVARCHARLength() || length>=DatabaseMeta.CLOB_LENGTH)
+       case IValueMeta.TYPE_BINARY:
+      if (length>getMaxVARCHARLength() || length>=CLOB_LENGTH)
       {
         retval+="BLOB("+length+")";
       }
@@ -217,7 +219,7 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
       break;
     }
 
-    if (add_cr) retval+=Const.CR;
+    if (add_cr) retval+=CR;
     
     return retval;
   }
@@ -300,7 +302,7 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
       String sql="";
       for (int i=0;i<tableNames.length;i++)
       {
-          sql+="LOCK TABLE "+tableNames[i]+" IN SHARE MODE;"+Const.CR;
+          sql+="LOCK TABLE "+tableNames[i]+" IN SHARE MODE;"+CR;
       }
       return sql;
   }

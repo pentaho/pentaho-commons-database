@@ -1,12 +1,11 @@
 package org.pentaho.database.dialect;
 
+import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
-import org.pentaho.di.core.Const;
-import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.row.ValueMetaInterface;
+
 
 public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
 
@@ -23,6 +22,9 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
         "http://jdbc.postgresql.org/documentation/83/connect.html#connection-parameters"
     );
   
+  public PostgreSQLDatabaseDialect() {
+    
+  }
   public IDatabaseType getDatabaseType() {
     return DBTYPE;
   }
@@ -195,7 +197,7 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to add a column to the specified table
    */
   @Override
-  public String getAddColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getAddColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     return "ALTER TABLE "+tablename+" ADD COLUMN "+getFieldDefinition(v, tk, pk, use_autoinc, true, false);
   }
@@ -211,9 +213,9 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to drop a column from the specified table
    */
   @Override
-  public String getDropColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getDropColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
-    return "ALTER TABLE "+tablename+" DROP COLUMN "+v.getName()+Const.CR;
+    return "ALTER TABLE "+tablename+" DROP COLUMN "+v.getName()+CR;
   }
 
   /**
@@ -227,16 +229,16 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to modify a column in the specified table
    */
   @Override
-  public String getModifyColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getModifyColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     String retval="";
-    retval+="ALTER TABLE "+tablename+" DROP COLUMN "+v.getName()+Const.CR+";"+Const.CR;
+    retval+="ALTER TABLE "+tablename+" DROP COLUMN "+v.getName()+CR+";"+CR;
     retval+="ALTER TABLE "+tablename+" ADD COLUMN "+getFieldDefinition(v, tk, pk, use_autoinc, true, false);
     return retval;
   }
 
   @Override
-  public String getFieldDefinition(ValueMetaInterface v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
+  public String getFieldDefinition(IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
   {
     String retval="";
     
@@ -249,17 +251,17 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
     int type         = v.getType();
     switch(type)
     {
-    case ValueMetaInterface.TYPE_DATE   : retval+="TIMESTAMP"; break;
-    case ValueMetaInterface.TYPE_BOOLEAN: 
+    case IValueMeta.TYPE_DATE   : retval+="TIMESTAMP"; break;
+    case IValueMeta.TYPE_BOOLEAN: 
       if (supportsBooleanDataType()) {
         retval+="BOOLEAN"; 
       } else {
         retval+="CHAR(1)";
       }
       break;
-    case ValueMetaInterface.TYPE_NUMBER : 
-    case ValueMetaInterface.TYPE_INTEGER: 
-        case ValueMetaInterface.TYPE_BIGNUMBER: 
+    case IValueMeta.TYPE_NUMBER : 
+    case IValueMeta.TYPE_INTEGER: 
+        case IValueMeta.TYPE_BIGNUMBER: 
       if (fieldname.equalsIgnoreCase(tk) || // Technical key
           fieldname.equalsIgnoreCase(pk)    // Primary key
           ) 
@@ -300,8 +302,8 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
         }
       }
       break;
-    case ValueMetaInterface.TYPE_STRING:
-      if (length<1 || length>=DatabaseMeta.CLOB_LENGTH)
+    case IValueMeta.TYPE_STRING:
+      if (length<1 || length>=CLOB_LENGTH)
       {
         retval+="TEXT";
       }
@@ -315,7 +317,7 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
       break;
     }
     
-    if (add_cr) retval+=Const.CR;
+    if (add_cr) retval+=CR;
     
     return retval;
   }
@@ -444,7 +446,7 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
           if (i>0) sql+=", ";
           sql+=tableNames[i]+" ";
       }
-      sql+="IN ACCESS EXCLUSIVE MODE;"+Const.CR;
+      sql+="IN ACCESS EXCLUSIVE MODE;"+CR;
 
       return sql;
   }

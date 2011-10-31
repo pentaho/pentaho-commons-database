@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.pentaho.database.model.DatabaseConnectionPoolParameter;
 import org.pentaho.database.model.IDatabaseConnection;
-import org.pentaho.database.model.IDatabaseType;
 import org.pentaho.database.service.IDatabaseConnectionService;
 import org.pentaho.ui.database.services.IXulAsyncDatabaseConnectionService;
 import org.pentaho.ui.xul.XulServiceCallback;
@@ -36,8 +35,9 @@ public class XulAsyncDatabaseConnectionService implements IXulAsyncDatabaseConne
     callback.success(service.testConnection(connection));
   }
 
-  public void getDatabaseTypes(XulServiceCallback<List<IDatabaseType>> callback) {
-    callback.success(service.getDatabaseTypes());
+  public void createDatabaseConnection(String driver, String url, XulServiceCallback<IDatabaseConnection> callback) {
+    callback.success(service.createDatabaseConnection(driver, url));
+    
   }
 
 }

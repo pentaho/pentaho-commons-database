@@ -1,14 +1,12 @@
 package org.pentaho.database.dialect;
 
+import org.pentaho.database.DatabaseDialectException;
+import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
-import org.pentaho.di.core.Const;
-import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.exception.KettleDatabaseException;
-import org.pentaho.di.core.row.ValueMetaInterface;
 
 public class GenericDatabaseDialect extends AbstractDatabaseDialect {
 
@@ -27,6 +25,10 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
         -1, 
         null
     );
+
+  
+  public GenericDatabaseDialect() {
+  }
   
   public IDatabaseType getDatabaseType() {
     return DBTYPE;
@@ -45,13 +47,13 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to add a column to the specified table
    */
   @Override
-  public String getAddColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getAddColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     return "ALTER TABLE "+tablename+" ADD "+getFieldDefinition(v, tk, pk, use_autoinc, true, false);
   }
 
   @Override
-  public String getFieldDefinition(ValueMetaInterface v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
+  public String getFieldDefinition(IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
   {
     String retval="";
     
@@ -64,17 +66,17 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
     int type         = v.getType();
     switch(type)
     {
-    case ValueMetaInterface.TYPE_DATE   : retval+="TIMESTAMP"; break;
-    case ValueMetaInterface.TYPE_BOOLEAN:
+    case IValueMeta.TYPE_DATE   : retval+="TIMESTAMP"; break;
+    case IValueMeta.TYPE_BOOLEAN:
       if (supportsBooleanDataType()) {
         retval+="BOOLEAN"; 
       } else {
         retval+="CHAR(1)";
       }
       break;
-    case ValueMetaInterface.TYPE_NUMBER : 
-    case ValueMetaInterface.TYPE_INTEGER: 
-        case ValueMetaInterface.TYPE_BIGNUMBER: 
+    case IValueMeta.TYPE_NUMBER : 
+    case IValueMeta.TYPE_INTEGER: 
+        case IValueMeta.TYPE_BIGNUMBER: 
       if (fieldname.equalsIgnoreCase(tk) || // Technical key
           fieldname.equalsIgnoreCase(pk)    // Primary key
           ) 
@@ -115,8 +117,8 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
         }
       }
       break;
-    case ValueMetaInterface.TYPE_STRING:
-      if (length>=DatabaseMeta.CLOB_LENGTH)
+    case IValueMeta.TYPE_STRING:
+      if (length>=CLOB_LENGTH)
       {
         retval+="TEXT";
       }
@@ -139,7 +141,7 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
       break;
     }
     
-    if (add_cr) retval+=Const.CR;
+    if (add_cr) retval+=CR;
     
     return retval;
   }
@@ -155,7 +157,7 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to modify a column in the specified table
    */
   @Override
-  public String getModifyColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getModifyColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     return "ALTER TABLE "+tablename+" MODIFY "+getFieldDefinition(v, tk, pk, use_autoinc, true, false);
   }
@@ -173,7 +175,7 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
   }
 
   @Override
-  public String getURL(IDatabaseConnection connection) throws KettleDatabaseException {
+  public String getURL(IDatabaseConnection connection) throws DatabaseDialectException {
     if (connection.getAccessType() == DatabaseAccessType.NATIVE)
     {
         String url = connection.getAttributes().get(ATTRIBUTE_CUSTOM_URL);
@@ -187,7 +189,7 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
         return "jdbc:odbc:"+connection.getDatabaseName();
     }
   }
-  
+
   /**
    * The Generic datasource should not attempt to append options to the url.
    */

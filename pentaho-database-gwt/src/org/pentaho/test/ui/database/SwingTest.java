@@ -5,6 +5,7 @@ import java.io.InputStream;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.pentaho.database.service.DatabaseConnectionService;
+import org.pentaho.database.service.DatabaseDialectService;
 import org.pentaho.database.util.DatabaseTypeHelper;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.ui.database.DatabaseConnectionDialog;
@@ -56,7 +57,8 @@ public class SwingTest {
 			
 			// core services
 			DatabaseConnectionService connectionService = new DatabaseConnectionService();
-	    DatabaseTypeHelper databaseTypeHelper = new DatabaseTypeHelper(connectionService.getDatabaseTypes());
+			DatabaseDialectService dialectService = new DatabaseDialectService();
+	    DatabaseTypeHelper databaseTypeHelper = new DatabaseTypeHelper(dialectService.getDatabaseTypes());
 	    
 	    // ui services
 	    XulAsyncDatabaseConnectionService service = new XulAsyncDatabaseConnectionService(connectionService);

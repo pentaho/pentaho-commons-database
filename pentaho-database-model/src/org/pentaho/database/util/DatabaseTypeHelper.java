@@ -14,27 +14,6 @@ public class DatabaseTypeHelper {
   Map<String, IDatabaseType> databaseTypeByName = null;
   Map<String, IDatabaseType> databaseTypeByShortName = null;
   
-// consider moving this to a separate service
-//  Map<IDatabaseType, IDatabaseDialect> typeToDialectMap = new HashMap<IDatabaseType, IDatabaseDialect>();
-
-//public void registerDatabaseType(IDatabaseType databaseType, Object /*IDatabaseDialect*/ databaseDialect) {
-//databaseTypes.add(databaseType);
-////typeToDialectMap.put(databaseType, databaseDialect);
-//}
-
-//public IDatabaseDialect getDialect(DatabaseConnection connection) {
-//return typeToDialectMap.get(connection.getDatabaseType());
-//}
-
-  
-//  private List<DatabaseAccessType> getList(DatabaseAccessType... accessTypes) {
-//    ArrayList<DatabaseAccessType> list = new ArrayList<DatabaseAccessType>();
-//    for (DatabaseAccessType accessType : accessTypes) {
-//      list.add(accessType);
-//    }
-//    return list;
-//  }
-  
   public DatabaseTypeHelper(List<IDatabaseType> databaseTypes) {
     this.databaseTypes = databaseTypes;
   }
@@ -48,9 +27,9 @@ public class DatabaseTypeHelper {
       dbTypeByName.put(dbtype.getName(), dbtype);
       dbTypeByShortName.put(dbtype.getShortName(), dbtype);
     }
-    databaseTypeNames = /*Collections.unmodifiableList(*/ dbTypeNames; //);
-    databaseTypeByName = /*Collections.unmodifiableMap(*/ dbTypeByName; //);
-    databaseTypeByShortName = /*Collections.unmodifiableMap(*/ dbTypeByShortName; //);
+    databaseTypeNames = dbTypeNames; //);
+    databaseTypeByName =  dbTypeByName; //);
+    databaseTypeByShortName =  dbTypeByShortName; //);
     
   }
   

@@ -1,11 +1,11 @@
 package org.pentaho.database.dialect;
 
+import org.pentaho.database.DatabaseDialectException;
+import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
-import org.pentaho.di.core.Const;
-import org.pentaho.di.core.row.ValueMetaInterface;
 
 public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
 
@@ -21,7 +21,9 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
         3306, 
         "http://dev.mysql.com/doc/refman/5.0/en/connector-j-reference-configuration-properties.html"
     );
-  
+  public MySQLDatabaseDialect() {
+    
+  }
   public IDatabaseType getDatabaseType() {
     return DBTYPE;
   }
@@ -41,7 +43,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to add a column to the specified table
    */
   @Override
-  public String getAddColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getAddColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     return "ALTER TABLE "+tablename+" ADD "+getFieldDefinition(v, tk, pk, use_autoinc, true, false);
   }
@@ -58,13 +60,13 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to modify a column in the specified table
    */
   @Override
-  public String getModifyColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getModifyColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     return "ALTER TABLE "+tablename+" MODIFY "+getFieldDefinition(v, tk, pk, use_autoinc, true, false);
   }
 
   @Override
-  public String getFieldDefinition(ValueMetaInterface v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
+  public String getFieldDefinition(IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
   {
     String retval="";
     
@@ -77,8 +79,8 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
     int type         = v.getType();
     switch(type)
     {
-    case ValueMetaInterface.TYPE_DATE      : retval+="DATETIME"; break;
-    case ValueMetaInterface.TYPE_BOOLEAN   : 
+    case IValueMeta.TYPE_DATE      : retval+="DATETIME"; break;
+    case IValueMeta.TYPE_BOOLEAN   : 
       if (supportsBooleanDataType()) {
         retval+="BOOLEAN"; 
       } else {
@@ -86,9 +88,9 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
       }
       break;
 
-    case ValueMetaInterface.TYPE_NUMBER    :
-    case ValueMetaInterface.TYPE_INTEGER   : 
-        case ValueMetaInterface.TYPE_BIGNUMBER : 
+    case IValueMeta.TYPE_NUMBER    :
+    case IValueMeta.TYPE_INTEGER   : 
+        case IValueMeta.TYPE_BIGNUMBER : 
       if (fieldname.equalsIgnoreCase(tk) || // Technical key
           fieldname.equalsIgnoreCase(pk)    // Primary key
           ) 
@@ -141,7 +143,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
         }
       }
       break;
-    case ValueMetaInterface.TYPE_STRING:
+    case IValueMeta.TYPE_STRING:
       if (length>0)
       {
         if (length==1) retval+="CHAR(1)";
@@ -155,7 +157,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
         retval+="TINYTEXT";
       }
       break;
-        case ValueMetaInterface.TYPE_BINARY:
+        case IValueMeta.TYPE_BINARY:
             retval+="LONGBLOB";
             break;
     default:
@@ -163,7 +165,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
       break;
     }
     
-    if (add_cr) retval+=Const.CR;
+    if (add_cr) retval+=CR;
     
     return retval;
   }
@@ -216,14 +218,14 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
   }
 
   @Override
-  public String getURL(IDatabaseConnection connection)
+  public String getURL(IDatabaseConnection connection) throws DatabaseDialectException
     {
     if (connection.getAccessType()==DatabaseAccessType.ODBC) {
       return "jdbc:odbc:"+connection.getDatabaseName();
     }
     else
     {
-            if (Const.isEmpty(connection.getDatabasePort()))
+            if (isEmpty(connection.getDatabasePort()))
             {
                 return getNativeJdbcPre() + connection.getHostname()+"/"+connection.getDatabaseName();
             }
@@ -302,7 +304,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
           if (i>0) sql+=", ";
           sql+=tableNames[i]+" WRITE";
       }
-      sql+=";"+Const.CR;
+      sql+=";"+CR;
 
       return sql;
   }

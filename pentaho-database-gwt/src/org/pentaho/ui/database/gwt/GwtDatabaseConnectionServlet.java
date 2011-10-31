@@ -5,7 +5,6 @@ import java.util.List;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseConnectionPoolParameter;
 import org.pentaho.database.model.IDatabaseConnection;
-import org.pentaho.database.model.IDatabaseType;
 import org.pentaho.database.service.DatabaseConnectionService;
 import org.pentaho.database.service.IDatabaseConnectionService;
 
@@ -31,7 +30,7 @@ public class GwtDatabaseConnectionServlet extends RemoteServiceServlet implement
     return null;
   }
 
-  public List<IDatabaseType> getDatabaseTypes() {
-    return service.getDatabaseTypes();
+  public IDatabaseConnection createDatabaseConnection(String driver, String url) {
+    return service.createDatabaseConnection(driver, url);
   }
 }

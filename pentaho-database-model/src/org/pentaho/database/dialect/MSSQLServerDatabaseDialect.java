@@ -1,11 +1,12 @@
 package org.pentaho.database.dialect;
 
+import org.pentaho.database.DatabaseDialectException;
+import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
-import org.pentaho.di.core.Const;
-import org.pentaho.di.core.row.ValueMetaInterface;
+
 
 public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
 
@@ -22,6 +23,10 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
         "http://jtds.sourceforge.net/faq.html#urlFormat"
     );
   
+  public MSSQLServerDatabaseDialect() {
+    
+  }
+  
   public IDatabaseType getDatabaseType() {
     return DBTYPE;
   }
@@ -37,7 +42,7 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
   }
   
   @Override
-  public String getURL(IDatabaseConnection connection)
+  public String getURL(IDatabaseConnection connection) throws DatabaseDialectException
     {
     if (connection.getAccessType()==DatabaseAccessType.ODBC) {
       return "jdbc:odbc:"+connection.getDatabaseName();
@@ -107,7 +112,7 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
       StringBuffer sql=new StringBuffer(128);
       for (int i=0;i<tableNames.length;i++)
       {
-          sql.append("SELECT top 0 * FROM ").append(tableNames[i]).append(" WITH (TABLOCKX, HOLDLOCK);").append(Const.CR);
+          sql.append("SELECT top 0 * FROM ").append(tableNames[i]).append(" WITH (TABLOCKX, HOLDLOCK);").append(CR);
       }
       return sql.toString();
   }
@@ -123,7 +128,7 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to add a column to the specified table
    */
   @Override
-  public String getAddColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getAddColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     return "ALTER TABLE "+tablename+" ADD "+getFieldDefinition(v, tk, pk, use_autoinc, true, false);
   }
@@ -139,7 +144,7 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to modify a column in the specified table
    */
   @Override
-  public String getModifyColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getModifyColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     return "ALTER TABLE "+tablename+" ALTER COLUMN "+getFieldDefinition(v, tk, pk, use_autoinc, true, false);
   }
@@ -155,13 +160,13 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to drop a column from the specified table
    */
   @Override
-  public String getDropColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getDropColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
-    return "ALTER TABLE "+tablename+" DROP COLUMN "+v.getName()+Const.CR;
+    return "ALTER TABLE "+tablename+" DROP COLUMN "+v.getName()+CR;
   }
 
   @Override
-  public String getFieldDefinition(ValueMetaInterface v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
+  public String getFieldDefinition(IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
   {
     String retval="";
     
@@ -174,17 +179,17 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
     int type         = v.getType();
     switch(type)
     {
-    case ValueMetaInterface.TYPE_DATE   : retval+="DATETIME"; break;
-    case ValueMetaInterface.TYPE_BOOLEAN:
+    case IValueMeta.TYPE_DATE   : retval+="DATETIME"; break;
+    case IValueMeta.TYPE_BOOLEAN:
       if (supportsBooleanDataType()) {
         retval+="BIT"; 
       } else {
         retval+="CHAR(1)";
       }
       break;
-    case ValueMetaInterface.TYPE_NUMBER :
-    case ValueMetaInterface.TYPE_INTEGER: 
-        case ValueMetaInterface.TYPE_BIGNUMBER: 
+    case IValueMeta.TYPE_NUMBER :
+    case IValueMeta.TYPE_INTEGER: 
+        case IValueMeta.TYPE_BIGNUMBER: 
       if (fieldname.equalsIgnoreCase(tk) ||  // Technical key
           fieldname.equalsIgnoreCase(pk)     // Primary key
           ) 
@@ -234,7 +239,7 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
                 }
       }
       break;
-    case ValueMetaInterface.TYPE_STRING:
+    case IValueMeta.TYPE_STRING:
       if (length<8000)
       {
         //  Maybe use some default DB String length in case length<=0
@@ -257,7 +262,7 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
       break;
     }
     
-    if (add_cr) retval+=Const.CR;
+    if (add_cr) retval+=CR;
     
     return retval;
   }

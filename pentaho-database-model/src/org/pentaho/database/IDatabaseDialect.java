@@ -1,12 +1,15 @@
-package org.pentaho.database.dialect;
+package org.pentaho.database;
 
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
-import org.pentaho.di.core.exception.KettleDatabaseException;
-import org.pentaho.di.core.row.ValueMetaInterface;
+
 
 public interface IDatabaseDialect {
 
+  /**
+   * Use this length in a String value to indicate that you want to use a CLOB in stead of a normal text field.
+   */
+  public static final int CLOB_LENGTH = 9999999;
   /**
    * @return the default database port number
    */
@@ -156,7 +159,7 @@ public interface IDatabaseDialect {
    * @param semicolon whether or not to add a semi-colon behind the statement.
    * @return the SQL statement to drop a column from the specified table
    */
-  String getDropColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc,
+  String getDropColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc,
       String pk, boolean semicolon);
 
   /**
@@ -298,19 +301,19 @@ public interface IDatabaseDialect {
   
   String getDriverClass(IDatabaseConnection connection);
   
-  String getURL(IDatabaseConnection connection)  throws KettleDatabaseException;
+  String getURL(IDatabaseConnection connection) throws DatabaseDialectException;
   
-  String getURLWithExtraOptions(IDatabaseConnection connection) throws KettleDatabaseException;
+  String getURLWithExtraOptions(IDatabaseConnection connection) throws DatabaseDialectException;
   
   // String getSQLQueryColumnFields(String columnname, String tableName);
   
   boolean supportsOptionsInURL();
   
-  String getAddColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon);
+  String getAddColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon);
   
-  String getModifyColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon);
+  String getModifyColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon);
   
-  String getFieldDefinition(ValueMetaInterface v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr);
+  String getFieldDefinition(IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr);
   
   String getExtraOptionsHelpText();
   

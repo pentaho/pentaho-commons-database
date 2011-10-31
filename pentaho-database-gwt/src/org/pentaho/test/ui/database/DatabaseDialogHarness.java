@@ -15,7 +15,9 @@ import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.PartitionDatabaseMeta;
 import org.pentaho.database.service.DatabaseConnectionService;
+import org.pentaho.database.service.DatabaseDialectService;
 import org.pentaho.database.service.IDatabaseConnectionService;
+import org.pentaho.database.service.IDatabaseDialectService;
 import org.pentaho.database.util.DatabaseTypeHelper;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.ui.database.DatabaseConnectionDialog;
@@ -30,7 +32,8 @@ public class DatabaseDialogHarness {
   IDatabaseConnection database = null;
 
   IDatabaseConnectionService service = new DatabaseConnectionService();
-  DatabaseTypeHelper databaseTypeHelper = new DatabaseTypeHelper(service.getDatabaseTypes());
+  IDatabaseDialectService dialectService = new DatabaseDialectService();
+  DatabaseTypeHelper databaseTypeHelper = new DatabaseTypeHelper(dialectService.getDatabaseTypes());
   
   public static void main(String[] args) throws Exception {
 //    dialog.setDatabaseConnection(conn);

@@ -1,22 +1,29 @@
 package org.pentaho.database.dialect;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.pentaho.database.DatabaseDialectException;
+import org.pentaho.database.IDatabaseDialect;
+import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.IDatabaseConnection;
-import org.pentaho.di.core.Const;
-import org.pentaho.di.core.exception.KettleDatabaseException;
-import org.pentaho.di.core.row.ValueMetaInterface;
 
-public abstract class AbstractDatabaseDialect implements IDatabaseDialect {
+
+public abstract class AbstractDatabaseDialect implements IDatabaseDialect, Serializable {
 
   /**
    * Use this length in a String value to indicate that you want to use a CLOB in stead of a normal text field.
    */
   public static final int CLOB_LENGTH = 9999999;
 
+  /**
+   * CR: operating systems specific Carriage Return
+   */
+  //public static final String CR = System.getProperty("line.separator");
+  public static final String CR = " ";
   
   /* 
    ********************************************************************************
@@ -230,9 +237,9 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect {
   /* (non-Javadoc)
    * @see org.pentaho.database.dialect.IDatabaseDialect#getDropColumnStatement(java.lang.String, org.pentaho.di.core.row.ValueMetaInterface, java.lang.String, boolean, java.lang.String, boolean)
    */
-  public String getDropColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getDropColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
-    return "ALTER TABLE "+tablename+" DROP "+v.getName()+Const.CR;
+    return "ALTER TABLE "+tablename+" DROP "+v.getName()+ CR;
   }
 
   /* (non-Javadoc)
@@ -458,9 +465,9 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect {
       return true;
     }
 
-    public abstract String getURL(IDatabaseConnection connection)  throws KettleDatabaseException;
+    public abstract String getURL(IDatabaseConnection connection) throws DatabaseDialectException;
 
-    public String getURLWithExtraOptions(IDatabaseConnection connection) throws KettleDatabaseException {
+    public String getURLWithExtraOptions(IDatabaseConnection connection)  throws DatabaseDialectException{
       StringBuffer url = new StringBuffer(getURL(connection));
       if (supportsOptionsInURL()) {
           // OK, now add all the options...
@@ -490,7 +497,7 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect {
                           }
 
                           url.append(parameter);
-                          if (!Const.isEmpty(value)) {
+                          if (!isEmpty(value)) {
                               url.append(valueSeparator).append(value);
                           }
                           first=false;
@@ -507,11 +514,11 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect {
     
     // public abstract String getSQLQueryColumnFields(String columnname, String tableName);
     
-    public abstract String getAddColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon);
+    public abstract String getAddColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon);
     
-    public abstract String getModifyColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon);
+    public abstract String getModifyColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon);
 
-    public abstract String getFieldDefinition(ValueMetaInterface v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr);
+    public abstract String getFieldDefinition(IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr);
     
     public String getExtraOptionsHelpText() {
       return getDatabaseType().getExtraOptionsHelpUrl();
@@ -644,5 +651,35 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect {
     public String getExtraOptionIndicator()
     {
         return ";";
+    }
+    
+    /**
+     * Check if the string supplied is empty.  A String is empty when it is null or when the length is 0
+     * @param string The string to check
+     * @return true if the string supplied is empty
+     */
+    public static final boolean isEmpty(String string)
+    {
+      return string==null || string.length()==0;
+    }
+
+
+    /**
+     * Convert a String into an integer.  If the conversion fails, assign a default value.
+     * @param str The String to convert to an integer 
+     * @param def The default value
+     * @return The converted value or the default.
+     */
+    public static final int toInt(String str, int def)
+    {
+      int retval;
+      try
+      {
+        retval = Integer.parseInt(str);
+      } catch (Exception e)
+      {
+        retval = def;
+      }   
+      return retval;
     }
 }

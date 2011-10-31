@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.pentaho.database.model.DatabaseConnectionPoolParameter;
 import org.pentaho.database.model.IDatabaseConnection;
-import org.pentaho.database.model.IDatabaseType;
 import org.pentaho.gwt.widgets.login.client.AuthenticatedGwtServiceUtil;
 import org.pentaho.gwt.widgets.login.client.IAuthenticatedGwtCommand;
 import org.pentaho.ui.database.services.IXulAsyncDatabaseConnectionService;
@@ -105,20 +104,22 @@ public class GwtXulAsyncDatabaseConnectionService implements IXulAsyncDatabaseCo
     });
   }
 
-  public void getDatabaseTypes(final XulServiceCallback<List<IDatabaseType>> callback) {
+
+  @Override
+  public void createDatabaseConnection(final String driver, final String url, final XulServiceCallback<IDatabaseConnection> callback) {
     AuthenticatedGwtServiceUtil.invokeCommand(new IAuthenticatedGwtCommand() {
       public void execute(AsyncCallback callback) {
-        SERVICE.getDatabaseTypes(callback);
+        SERVICE.createDatabaseConnection(driver, url, callback);
       }
-    }, new AsyncCallback<List<IDatabaseType>>() {
+    }, new AsyncCallback<IDatabaseConnection>() {
       
       public void onFailure(Throwable arg0) {
         callback.error("error testing connection: ", arg0);//$NON-NLS-1$
       }
-      public void onSuccess(List<IDatabaseType> arg0) {
+      public void onSuccess(IDatabaseConnection arg0) {
         callback.success(arg0);
       }
     });
-
   }
+
 }

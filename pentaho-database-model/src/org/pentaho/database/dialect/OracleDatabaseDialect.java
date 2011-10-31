@@ -1,14 +1,12 @@
 package org.pentaho.database.dialect;
 
+import org.pentaho.database.DatabaseDialectException;
+import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
-import org.pentaho.di.core.Const;
-import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.exception.KettleDatabaseException;
-import org.pentaho.di.core.row.ValueMetaInterface;
 
 public class OracleDatabaseDialect extends AbstractDatabaseDialect {
   
@@ -26,6 +24,9 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
         "http://download.oracle.com/docs/cd/B19306_01/java.102/b14355/urls.htm#i1006362"
       );
   
+  public OracleDatabaseDialect() {
+    
+  }
   public IDatabaseType getDatabaseType() {
     return DBTYPE;
   }
@@ -88,7 +89,7 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
   }
   
   @Override
-  public String getURL(IDatabaseConnection databaseConnection) throws KettleDatabaseException
+  public String getURL(IDatabaseConnection databaseConnection) throws DatabaseDialectException
   {
     String databaseName = databaseConnection.getDatabaseName();
     String port = databaseConnection.getDatabasePort();
@@ -108,8 +109,8 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
           (databaseName.startsWith("/") || databaseName.startsWith(":"))) {
         return getNativeJdbcPre() + hostname + ":" + port + databaseName;
       }
-      else if (Const.isEmpty(port) && 
-          (Const.isEmpty(port) || port.equals("-1"))) {  //-1 when file based stored connection
+      else if (isEmpty(port) && 
+          (isEmpty(port) || port.equals("-1"))) {  //-1 when file based stored connection
         // support RAC with a self defined URL in databaseName like
         // (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = host1-vip)(PORT = 1521))(ADDRESS = (PROTOCOL = TCP)(HOST = host2-vip)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(SERVICE_NAME = db-service)(FAILOVER_MODE =(TYPE = SELECT)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))
         // or (DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=PRIMARY_NODE_HOSTNAME)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=SECONDARY_NODE_HOSTNAME)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=DATABASE_SERVICENAME)))
@@ -137,7 +138,7 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
       }
       else
       {
-          throw new KettleDatabaseException("Unable to construct a JDBC URL: at least the database name must be specified");
+          throw new DatabaseDialectException("Unable to construct a JDBC URL: at least the database name must be specified");
       }
     }
   }
@@ -226,7 +227,7 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to add a column to the specified table
    */
   @Override
-  public String getAddColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getAddColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
     return "ALTER TABLE "+tablename+" ADD ( "+getFieldDefinition(v, tk, pk, use_autoinc, true, false)+" ) ";
   }
@@ -242,9 +243,9 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to drop a column from the specified table
    */
   @Override
-  public String getDropColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getDropColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
-    return "ALTER TABLE "+tablename+" DROP ( "+v.getName()+" ) "+Const.CR;
+    return "ALTER TABLE "+tablename+" DROP ( "+v.getName()+" ) "+CR;
   }
 
   /**
@@ -258,9 +259,9 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
    * @return the SQL statement to modify a column in the specified table
    */
   @Override
-  public String getModifyColumnStatement(String tablename, ValueMetaInterface v, String tk, boolean use_autoinc, String pk, boolean semicolon)
+  public String getModifyColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon)
   {
-        ValueMetaInterface tmpColumn = v.clone(); 
+        IValueMeta tmpColumn = v.clone(); 
         int threeoh = v.getName().length()>=30 ? 30 : v.getName().length();
         
         tmpColumn.setName(v.getName().substring(0,threeoh)+"_KTL"); // should always be less then 35
@@ -268,23 +269,23 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
         String sql="";
         
         // Create a new tmp column
-        sql+=getAddColumnStatement(tablename, tmpColumn, tk, use_autoinc, pk, semicolon)+";"+Const.CR;
+        sql+=getAddColumnStatement(tablename, tmpColumn, tk, use_autoinc, pk, semicolon)+";"+CR;
         // copy the old data over to the tmp column
-        sql+="UPDATE "+tablename+" SET "+tmpColumn.getName()+"="+v.getName()+";"+Const.CR;
+        sql+="UPDATE "+tablename+" SET "+tmpColumn.getName()+"="+v.getName()+";"+CR;
         // drop the old column
-        sql+=getDropColumnStatement(tablename, v, tk, use_autoinc, pk, semicolon)+";"+Const.CR;
+        sql+=getDropColumnStatement(tablename, v, tk, use_autoinc, pk, semicolon)+";"+CR;
         // create the wanted column
-        sql+=getAddColumnStatement(tablename, v, tk, use_autoinc, pk, semicolon)+";"+Const.CR;
+        sql+=getAddColumnStatement(tablename, v, tk, use_autoinc, pk, semicolon)+";"+CR;
         // copy the data from the tmp column to the wanted column (again)  
         // All this to avoid the rename clause as this is not supported on all Oracle versions
-        sql+="UPDATE "+tablename+" SET "+v.getName()+"="+tmpColumn.getName()+";"+Const.CR;
+        sql+="UPDATE "+tablename+" SET "+v.getName()+"="+tmpColumn.getName()+";"+CR;
         // drop the temp column
         sql+=getDropColumnStatement(tablename, tmpColumn, tk, use_autoinc, pk, semicolon);
         
         return sql;
   }
 
-  public String getFieldDefinition(ValueMetaInterface v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
+  public String getFieldDefinition(IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr)
   {
     StringBuffer retval=new StringBuffer(128);
     
@@ -297,10 +298,10 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
     int type         = v.getType();
     switch(type)
     {
-    case ValueMetaInterface.TYPE_DATE   : retval.append("DATE"); break;
-    case ValueMetaInterface.TYPE_BOOLEAN: retval.append("CHAR(1)"); break;
-    case ValueMetaInterface.TYPE_NUMBER : 
-        case ValueMetaInterface.TYPE_BIGNUMBER: 
+    case IValueMeta.TYPE_DATE   : retval.append("DATE"); break;
+    case IValueMeta.TYPE_BOOLEAN: retval.append("CHAR(1)"); break;
+    case IValueMeta.TYPE_NUMBER : 
+        case IValueMeta.TYPE_BIGNUMBER: 
       retval.append("NUMBER"); 
       if (length>0)
       {
@@ -312,11 +313,11 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
         retval.append(')');
       }
       break;
-    case ValueMetaInterface.TYPE_INTEGER:  
+    case IValueMeta.TYPE_INTEGER:  
       retval.append("INTEGER"); 
       break;      
-    case ValueMetaInterface.TYPE_STRING:
-      if (length>=DatabaseMeta.CLOB_LENGTH)
+    case IValueMeta.TYPE_STRING:
+      if (length>=CLOB_LENGTH)
       {
         retval.append("CLOB");
       }
@@ -341,7 +342,7 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
         }
       }
       break;
-        case ValueMetaInterface.TYPE_BINARY: // the BLOB can contain binary data.
+        case IValueMeta.TYPE_BINARY: // the BLOB can contain binary data.
             {
                 retval.append("BLOB");
             }
@@ -351,7 +352,7 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
       break;
     }
     
-    if (add_cr) retval.append(Const.CR);
+    if (add_cr) retval.append(CR);
     
     return retval.toString();
   }
@@ -393,7 +394,7 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
       StringBuffer sql=new StringBuffer(128);
       for (int i=0;i<tableNames.length;i++)
       {
-          sql.append("LOCK TABLE ").append(tableNames[i]).append(" IN EXCLUSIVE MODE;").append(Const.CR);
+          sql.append("LOCK TABLE ").append(tableNames[i]).append(" IN EXCLUSIVE MODE;").append(CR);
       }
       return sql.toString();
   }

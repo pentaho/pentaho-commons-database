@@ -1,5 +1,6 @@
 package org.pentaho.database.dialect;
 
+import org.pentaho.database.DatabaseDialectException;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseType;
@@ -25,6 +26,9 @@ public class MSSQLServerNativeDatabaseDialect extends MSSQLServerDatabaseDialect
         "http://msdn.microsoft.com/en-us/library/ms378428.aspx"
     );
   
+  public MSSQLServerNativeDatabaseDialect() {
+    
+  }
   public IDatabaseType getDatabaseType() {
     return DBTYPE;
   }
@@ -40,7 +44,7 @@ public class MSSQLServerNativeDatabaseDialect extends MSSQLServerDatabaseDialect
   }
 
   @Override
-  public String getURL(IDatabaseConnection connection)
+  public String getURL(IDatabaseConnection connection) throws DatabaseDialectException
     {
     if (connection.getAccessType()==DatabaseAccessType.ODBC) {
       return "jdbc:odbc:"+connection.getDatabaseName();
