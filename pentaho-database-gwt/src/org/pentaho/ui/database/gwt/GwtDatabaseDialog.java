@@ -116,7 +116,7 @@ public class GwtDatabaseDialog {
             public void overlayRemoved() {}
             public void xulLoaded(GwtXulRunner runner) {}
           };
-          AsyncXulLoader.loadOverlayFromUrl(GWT.getModuleBaseURL() + overlay, GWT.getModuleBaseURL() + overlayResource, container, callback2);
+          AsyncXulLoader.loadOverlayFromUrl(overlay, overlayResource, container, callback2);
         } else {
           dialog = (XulDialog) container.getDocumentRoot().getElementById("general-datasource-window"); //$NON-NLS-1$
           if (listener != null) {

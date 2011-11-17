@@ -9,7 +9,6 @@ import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
 import org.pentaho.database.util.DatabaseTypeHelper;
-import org.pentaho.ui.database.event.IMessages;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
