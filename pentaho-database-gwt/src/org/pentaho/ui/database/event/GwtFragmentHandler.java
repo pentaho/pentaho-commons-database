@@ -27,6 +27,8 @@ import org.pentaho.ui.xul.gwt.util.IXulLoaderCallback;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.stereotype.Bindable;
 
+import com.google.gwt.core.client.GWT;
+
 /**
  * Fragment handler deals with the logistics of replacing a portion of the dialog 
  * from a XUL fragment when the combination of database connection type and database 
@@ -105,7 +107,7 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
       };
       
       // this call will cache the individual overlays in a map within AsyncXulLoader
-      AsyncXulLoader.loadOverlayFromUrl(fragmentUri, "databasedialog", (GwtXulDomContainer)getXulDomContainer(), internalCallback, true);
+      AsyncXulLoader.loadOverlayFromUrl(GWT.getModuleBaseURL() + fragmentUri, GWT.getModuleBaseURL() + "databasedialog", (GwtXulDomContainer)getXulDomContainer(), internalCallback, true);
       
 //      fragmentContainer = this.xulDomContainer.loadFragment(fragmentUri, (Object)null); //messages.getBundle());
 //      XulComponent newGroup = fragmentContainer.getDocumentRoot().getFirstChild();
