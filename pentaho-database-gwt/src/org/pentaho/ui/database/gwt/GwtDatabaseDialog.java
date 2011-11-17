@@ -13,6 +13,8 @@ import org.pentaho.ui.xul.gwt.GwtXulRunner;
 import org.pentaho.ui.xul.gwt.util.AsyncXulLoader;
 import org.pentaho.ui.xul.gwt.util.IXulLoaderCallback;
 
+import com.google.gwt.core.client.GWT;
+
 public class GwtDatabaseDialog {
   
   protected IXulAsyncDatabaseConnectionService connService;
@@ -29,7 +31,7 @@ public class GwtDatabaseDialog {
     this.connService = connService;
     this.databaseTypeHelper = databaseTypeHelper;
     this.listener = listener;
-    AsyncXulLoader.loadXulFromUrl("databasedialog.xul", "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
+    AsyncXulLoader.loadXulFromUrl(GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
   }
   
   public GwtDatabaseDialog(IXulAsyncDatabaseConnectionService connService, DatabaseTypeHelper databaseTypeHelper, String overlay, DatabaseDialogListener listener) {
@@ -37,7 +39,7 @@ public class GwtDatabaseDialog {
     this.databaseTypeHelper = databaseTypeHelper;
     this.overlay = overlay;
     this.listener = listener;
-    AsyncXulLoader.loadXulFromUrl("databasedialog.xul", "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
+    AsyncXulLoader.loadXulFromUrl(GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
   }
   
   public GwtDatabaseDialog(IXulAsyncDatabaseConnectionService connService, DatabaseTypeHelper databaseTypeHelper, String overlay, String overlayResource, DatabaseDialogListener listener) {
@@ -46,7 +48,7 @@ public class GwtDatabaseDialog {
     this.overlay = overlay;
     this.overlayResource = overlayResource;
     this.listener = listener;
-    AsyncXulLoader.loadXulFromUrl("databasedialog.xul", "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
+    AsyncXulLoader.loadXulFromUrl(GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
   }
   
   public void show() {
