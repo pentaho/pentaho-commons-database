@@ -139,8 +139,8 @@ public class DatabaseConnectionServiceTest {
   
   @Test
   public void testCreateMSSQLNativeDatabaseConnection() throws Exception {
-    DatabaseDialectService dialectService = new DatabaseDialectService();
-    DatabaseConnectionService connectionService = new DatabaseConnectionService();
+    DatabaseDialectService dialectService = new DatabaseDialectService(false);
+    DatabaseConnectionService connectionService = new DatabaseConnectionService(dialectService);
     DatabaseTypeHelper helper = new DatabaseTypeHelper(dialectService.getDatabaseTypes());
     
     IDatabaseConnection conn = connectionService.createDatabaseConnection(
