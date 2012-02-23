@@ -6,6 +6,10 @@ import java.util.Map;
 
 public interface IDatabaseConnection extends Serializable {
 
+  void setId(String id);
+  
+  String getId();
+  
   void setAccessType(DatabaseAccessType accessType);
 
   DatabaseAccessType getAccessType();

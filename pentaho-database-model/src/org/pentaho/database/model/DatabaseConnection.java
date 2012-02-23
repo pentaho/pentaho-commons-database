@@ -16,7 +16,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   public static final String ATTRIBUTE_CUSTOM_DRIVER_CLASS = "CUSTOM_DRIVER_CLASS"; //$NON-NLS-1$
   
   public static final String ATTRIBUTE_PREFIX_EXTRA_OPTION    = "EXTRA_OPTION_"; //$NON-NLS-1$
-  
+  String id;
   String name;
   String databaseName;
   String databasePort;
@@ -445,5 +445,15 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
    */
   public List<PartitionDatabaseMeta> getPartitioningInformation() {
     return this.partitioningInformation;
+  }
+
+  @Override
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  @Override
+  public String getId() {
+    return id;
   }
 }
