@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.pentaho.database.IDatabaseDialect;
 import org.pentaho.database.dialect.DB2DatabaseDialect;
 import org.pentaho.database.dialect.GenericDatabaseDialect;
+import org.pentaho.database.dialect.H2DatabaseDialect;
 import org.pentaho.database.dialect.HypersonicDatabaseDialect;
 import org.pentaho.database.dialect.MSSQLServerDatabaseDialect;
 import org.pentaho.database.dialect.MSSQLServerNativeDatabaseDialect;
@@ -42,7 +43,7 @@ public class DatabaseDialectService implements IDatabaseDialectService{
     registerDatabaseDialect(new MSSQLServerNativeDatabaseDialect(), validateClasses);
     registerDatabaseDialect(new DB2DatabaseDialect(), validateClasses);
     registerDatabaseDialect(new PostgreSQLDatabaseDialect(), validateClasses);
-    
+    registerDatabaseDialect(new H2DatabaseDialect(), validateClasses);
     // the generic service is special, because it plays a role
     // in generation from a URL and Driver
     registerDatabaseDialect(genericDialect, validateClasses);
