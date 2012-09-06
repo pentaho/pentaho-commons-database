@@ -14,7 +14,9 @@ package org.pentaho.database.model;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class DatabaseConnectionPoolParameter implements Serializable {
 
   private static final long serialVersionUID = -1418014026922746690L;
