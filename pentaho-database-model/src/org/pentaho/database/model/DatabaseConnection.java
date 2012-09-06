@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   private static final long serialVersionUID = -3816140282186728714L;

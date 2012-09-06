@@ -14,12 +14,16 @@ package org.pentaho.database.model;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Class to contain the information needed to parition (cluster): id, hostname, port, database
  * 
  * @author Matt
  *
  */
+
+@XmlRootElement
 public class PartitionDatabaseMeta implements Serializable {
 
   private static final long serialVersionUID = -4252906914407231458L;

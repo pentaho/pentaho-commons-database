@@ -3,6 +3,9 @@ package org.pentaho.database.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class DatabaseType implements Serializable, IDatabaseType {
   
   private static final long serialVersionUID = 1955013893420806385L;
