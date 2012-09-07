@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -46,6 +47,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   
   String accessTypeValue = null;
   DatabaseAccessType accessType = null;
+  @XmlElement(type=DatabaseType.class)
   IDatabaseType driver = null;
   Map<String, String> extraOptions = new HashMap<String, String>();
   Map<String, String> attributes = new HashMap<String, String>();
