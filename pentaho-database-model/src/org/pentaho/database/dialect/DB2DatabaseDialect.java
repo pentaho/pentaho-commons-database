@@ -333,7 +333,7 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
   }
     
   /**
-   * @return false because the DB2 JDBC driver doesn't support getBlob on the resultset.  We must use getBytes() to get the data.
+   * @return false because the DB2 JDBC databaseType doesn't support getBlob on the resultset.  We must use getBytes() to get the data.
    */
   @Override
   public boolean supportsGetBlob()

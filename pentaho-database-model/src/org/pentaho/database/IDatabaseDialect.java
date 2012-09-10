@@ -53,7 +53,7 @@ public interface IDatabaseDialect {
   String getSQLSequenceExists(String sequenceName);
 
   /**
-   * Checks whether or not the command setFetchSize() is supported by the JDBC driver...
+   * Checks whether or not the command setFetchSize() is supported by the JDBC databaseType...
    * @return true is setFetchSize() is supported!
    */
   boolean isFetchSizeSupported();
@@ -145,7 +145,7 @@ public interface IDatabaseDialect {
   boolean supportsBitmapIndex();
 
   /**
-   * @return true if the database JDBC driver supports the setLong command
+   * @return true if the database JDBC databaseType supports the setLong command
    */
   boolean supportsSetLong();
 
@@ -266,7 +266,7 @@ public interface IDatabaseDialect {
   boolean supportsTimeStampToDateConversion();
 
   /**
-   * @return true if the database JDBC driver supports batch updates
+   * @return true if the database JDBC databaseType supports batch updates
    * For example Interbase doesn't support this!
    */
   boolean supportsBatchUpdates();

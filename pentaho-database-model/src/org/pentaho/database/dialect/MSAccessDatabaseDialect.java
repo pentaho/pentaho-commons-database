@@ -58,7 +58,7 @@ public class MSAccessDatabaseDialect extends AbstractDatabaseDialect {
   
 
   /**
-   * Checks whether or not the command setFetchSize() is supported by the JDBC driver...
+   * Checks whether or not the command setFetchSize() is supported by the JDBC databaseType...
    * @return true is setFetchSize() is supported!
    */
   public boolean isFetchSizeSupported()
@@ -101,7 +101,7 @@ public class MSAccessDatabaseDialect extends AbstractDatabaseDialect {
   }
 
   /**
-   * @return true if the database JDBC driver supports the setLong command
+   * @return true if the database JDBC databaseType supports the setLong command
    */
   public boolean supportsSetLong()
   {

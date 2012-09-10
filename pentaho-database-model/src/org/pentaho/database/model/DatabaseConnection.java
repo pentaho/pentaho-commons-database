@@ -47,8 +47,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   
   String accessTypeValue = null;
   DatabaseAccessType accessType = null;
-  @XmlElement(type=DatabaseType.class)
-  IDatabaseType driver = null;
+  IDatabaseType databaseType = null;
   Map<String, String> extraOptions = new HashMap<String, String>();
   Map<String, String> attributes = new HashMap<String, String>();
   Map<String, String> connectionPoolingProperties = new HashMap<String, String>();
@@ -95,15 +94,16 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   /* (non-Javadoc)
    * @see org.pentaho.database.model.IDatabaseConnection#setDatabaseDriver(org.pentaho.database.model.DatabaseType)
    */
+  @XmlElement(type=DatabaseType.class)
   public void setDatabaseType(IDatabaseType driver) {
-    this.driver = driver;
+    this.databaseType = driver;
   }
   
   /* (non-Javadoc)
    * @see org.pentaho.database.model.IDatabaseConnection#getDatabaseType()
    */
   public IDatabaseType getDatabaseType() {
-    return driver;
+    return databaseType;
   }
   
   /* (non-Javadoc)

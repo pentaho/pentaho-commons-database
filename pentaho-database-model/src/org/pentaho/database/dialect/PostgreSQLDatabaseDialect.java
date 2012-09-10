@@ -73,7 +73,7 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
   
 
   /**
-   * Checks whether or not the command setFetchSize() is supported by the JDBC driver...
+   * Checks whether or not the command setFetchSize() is supported by the JDBC databaseType...
    * @return true is setFetchSize() is supported!
    */
   @Override

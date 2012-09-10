@@ -621,7 +621,7 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, Seria
     }
     
     /**
-     * @return true if the database JDBC driver supports getBlob on the resultset.  If not we must use getBytes() to get the data.
+     * @return true if the database JDBC databaseType supports getBlob on the resultset.  If not we must use getBytes() to get the data.
      */
     public boolean supportsGetBlob()
     {
