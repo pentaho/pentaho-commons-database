@@ -78,8 +78,8 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
    * marshalling that does not support enums (like Apache Axis)
    * @param value
    */
-  public void setAccessTypeValue( String accessTypeValue ) {
-    this.accessTypeValue = accessTypeValue;
+  public void setAccessTypeValue( String value ) {
+    accessTypeValue = value;
   }
   
   /**
@@ -95,8 +95,8 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
    * @see org.pentaho.database.model.IDatabaseConnection#setDatabaseDriver(org.pentaho.database.model.DatabaseType)
    */
   @XmlElement(type=DatabaseType.class)
-  public void setDatabaseType(IDatabaseType databaseType) {
-    this.databaseType = databaseType;
+  public void setDatabaseType(IDatabaseType driver) {
+    this.databaseType = driver;
   }
   
   /* (non-Javadoc)
