@@ -14,6 +14,7 @@ import org.pentaho.database.dialect.H2DatabaseDialect;
 import org.pentaho.database.dialect.HypersonicDatabaseDialect;
 import org.pentaho.database.dialect.MSSQLServerDatabaseDialect;
 import org.pentaho.database.dialect.MSSQLServerNativeDatabaseDialect;
+import org.pentaho.database.dialect.MonetDatabaseDialect;
 import org.pentaho.database.dialect.MySQLDatabaseDialect;
 import org.pentaho.database.dialect.OracleDatabaseDialect;
 import org.pentaho.database.dialect.PostgreSQLDatabaseDialect;
@@ -44,6 +45,7 @@ public class DatabaseDialectService implements IDatabaseDialectService{
     registerDatabaseDialect(new DB2DatabaseDialect(), validateClasses);
     registerDatabaseDialect(new PostgreSQLDatabaseDialect(), validateClasses);
     registerDatabaseDialect(new H2DatabaseDialect(), validateClasses);
+    registerDatabaseDialect(new MonetDatabaseDialect(), validateClasses);
     // the generic service is special, because it plays a role
     // in generation from a URL and Driver
     registerDatabaseDialect(genericDialect, validateClasses);
