@@ -47,7 +47,10 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   
   String accessTypeValue = null;
   DatabaseAccessType accessType = null;
+  
+//  @XmlElement(type=DatabaseType.class)
   IDatabaseType databaseType = null;
+  
   Map<String, String> extraOptions = new HashMap<String, String>();
   Map<String, String> attributes = new HashMap<String, String>();
   Map<String, String> connectionPoolingProperties = new HashMap<String, String>();
@@ -460,5 +463,11 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   @Override
   public String getId() {
     return id;
+  }
+
+  @Override
+  public String toString() {
+    return "DatabaseConnection [id=" + id + ", name=" + name + ", databaseName=" + databaseName + ", databasePort=" + databasePort + ", hostname=" + hostname + ", username=" + username + ", password=" + password + ", dataTablespace=" + dataTablespace + ", indexTablespace=" + indexTablespace + ", streamingResults=" + streamingResults + ", quoteAllFields=" + quoteAllFields + ", changed=" + changed + ", usingDoubleDecimalAsSchemaTableSeparator=" + usingDoubleDecimalAsSchemaTableSeparator + ", informixServername=" + informixServername + ", forcingIdentifiersToLowerCase=" + forcingIdentifiersToLowerCase + ", forcingIdentifiersToUpperCase=" + forcingIdentifiersToUpperCase + ", connectSql=" + connectSql + ", usingConnectionPool=" + usingConnectionPool + ", accessTypeValue=" + accessTypeValue + ", accessType=" + accessType + ", databaseType=" + databaseType + ", extraOptions=" + extraOptions + ", attributes=" + attributes + ", connectionPoolingProperties=" + connectionPoolingProperties + ", partitioningInformation="
+        + partitioningInformation + ", initialPoolSize=" + initialPoolSize + ", maxPoolSize=" + maxPoolSize + ", partitioned=" + partitioned + "]";
   }
 }
