@@ -9,7 +9,6 @@ import org.pentaho.database.model.IDatabaseType;
 import org.pentaho.database.util.DatabaseTypeHelper;
 import org.pentaho.ui.database.event.DatabaseDialogListener;
 import org.pentaho.ui.database.gwt.GwtDatabaseDialog;
-import org.pentaho.ui.database.gwt.GwtXulAsyncDatabaseConnectionService;
 import org.pentaho.ui.database.gwt.GwtXulAsyncDatabaseDialectService;
 import org.pentaho.ui.xul.XulServiceCallback;
 
@@ -22,7 +21,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class GwtDatabaseDialogExample implements EntryPoint, DatabaseDialogListener {
 
-  GwtXulAsyncDatabaseConnectionService connService = new GwtXulAsyncDatabaseConnectionService();
   GwtXulAsyncDatabaseDialectService dialectService = new GwtXulAsyncDatabaseDialectService();
   GwtDatabaseDialog dialog;
   DatabaseTypeHelper databaseTypeHelper;
@@ -58,7 +56,7 @@ public class GwtDatabaseDialogExample implements EntryPoint, DatabaseDialogListe
       }
       public void success(List<IDatabaseType> retVal) {
         databaseTypeHelper = new DatabaseTypeHelper(retVal);
-        dialog = new GwtDatabaseDialog(connService, databaseTypeHelper, "testoverlay.xul", GwtDatabaseDialogExample.this); //$NON-NLS-1$
+        dialog = new GwtDatabaseDialog(databaseTypeHelper, "testoverlay.xul", GwtDatabaseDialogExample.this); //$NON-NLS-1$
       }
     };
     dialectService.getDatabaseTypes(callback);

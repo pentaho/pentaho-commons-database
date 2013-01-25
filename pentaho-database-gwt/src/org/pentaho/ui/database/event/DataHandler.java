@@ -10,14 +10,13 @@ import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseConnectionPoolParameter;
 import org.pentaho.database.model.IDatabaseConnection;
+import org.pentaho.database.model.IDatabaseConnectionPoolParameter;
 import org.pentaho.database.model.IDatabaseType;
 import org.pentaho.database.model.PartitionDatabaseMeta;
 import org.pentaho.database.util.DatabaseTypeHelper;
 import org.pentaho.ui.database.event.ILaunch.Status;
-import org.pentaho.ui.database.services.IXulAsyncDatabaseConnectionService;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
-import org.pentaho.ui.xul.XulServiceCallback;
 import org.pentaho.ui.xul.components.XulCheckbox;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulListitem;
@@ -33,6 +32,19 @@ import org.pentaho.ui.xul.containers.XulTreeRow;
 import org.pentaho.ui.xul.containers.XulWindow;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.stereotype.Bindable;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Window;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
@@ -53,7 +65,7 @@ public class DataHandler extends AbstractXulEventHandler {
   protected DatabaseDialogListener listener;
   protected IMessages messages;
   protected ILaunch launch;
-  protected IXulAsyncDatabaseConnectionService connectionService;
+//  protected IXulAsyncDatabaseConnectionService connectionService;
   protected DatabaseTypeHelper databaseTypeHelper;
   protected IFragmentHandler fragmentHandler;
 
@@ -61,7 +73,7 @@ public class DataHandler extends AbstractXulEventHandler {
   
   protected IDatabaseConnection databaseConnection = null;
 
-  private IDatabaseConnection cache = new DatabaseConnection();
+  private IDatabaseConnection cache;
 
   private XulDeck dialogDeck;
 
@@ -159,8 +171,12 @@ public class DataHandler extends AbstractXulEventHandler {
 
   protected XulTree poolParameterTree;
 
+  protected IConnectionAutoBeanFactory connectionAutoBeanFactory;
+  
   public DataHandler() {
     setName("dataHandler"); //$NON-NLS-1$
+    connectionAutoBeanFactory = GWT.create(IConnectionAutoBeanFactory.class);
+    cache = connectionAutoBeanFactory.iDatabaseConnection().as();
   }
   
   public void setFragmentHandler(IFragmentHandler fragmentHandler) {
@@ -175,10 +191,6 @@ public class DataHandler extends AbstractXulEventHandler {
     this.listener = listener;
   }
 
-  public void setAsyncDatabaseConnectionService(IXulAsyncDatabaseConnectionService connectionService) {
-    this.connectionService = connectionService;
-  }
-  
   public void setMessages(IMessages messages) {
     this.messages = messages;
   }
@@ -211,8 +223,6 @@ public class DataHandler extends AbstractXulEventHandler {
     connectionBox.setRows(connectionBox.getRows());
 
     Object key = getSelectedString(connectionBox);
-
-    // Nothing selected yet...select first item.
 
     // TODO Implement a connection type preference,
     // and use that type as the default for 
@@ -276,11 +286,6 @@ public class DataHandler extends AbstractXulEventHandler {
     // May not exist for this connection type.
 
     accessBox.setSelectedItem(accessKey);
-
-    // Last resort, set first as default
-    if (accessBox.getSelectedItem() == null) {
-      accessBox.setSelectedItem(acc.get(0).getName());
-    }
     
     setOptionsData(databaseConnection != null ? databaseConnection.getExtraOptions() : null);
     setClusterData(databaseConnection != null ? databaseConnection.getPartitioningInformation() : null);
@@ -325,7 +330,7 @@ public class DataHandler extends AbstractXulEventHandler {
   public void getOptionHelp() {
 
     String message = null;
-    IDatabaseConnection database = new DatabaseConnection();
+    IDatabaseConnection database = connectionAutoBeanFactory.iDatabaseConnection().as();
 
     getInfo(database);
     String url = database.getDatabaseType().getExtraOptionsHelpUrl();
@@ -352,6 +357,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
 
+  @Bindable
   public void addEmptyRowsToOptions() {
     Object[][] values = optionsParameterTree.getValues();
     int emptyRows = 0;
@@ -412,6 +418,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   }
 
+  @Bindable
   public void onPoolingCheck() {
     if (poolingCheck != null) {
       boolean dis = !poolingCheck.isChecked();
@@ -443,6 +450,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
 
+  @Bindable
   public void onClusterCheck() {
     if (clusteringCheck != null) {
       boolean dis = !clusteringCheck.isChecked();
@@ -456,14 +464,6 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   public Object getData() {
-
-//    if (databaseMeta == null) {
-//      databaseMeta = new DatabaseConnection();
-//    }
-//    
-//    if (!windowClosed()){
-//      this.getInfo(databaseMeta);
-//    }
     return databaseConnection;
   }
 
@@ -472,12 +472,10 @@ public class DataHandler extends AbstractXulEventHandler {
     // if a null value is passed in, replace it with an 
     // empty database connection
     if (data == null) {
-      data = new DatabaseConnection();
+      data = connectionAutoBeanFactory.iDatabaseConnection().as();
     }
     
-    if (data instanceof DatabaseConnection) {
-      databaseConnection = (IDatabaseConnection) data;
-    }
+    databaseConnection = (IDatabaseConnection) data;
     setInfo(databaseConnection);
   }
 
@@ -526,71 +524,111 @@ public class DataHandler extends AbstractXulEventHandler {
 
   @Bindable
   public void onOK() {
-
-    IDatabaseConnection database = new DatabaseConnection();
-    this.getInfo(database);
-
+    final IDatabaseConnection database = connectionAutoBeanFactory.iDatabaseConnection().as();
+    getInfo(database);
+    
     boolean passed = checkPoolingParameters();
     if (!passed){
       return;
     }
-    
-    connectionService.checkParameters(database, new XulServiceCallback<List<String>>() {
-      public void error(String message, Throwable error) {
-        showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, message.length() > 300); //$NON-NLS-1$
-      }
-      public void success(List<String> remarks) {
-        String message = ""; //$NON-NLS-1$
-        if (remarks.size() != 0) {
-          for (int i = 0; i < remarks.size(); i++) {
-            message = message.concat("* ").concat(remarks.get(i)).concat(LINE_SEPARATOR); //$NON-NLS-1$
+
+    RequestBuilder checkParamsBuilder = new RequestBuilder(RequestBuilder.POST, URL.encode(getBaseURL() + "checkParams")); 
+    checkParamsBuilder.setHeader("Content-Type", "application/json");
+    try {
+      AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean(database);
+      String checkParamsJson = AutoBeanCodex.encode(bean).getPayload();
+      checkParamsBuilder.sendRequest(checkParamsJson, new RequestCallback() {
+
+        @Override
+        public void onError(Request request, Throwable exception) {         
+          showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), exception.getMessage(), exception.getMessage().length() > 300); //$NON-NLS-1$
+        }
+
+        @Override
+        public void onResponseReceived(Request request, Response response) {
+          if (response.getStatusCode() == Response.SC_NO_CONTENT) {
+            if (databaseConnection == null) {
+              databaseConnection = connectionAutoBeanFactory.iDatabaseConnection().as();
+            }
+            getInfo(databaseConnection);
+            databaseConnection.setChanged(true);
+            close();
+            if (listener != null) {
+              listener.onDialogAccept(databaseConnection);
+            }             
+          } else if (response.getStatusCode() == Response.SC_OK && response.getText().equalsIgnoreCase("null")) {
+            String message = ""; //$NON-NLS-1$
+            String[] remarks = deserializeStringArray(response.getText());
+            for (int i = 0; i < remarks.length; i++) {
+              message = message.concat("* ").concat(remarks[i]).concat(LINE_SEPARATOR); //$NON-NLS-1$
+            }
+            showMessage(messages.getString("DataHandler.CHECK_PARAMS_TITLE"), message, false); //$NON-NLS-1$
+          } else {
+            showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), response.getStatusText(), response.getStatusText().length() > 300); //$NON-NLS-1$
           }
-          showMessage(messages.getString("DataHandler.CHECK_PARAMS_TITLE"), message, false); //$NON-NLS-1$
-        } else {
-          if (databaseConnection == null) {
-            databaseConnection = new DatabaseConnection();
-          }
-          getInfo(databaseConnection);
-          databaseConnection.setChanged(true);
-          close();
-          if (listener != null) {
-            listener.onDialogAccept(databaseConnection);
-          }
-        }      
-      }
-    });
-    
+        }
+      });
+    } catch (RequestException e) {
+      showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), e.getMessage(), e.getMessage().length() > 300); //$NON-NLS-1$
+    }
   }
 
   @Bindable
   public void testDatabaseConnection() {
-
-    final IDatabaseConnection database = new DatabaseConnection();
-
+    final IDatabaseConnection database = connectionAutoBeanFactory.iDatabaseConnection().as();
     getInfo(database);
-    connectionService.checkParameters(database, new XulServiceCallback<List<String>>() {
-      public void error(String message, Throwable error) {
-        showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, message.length() > 300); //$NON-NLS-1$
-      }
-      public void success(List<String> remarks) {
-        String message = ""; //$NON-NLS-1$
-        if (remarks.size() != 0) {
-          for (int i = 0; i < remarks.size(); i++) {
-            message = message.concat("* ").concat(remarks.get(i)).concat(LINE_SEPARATOR); //$NON-NLS-1$
-          }
-          showMessage(messages.getString("DataHandler.TEST_MESSAGE_TITLE"), message, message.length() > 300); //$NON-NLS-1$
-        } else {
-          connectionService.testConnection(database, new XulServiceCallback<String>() {
-            public void error(String message, Throwable error) {
-              showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, message.length() > 300); //$NON-NLS-1$
-            }
-            public void success(String message) {
-              showMessage(messages.getString("DataHandler.TEST_MESSAGE_TITLE"), message, message.length() > 300);  //$NON-NLS-1$            
-            }
-          });
+    
+    RequestBuilder checkParamsBuilder = new RequestBuilder(RequestBuilder.POST, URL.encode(getBaseURL() + "checkParams")); 
+    checkParamsBuilder.setHeader("Content-Type", "application/json");
+    try {
+      AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean(database);
+      String checkParamsJson = AutoBeanCodex.encode(bean).getPayload();
+      checkParamsBuilder.sendRequest(checkParamsJson, new RequestCallback() {
+
+        @Override
+        public void onError(Request request, Throwable exception) {         
+          showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), exception.getMessage(), exception.getMessage().length() > 300); //$NON-NLS-1$
         }
-      }
-    });
+
+        @Override
+        public void onResponseReceived(Request request, Response response) {
+          if (response.getStatusCode() == Response.SC_NO_CONTENT) {
+            RequestBuilder testBuilder = new RequestBuilder(RequestBuilder.PUT, URL.encode(getBaseURL() + "testConnection"));
+            testBuilder.setHeader("Content-Type", "application/json");
+            try {
+              AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean(database);
+              String testConnectionJson = AutoBeanCodex.encode(bean).getPayload();
+              testBuilder.sendRequest(testConnectionJson, new RequestCallback() {
+  
+                @Override
+                public void onError(Request request, Throwable exception) {
+                  showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), exception.getMessage(), exception.getMessage().length() > 300); //$NON-NLS-1$
+                }
+  
+                @Override
+                public void onResponseReceived(Request request, Response response) {
+                  showMessage(messages.getString("DataHandler.TEST_MESSAGE_TITLE"), response.getText(), response.getText().length() > 300);  //$NON-NLS-1$
+                }
+                
+              });
+            } catch (RequestException e) {
+              showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), e.getMessage(), e.getMessage().length() > 300); //$NON-NLS-1$
+            }
+          } else if (response.getStatusCode() == Response.SC_OK && response.getText().equalsIgnoreCase("null")) {
+            String message = ""; //$NON-NLS-1$
+            String[] remarks = deserializeStringArray(response.getText());
+            for (int i = 0; i < remarks.length; i++) {
+              message = message.concat("* ").concat(remarks[i]).concat(LINE_SEPARATOR); //$NON-NLS-1$
+            }
+            showMessage(messages.getString("DataHandler.CHECK_PARAMS_TITLE"), message, false); //$NON-NLS-1$
+          } else {
+            showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), response.getStatusText(), response.getStatusText().length() > 300); //$NON-NLS-1$
+          }
+        }
+      });
+    } catch (RequestException e) {
+      showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), e.getMessage(), e.getMessage().length() > 300); //$NON-NLS-1$
+    }
   }
 
   protected void getInfo(IDatabaseConnection meta) {
@@ -939,27 +977,40 @@ public class DataHandler extends AbstractXulEventHandler {
   }
   
   private void setDefaultPoolParameters() {
-    connectionService.getPoolingParameters(new XulServiceCallback<DatabaseConnectionPoolParameter[]>() {
-      public void error(String message, Throwable error) {
-        showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), message, false); //$NON-NLS-1$
-      }
-      public void success(DatabaseConnectionPoolParameter[] retVal) {
-        poolingParameters = retVal;
-        if (poolParameterTree != null) {
-          for (DatabaseConnectionPoolParameter parameter : poolingParameters) {
-            XulTreeRow row = poolParameterTree.getRootChildren().addNewRow();
-            row.addCellText(0, "false"); //$NON-NLS-1$
-            row.addCellText(1, parameter.getParameter());
-            row.addCellText(2, parameter.getDefaultValue());
+    RequestBuilder poolingParamsBuilder = new RequestBuilder(RequestBuilder.GET, URL.encode(getBaseURL() + "poolingParameters"));
+    try {
+      poolingParamsBuilder.sendRequest(null, new RequestCallback() {
+
+        @Override
+        public void onError(Request request, Throwable exception) {         
+          showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), exception.getMessage(), exception.getMessage().length() > 300); //$NON-NLS-1$
+        }
+
+        @Override
+        public void onResponseReceived(Request request, Response response) {
+          Boolean success = response.getStatusCode() == Response.SC_OK;
+          if (success) {
+            AutoBean<IDatabaseConnectionPoolParameterList> bean = AutoBeanCodex.decode(connectionAutoBeanFactory, IDatabaseConnectionPoolParameterList.class, response.getText());
+            IDatabaseConnectionPoolParameterList paramListWrapper = bean.as();
+            if (poolParameterTree != null) {
+              for (IDatabaseConnectionPoolParameter parameter : paramListWrapper.getDatabaseConnectionPoolParameters()) {
+                XulTreeRow row = poolParameterTree.getRootChildren().addNewRow();
+                row.addCellText(0, "false"); //$NON-NLS-1$
+                row.addCellText(1, parameter.getParameter());
+                row.addCellText(2, parameter.getDefaultValue());
+              }
+            }
+          
+            // HACK: reDim the pooling table
+            if(poolParameterTree != null) {
+              poolParameterTree.setRows(poolParameterTree.getRows());
+            }
           }
         }
-        
-        // HACK: reDim the pooling table
-        if(poolParameterTree != null) {
-          poolParameterTree.setRows(poolParameterTree.getRows());
-        }
-      }
-    });
+      });
+    } catch (RequestException e) {
+      showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), e.getMessage(), e.getMessage().length() > 300); //$NON-NLS-1$
+    }
   }
   
   private void clearOptions() {
@@ -1226,7 +1277,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
     // Generic settings...
     if (customUrlBox != null) {
-      meta.getAttributes().put(DatabaseConnection.ATTRIBUTE_CUSTOM_URL, customUrlBox.getValue());
+      meta.getAttributes().put(DatabaseConnection.ATTRIBUTE_CUSTOM_URL, customUrlBox.getValue() != null ? customUrlBox.getValue() : "");
     }
     if (customDriverClassBox != null) {
       meta.getAttributes().put(DatabaseConnection.ATTRIBUTE_CUSTOM_DRIVER_CLASS, customDriverClassBox.getValue());
@@ -1401,4 +1452,32 @@ public class DataHandler extends AbstractXulEventHandler {
   private native void jsni_showContextHelp()/*-{
     $wnd.open($wnd.CONTEXT_PATH+"webHelp/Viewer.jsp?topic=webHelp/concept_adding_a_jdbc_driver.html","webHelp","width=475,height=600,location=no,status=no,toolbar=no");
   }-*/;
+  
+  
+  private static final native String[] deserializeStringArray(String json)/*-{
+    var jso
+    jso = jso = eval('(' + json + ')');
+    if (jso instanceof Array) {
+      return jso;
+    } else {
+      var arr = new Array();
+      arr.push(jso);
+      return arr;
+    }
+  }-*/;
+  
+  public static String getBaseURL() {
+    String moduleUrl = GWT.getModuleBaseURL();
+    //
+    //Set the base url appropriately based on the context in which we are running this client
+    //
+    if (moduleUrl.indexOf("content") > -1) {
+      //we are running the client in the context of a BI Server plugin, so 
+      //point the request to the GWT rpc proxy servlet
+      String baseUrl = moduleUrl.substring(0, moduleUrl.indexOf("content"));
+      return baseUrl + "plugin/data-access/api/connection/";
+    }
+    
+    return moduleUrl + "plugin/data-access/api/connection/";
+  }
 }
