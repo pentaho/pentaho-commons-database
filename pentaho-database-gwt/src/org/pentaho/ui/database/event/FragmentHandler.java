@@ -96,6 +96,10 @@ public class FragmentHandler extends AbstractXulEventHandler implements IFragmen
     IDatabaseType database = databaseTypeHelper.getDatabaseTypeByName(connectionKey);
     
     String accessKey = (String)accessBox.getSelectedItem();
+    if (accessKey == null) {
+      accessBox.setSelectedIndex(0);
+      accessKey = (String)accessBox.getSelectedItem();
+    }
     DatabaseAccessType access = DatabaseAccessType.getAccessTypeByName(accessKey);
     
     if (access == null) {

@@ -47,7 +47,6 @@ public class DatabaseConnectionDialog {
     container = loader.loadXul(DIALOG_DEFINITION_FILE, messages.getBundle());
     
     // ui services
-     XulAsyncDatabaseConnectionService service = new XulAsyncDatabaseConnectionService(connectionService);
     
     // ui controllers
     DataHandler dataHandler = new DataHandler();
@@ -56,7 +55,7 @@ public class DatabaseConnectionDialog {
     
     dataHandler.setDatabaseTypeHelper(databaseTypeHelper);
     dataHandler.setMessages(messages);
-    dataHandler.setAsyncDatabaseConnectionService(service);
+//    dataHandler.setAsyncDatabaseConnectionService(service);
     dataHandler.setLaunch(new Launch());
     dataHandler.setFragmentHandler(fragmentHandler);
 
