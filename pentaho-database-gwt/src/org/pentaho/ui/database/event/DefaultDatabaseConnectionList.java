@@ -22,7 +22,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.pentaho.database.model.DatabaseConnection;
+import org.pentaho.database.model.DatabaseConnectionPoolParameter;
 import org.pentaho.database.model.IDatabaseConnection;
 
 /**
@@ -45,7 +45,7 @@ public class DefaultDatabaseConnectionList implements IDatabaseConnectionList {
    * @see org.pentaho.ui.database.event.IDatabaseConnectionPoolParameterList#getDatabaseConnectionPoolParameters(java.util.List)
    */
   @Override
-  @XmlElement(type=DatabaseConnection.class)
+  @XmlElement(type=DatabaseConnectionPoolParameter.class)
   public void setDatabaseConnections(List<IDatabaseConnection> databaseConnections) {
     this.databaseConnections = databaseConnections;
   }
