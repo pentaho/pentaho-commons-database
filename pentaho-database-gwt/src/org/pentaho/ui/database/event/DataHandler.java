@@ -593,7 +593,7 @@ public class DataHandler extends AbstractXulEventHandler {
         @Override
         public void onResponseReceived(Request request, Response response) {
           if (response.getStatusCode() == Response.SC_NO_CONTENT) {
-            RequestBuilder testBuilder = new RequestBuilder(RequestBuilder.PUT, URL.encode(getBaseURL() + "testConnection"));
+            RequestBuilder testBuilder = new RequestBuilder(RequestBuilder.PUT, URL.encode(getBaseURL() + "test"));
             testBuilder.setHeader("Content-Type", "application/json");
             try {
               AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean(database);
