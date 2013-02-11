@@ -631,7 +631,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
 
-  protected void getInfo(IDatabaseConnection meta) {
+  protected void getInfo(IDatabaseConnection dbConnection) {
 
     getControls();
 
@@ -648,25 +648,25 @@ public class DataHandler extends AbstractXulEventHandler {
     // TODO: what about the port number?
 
     // Name:
-    meta.setName(connectionNameBox.getValue());
+    dbConnection.setName(connectionNameBox.getValue());
 
     // Connection type:
     Object connection = getSelectedString(connectionBox);
     if (connection != null) {
-      meta.setDatabaseType(databaseTypeHelper.getDatabaseTypeByName((String) connection));
+      dbConnection.setDatabaseType(databaseTypeHelper.getDatabaseTypeByName((String) connection));
     }
 
     // Access type:
     Object access = getSelectedString(accessBox);
     if (access != null) {
-      meta.setAccessType(DatabaseAccessType.getAccessTypeByName((String) access));
+      dbConnection.setAccessType(DatabaseAccessType.getAccessTypeByName((String) access));
     }
 
-    getConnectionSpecificInfo(meta);
+    getConnectionSpecificInfo(dbConnection);
 
     // Port number:
     if (portNumberBox != null) {
-      meta.setDatabasePort(portNumberBox.getValue());
+      dbConnection.setDatabasePort(portNumberBox.getValue());
     }
 
     // Option parameters: 
@@ -689,7 +689,7 @@ public class DataHandler extends AbstractXulEventHandler {
           if (value.trim().length() <= 0) {
             value = DatabaseConnection.EMPTY_OPTIONS_STRING;
           }
-          meta.addExtraOption(meta.getDatabaseType().getShortName(), parameter, value);
+          dbConnection.addExtraOption(dbConnection.getDatabaseType().getShortName(), parameter, value);
         }
       }
     }
@@ -697,27 +697,27 @@ public class DataHandler extends AbstractXulEventHandler {
     // Advanced panel settings:
 
     if (quoteIdentifiersCheck != null) {
-      meta.setQuoteAllFields(quoteIdentifiersCheck.isChecked());
+      dbConnection.setQuoteAllFields(quoteIdentifiersCheck.isChecked());
     }
 
     if (lowerCaseIdentifiersCheck != null) {
-      meta.setForcingIdentifiersToLowerCase(lowerCaseIdentifiersCheck.isChecked());
+      dbConnection.setForcingIdentifiersToLowerCase(lowerCaseIdentifiersCheck.isChecked());
     }
 
     if (upperCaseIdentifiersCheck != null) {
-      meta.setForcingIdentifiersToUpperCase(upperCaseIdentifiersCheck.isChecked());
+      dbConnection.setForcingIdentifiersToUpperCase(upperCaseIdentifiersCheck.isChecked());
     }
 
     if (sqlBox != null) {
-        meta.setConnectSql(sqlBox.getValue());
+        dbConnection.setConnectSql(sqlBox.getValue());
     }
 
     // Cluster panel settings
     if (clusteringCheck != null) {
-      meta.setPartitioned(clusteringCheck.isChecked());
+      dbConnection.setPartitioned(clusteringCheck.isChecked());
     }
 
-    if ((clusterParameterTree != null) && (meta.isPartitioned())) {
+    if ((clusterParameterTree != null) && (dbConnection.isPartitioned())) {
 
       Object[][] values = clusterParameterTree.getValues();
       List<PartitionDatabaseMeta> pdms = new ArrayList<PartitionDatabaseMeta>();
@@ -739,18 +739,18 @@ public class DataHandler extends AbstractXulEventHandler {
         pdm.setPassword(password);
         pdms.add(pdm);
       }
-      meta.setPartitioningInformation(pdms);
+      dbConnection.setPartitioningInformation(pdms);
     }
 
     if (poolingCheck != null) {
-      meta.setUsingConnectionPool(poolingCheck.isChecked());
+      dbConnection.setUsingConnectionPool(poolingCheck.isChecked());
     }
 
-    if (meta.isUsingConnectionPool()) {
+    if (dbConnection.isUsingConnectionPool()) {
       if (poolSizeBox != null) {
         try {
           int initialPoolSize = Integer.parseInt(poolSizeBox.getValue());
-          meta.setInitialPoolSize(initialPoolSize);
+          dbConnection.setInitialPoolSize(initialPoolSize);
         } catch (NumberFormatException e) {
           // TODO log exception and move on ...
         }
@@ -759,7 +759,7 @@ public class DataHandler extends AbstractXulEventHandler {
       if (maxPoolSizeBox != null) {
         try {
           int maxPoolSize = Integer.parseInt(maxPoolSizeBox.getValue());
-          meta.setMaximumPoolSize(maxPoolSize);
+          dbConnection.setMaximumPoolSize(maxPoolSize);
         } catch (NumberFormatException e) {
           // TODO log exception and move on ...
         }
@@ -788,15 +788,15 @@ public class DataHandler extends AbstractXulEventHandler {
           }
 
         }
-        meta.setConnectionPoolingProperties(properties);
+        dbConnection.setConnectionPoolingProperties(properties);
       }
     }
 
   }
 
-  private void setInfo(final IDatabaseConnection meta) {
+  private void setInfo(final IDatabaseConnection databaseConnection) {
 
-    if (meta == null) {
+    if (databaseConnection == null) {
       return;
     }
 
@@ -805,21 +805,21 @@ public class DataHandler extends AbstractXulEventHandler {
     // TODO: Delete method: copyConnectionSpecificInfo(meta, cache);
     
     // Name:
-    connectionNameBox.setValue(meta.getName());
+    connectionNameBox.setValue(databaseConnection.getName());
 
     // disable refresh for now
     fragmentHandler.setDisableRefresh(true);
     
     // Connection type:
-    if (meta.getDatabaseType() != null) {
-      connectionBox.setSelectedItem(meta.getDatabaseType().getName());
+    if (databaseConnection.getDatabaseType() != null) {
+      connectionBox.setSelectedItem(databaseConnection.getDatabaseType().getName());
     } else {
       connectionBox.setSelectedIndex(0);
     }
 
     // Access type:
-    if (meta.getAccessType() != null) {
-      accessBox.setSelectedItem(meta.getAccessType().getName());
+    if (databaseConnection.getAccessType() != null) {
+      accessBox.setSelectedItem(databaseConnection.getAccessType().getName());
     } else {
       accessBox.setSelectedIndex(0);
     }
@@ -829,61 +829,61 @@ public class DataHandler extends AbstractXulEventHandler {
     fragmentHandler.refreshOptionsWithCallback(new IFragmentHandler.Callback() {
       public void callback() {
         fragmentHandler.setDisableRefresh(false);
-        setConnectionSpecificInfo(meta);
+        setConnectionSpecificInfo(databaseConnection);
       }
     });
 
     // Port number:
     if (portNumberBox != null) {
-      portNumberBox.setValue(meta.getDatabasePort());
+      portNumberBox.setValue(databaseConnection.getDatabasePort());
     }
 
     // Options Parameters:
 
-    setOptionsData(meta.getExtraOptions());
+    setOptionsData(databaseConnection.getExtraOptions());
 
     // Advanced panel settings:
 
     if (quoteIdentifiersCheck != null) {
-      quoteIdentifiersCheck.setChecked(meta.isQuoteAllFields());
+      quoteIdentifiersCheck.setChecked(databaseConnection.isQuoteAllFields());
     }
 
     if (lowerCaseIdentifiersCheck != null) {
-      lowerCaseIdentifiersCheck.setChecked(meta.isForcingIdentifiersToLowerCase());
+      lowerCaseIdentifiersCheck.setChecked(databaseConnection.isForcingIdentifiersToLowerCase());
     }
 
     if (upperCaseIdentifiersCheck != null) {
-      upperCaseIdentifiersCheck.setChecked(meta.isForcingIdentifiersToUpperCase());
+      upperCaseIdentifiersCheck.setChecked(databaseConnection.isForcingIdentifiersToUpperCase());
     }
 
     if (sqlBox != null) {
-      sqlBox.setValue(meta.getConnectSql() == null ? "" : meta.getConnectSql()); //$NON-NLS-1$
+      sqlBox.setValue(databaseConnection.getConnectSql() == null ? "" : databaseConnection.getConnectSql()); //$NON-NLS-1$
     }
 
     // Clustering panel settings
 
     if (clusteringCheck != null) {
-      clusteringCheck.setChecked(meta.isPartitioned());
+      clusteringCheck.setChecked(databaseConnection.isPartitioned());
     }
 
-    setClusterData(meta.getPartitioningInformation());
+    setClusterData(databaseConnection.getPartitioningInformation());
 
     // Pooling panel settings 
 
     if (poolingCheck != null) {
-      poolingCheck.setChecked(meta.isUsingConnectionPool());
+      poolingCheck.setChecked(databaseConnection.isUsingConnectionPool());
     }
 
-    if (meta.isUsingConnectionPool()) {
+    if (databaseConnection.isUsingConnectionPool()) {
       if (poolSizeBox != null) {
-        poolSizeBox.setValue(Integer.toString(meta.getInitialPoolSize()));
+        poolSizeBox.setValue(Integer.toString(databaseConnection.getInitialPoolSize()));
       }
 
       if (maxPoolSizeBox != null) {
-        maxPoolSizeBox.setValue(Integer.toString(meta.getMaximumPoolSize()));
+        maxPoolSizeBox.setValue(Integer.toString(databaseConnection.getMaximumPoolSize()));
       }
 
-      setPoolProperties(meta.getConnectionPoolingProperties());
+      setPoolProperties(databaseConnection.getConnectionPoolingProperties());
     }
 
     dialogDeck.setSelectedIndex(0);
