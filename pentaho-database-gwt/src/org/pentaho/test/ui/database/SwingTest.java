@@ -10,7 +10,7 @@ import org.pentaho.database.util.DatabaseTypeHelper;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.ui.database.DatabaseConnectionDialog;
 import org.pentaho.ui.database.Messages;
-import org.pentaho.ui.database.XulAsyncDatabaseConnectionService;
+//import org.pentaho.ui.database.XulAsyncDatabaseConnectionService;
 import org.pentaho.ui.database.event.DataHandler;
 import org.pentaho.ui.database.event.FragmentHandler;
 import org.pentaho.ui.util.Launch;
@@ -61,7 +61,7 @@ public class SwingTest {
 	    DatabaseTypeHelper databaseTypeHelper = new DatabaseTypeHelper(dialectService.getDatabaseTypes());
 	    
 	    // ui services
-	    XulAsyncDatabaseConnectionService service = new XulAsyncDatabaseConnectionService(connectionService);
+//	    XulAsyncDatabaseConnectionService service = new XulAsyncDatabaseConnectionService(connectionService);
 	    
 	    // ui controllers
 	    DataHandler dataHandler = new DataHandler();
@@ -69,7 +69,7 @@ public class SwingTest {
 	    
 	    dataHandler.setDatabaseTypeHelper(databaseTypeHelper);
 	    dataHandler.setMessages(messages);
-	    dataHandler.setAsyncDatabaseConnectionService(service);
+//	    dataHandler.setAsyncDatabaseConnectionService(service);
 	    dataHandler.setLaunch(new Launch());
 	    dataHandler.setFragmentHandler(fragmentHandler);
 	    fragmentHandler.setDatabaseTypeHelper(databaseTypeHelper);
