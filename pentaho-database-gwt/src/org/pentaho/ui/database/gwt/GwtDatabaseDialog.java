@@ -6,7 +6,6 @@ import org.pentaho.gwt.widgets.client.utils.i18n.ResourceBundle;
 import org.pentaho.ui.database.event.DataHandler;
 import org.pentaho.ui.database.event.DatabaseDialogListener;
 import org.pentaho.ui.database.event.GwtFragmentHandler;
-import org.pentaho.ui.database.services.IXulAsyncDatabaseConnectionService;
 import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.gwt.GwtXulDomContainer;
 import org.pentaho.ui.xul.gwt.GwtXulRunner;
@@ -17,7 +16,6 @@ import com.google.gwt.core.client.GWT;
 
 public class GwtDatabaseDialog {
   
-  protected IXulAsyncDatabaseConnectionService connService;
   protected DatabaseTypeHelper databaseTypeHelper;
   protected DataHandler dataHandler = new DataHandler();
   protected GwtFragmentHandler fragmentHandler = new GwtFragmentHandler();
@@ -27,23 +25,20 @@ public class GwtDatabaseDialog {
   protected DatabaseDialogListener listener;
   protected XulDialog dialog;
   
-  public GwtDatabaseDialog(IXulAsyncDatabaseConnectionService connService, DatabaseTypeHelper databaseTypeHelper, DatabaseDialogListener listener) {
-    this.connService = connService;
+  public GwtDatabaseDialog(DatabaseTypeHelper databaseTypeHelper, DatabaseDialogListener listener) {
     this.databaseTypeHelper = databaseTypeHelper;
     this.listener = listener;
     AsyncXulLoader.loadXulFromUrl(GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
   }
   
-  public GwtDatabaseDialog(IXulAsyncDatabaseConnectionService connService, DatabaseTypeHelper databaseTypeHelper, String overlay, DatabaseDialogListener listener) {
-    this.connService = connService;
+  public GwtDatabaseDialog(DatabaseTypeHelper databaseTypeHelper, String overlay, DatabaseDialogListener listener) {
     this.databaseTypeHelper = databaseTypeHelper;
     this.overlay = overlay;
     this.listener = listener;
     AsyncXulLoader.loadXulFromUrl(GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
   }
   
-  public GwtDatabaseDialog(IXulAsyncDatabaseConnectionService connService, DatabaseTypeHelper databaseTypeHelper, String overlay, String overlayResource, DatabaseDialogListener listener) {
-    this.connService = connService;
+  public GwtDatabaseDialog(DatabaseTypeHelper databaseTypeHelper, String overlay, String overlayResource, DatabaseDialogListener listener) {
     this.databaseTypeHelper = databaseTypeHelper;
     this.overlay = overlay;
     this.overlayResource = overlayResource;
@@ -53,19 +48,6 @@ public class GwtDatabaseDialog {
   
   public void show() {
     dialog.show();
-    /*
-    XulServiceCallback<List<IDatabaseType>> callback = new XulServiceCallback<List<IDatabaseType>>() {
-      public void error(String message, Throwable error) {
-      }
-      public void success(List<IDatabaseType> retVal) {
-        databaseTypeHelper = new DatabaseTypeHelper(retVal);
-        dataHandler.setDatabaseTypeHelper(databaseTypeHelper);
-        fragmentHandler.setDatabaseTypeHelper(databaseTypeHelper);
-        AsyncXulLoader.loadXulFromUrl("databasedialog.xul", "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$        
-      }
-    };
-    connService.getDatabaseTypes(callback);
-    */
   }
   
   public void setDatabaseConnection(IDatabaseConnection conn) {
@@ -93,7 +75,6 @@ public class GwtDatabaseDialog {
           dataHandler.setDatabaseDialogListener(listener);
         }
         dataHandler.setLaunch(new GwtLaunch());
-        dataHandler.setAsyncDatabaseConnectionService(connService);
         dataHandler.setDatabaseTypeHelper(databaseTypeHelper);
         dataHandler.setFragmentHandler(fragmentHandler);
 
