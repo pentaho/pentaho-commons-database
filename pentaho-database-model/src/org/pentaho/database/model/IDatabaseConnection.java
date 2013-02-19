@@ -7,9 +7,9 @@ import java.util.Map;
 public interface IDatabaseConnection extends Serializable {
 
   void setId(String id);
-  
+
   String getId();
-  
+
   void setAccessType(DatabaseAccessType accessType);
 
   DatabaseAccessType getAccessType();
@@ -69,6 +69,8 @@ public interface IDatabaseConnection extends Serializable {
   String getInformixServername();
 
   void addExtraOption(String databaseTypeCode, String option, String value);
+
+  void setAttributes(Map<String, String> attributes);
 
   Map<String, String> getAttributes();
 
