@@ -196,4 +196,9 @@ public class FragmentHandler extends AbstractXulEventHandler implements IFragmen
   public void setDisableRefresh(boolean disableRefresh) {
     this.disableRefresh = disableRefresh;
   }
+
+  @Override
+  public boolean isRefreshDisabled() {
+    return this.disableRefresh;
+  }
 }
