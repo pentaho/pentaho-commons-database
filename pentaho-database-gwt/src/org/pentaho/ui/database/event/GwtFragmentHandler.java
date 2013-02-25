@@ -37,15 +37,19 @@ import com.google.gwt.core.client.GWT;
  * @created Mar 19, 2008
  */
 public class GwtFragmentHandler extends AbstractXulEventHandler implements IFragmentHandler {
-  
+
   private XulListbox connectionBox;
+
   private XulListbox accessBox;
+
   private DatabaseTypeHelper databaseTypeHelper;
+
   private IMessages messages;
+
   Set<String> supportedFragments = new TreeSet<String>();
-  
+
   private boolean disableRefresh = false;
-  
+
   public GwtFragmentHandler() {
     setName("fragmentHandler");
     supportedFragments.add("generic_native.xul");
@@ -63,73 +67,77 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
     supportedFragments.add("oracle_odbc.xul");
     supportedFragments.add("sapr3_plugin.xul");
   }
-  
+
   public void setDisableRefresh(boolean disableRefresh) {
     this.disableRefresh = disableRefresh;
   }
-  
+
   public void setDatabaseTypeHelper(DatabaseTypeHelper databaseTypeHelper) {
     this.databaseTypeHelper = databaseTypeHelper;
   }
-  
+
   public void setMessages(IMessages messages) {
     this.messages = messages;
   }
-  
-  private void loadDatabaseOptionsFragment(String fragmentUri, final DataHandler dataHandler, final IDatabaseType database, final IFragmentHandler.Callback parentCallback) throws XulException{
-    
+
+  private void loadDatabaseOptionsFragment(String fragmentUri, final DataHandler dataHandler,
+      final IDatabaseType database, final IFragmentHandler.Callback parentCallback) throws XulException {
+
     // clean out group before reloading
     XulComponent groupElement = document.getElementById("database-options-box"); //$NON-NLS-1$
     for (XulComponent component : groupElement.getChildNodes()) {
       groupElement.removeChild(component);
-      
+
     }
 
     XulComponent parentElement = groupElement.getParent();
     XulDomContainer fragmentContainer = null;
 
-//    try {
-      
-      // Get new group box fragment ...
-      // This will effectively set up the SWT parent child relationship...
-      
-      IXulLoaderCallback internalCallback = new IXulLoaderCallback() {
-        public void overlayLoaded() {
-          // TODO Auto-generated method stub
-          afterOverlay(dataHandler, database);
-          if (parentCallback != null) {
-            parentCallback.callback();
-          }
+    //    try {
+
+    // Get new group box fragment ...
+    // This will effectively set up the SWT parent child relationship...
+
+    IXulLoaderCallback internalCallback = new IXulLoaderCallback() {
+      public void overlayLoaded() {
+        // TODO Auto-generated method stub
+        afterOverlay(dataHandler, database);
+        if (parentCallback != null) {
+          parentCallback.callback();
         }
-        public void overlayRemoved() {}
-        public void xulLoaded(GwtXulRunner runner) {}
-      };
-      
-      // this call will cache the individual overlays in a map within AsyncXulLoader
-      AsyncXulLoader.loadOverlayFromUrl(GWT.getModuleBaseURL() + fragmentUri, GWT.getModuleBaseURL() + "databasedialog", (GwtXulDomContainer)getXulDomContainer(), internalCallback, true);
-      
-//      fragmentContainer = this.xulDomContainer.loadFragment(fragmentUri, (Object)null); //messages.getBundle());
-//      XulComponent newGroup = fragmentContainer.getDocumentRoot().getFirstChild();
-//      parentElement.replaceChild(groupElement, newGroup);
-      
-//    } catch (XulException e) {
-//      e.printStackTrace();
-//      throw e;
-//    }
-    
-//    if (fragmentContainer == null){
-//      return;
-//    }
-    
+      }
+
+      public void overlayRemoved() {
+      }
+
+      public void xulLoaded(GwtXulRunner runner) {
+      }
+    };
+
+    // this call will cache the individual overlays in a map within AsyncXulLoader
+    AsyncXulLoader.loadOverlayFromUrl(GWT.getModuleBaseURL() + fragmentUri, GWT.getModuleBaseURL() + "databasedialog",
+        (GwtXulDomContainer) getXulDomContainer(), internalCallback, true);
+
+    //      fragmentContainer = this.xulDomContainer.loadFragment(fragmentUri, (Object)null); //messages.getBundle());
+    //      XulComponent newGroup = fragmentContainer.getDocumentRoot().getFirstChild();
+    //      parentElement.replaceChild(groupElement, newGroup);
+
+    //    } catch (XulException e) {
+    //      e.printStackTrace();
+    //      throw e;
+    //    }
+
+    //    if (fragmentContainer == null){
+    //      return;
+    //    }
+
   }
-  
+
   @Bindable
   public void refreshOptions() {
-    if (!disableRefresh) {
-      refreshOptionsWithCallback(null);
-    }
+    refreshOptionsWithCallback(null);
   }
-  
+
   /**
    * This method handles the resource-like loading of the XUL
    * fragment definitions based on connection type and access 
@@ -140,34 +148,38 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
    */
   public void refreshOptionsWithCallback(final IFragmentHandler.Callback callback) {
 
-    connectionBox = (XulListbox)document.getElementById("connection-type-list"); //$NON-NLS-1$
-    accessBox = (XulListbox)document.getElementById("access-type-list"); //$NON-NLS-1$
-    
-    String connectionKey = getSelectedString(connectionBox);
-    if(connectionKey == null){
+    if (this.disableRefresh) {
       return;
     }
-//    DatabaseInterface database = DataHandler.connectionMap.get(connectionKey);
+
+    connectionBox = (XulListbox) document.getElementById("connection-type-list"); //$NON-NLS-1$
+    accessBox = (XulListbox) document.getElementById("access-type-list"); //$NON-NLS-1$
+
+    String connectionKey = getSelectedString(connectionBox);
+    if (connectionKey == null) {
+      return;
+    }
+    //    DatabaseInterface database = DataHandler.connectionMap.get(connectionKey);
     IDatabaseType database = databaseTypeHelper.getDatabaseTypeByName(connectionKey);
-    
+
     String accessKey = getSelectedString(accessBox);
     DatabaseAccessType access = DatabaseAccessType.getAccessTypeByName(accessKey);
-    
+
     if (access == null) {
       return;
     }
-    
+
     String fragment = null;
 
     DataHandler dataHandler = null;
     try {
-      dataHandler = (DataHandler)xulDomContainer.getEventHandler("dataHandler"); //$NON-NLS-1$
+      dataHandler = (DataHandler) xulDomContainer.getEventHandler("dataHandler"); //$NON-NLS-1$
       dataHandler.pushCache();
     } catch (XulException e) {
       // TODO not a critical function, but should log a problem...
     }
 
-    switch(access){
+    switch (access) {
       case JNDI:
         fragment = getFragment(database, "_jndi.xul", "common_jndi.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
@@ -184,76 +196,80 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
         fragment = getFragment(database, "_plugin.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
     }
-    
+
     try {
       loadDatabaseOptionsFragment(fragment.toLowerCase(), dataHandler, database, callback);
     } catch (XulException e) {
       // TODO should be reporting as an error dialog; need error dialog in XUL framework
-      showMessage(
-        messages.getString("FragmentHandler.USER.CANT_LOAD_OPTIONS", database.getName()) //$NON-NLS-1$
-      ); 
+      showMessage(messages.getString("FragmentHandler.USER.CANT_LOAD_OPTIONS", database.getName()) //$NON-NLS-1$
+      );
     }
   }
-  
+
   private void afterOverlay(DataHandler dataHandler, IDatabaseType database) {
-    XulTextbox portBox = (XulTextbox)document.getElementById("port-number-text"); //$NON-NLS-1$
+    XulTextbox portBox = (XulTextbox) document.getElementById("port-number-text"); //$NON-NLS-1$
     Object data = dataHandler.getData();
-    String portValue = null; 
+    String portValue = null;
     IDatabaseConnection databaseConnection = null;
     // Extract the stored value for port number in the model
     if (data instanceof IDatabaseConnection) {
       databaseConnection = (IDatabaseConnection) data;
       portValue = databaseConnection.getDatabasePort();
     }
-    if (portBox != null){
+    if (portBox != null) {
       // If the model has the port number use it other wise use the default one for the selected database
-      int port = (portValue != null && portValue.length() > 0) ? Integer.parseInt(portValue) : database.getDefaultDatabasePort();
-      if (port > 0){
+      int port = (portValue != null && portValue.length() > 0) ? Integer.parseInt(portValue) : database
+          .getDefaultDatabasePort();
+      if (port > 0) {
         portBox.setValue(Integer.toString(port));
       }
     }
-    
-   if (dataHandler != null){
-     dataHandler.popCache();
-   }
 
-   GwtGroupBox box1 = (GwtGroupBox)document.getElementById("database-options-box");
-   
-   XulHbox box = (XulHbox)document.getElementById("connection-access-list-box");
-   
-   box1.layout();
+    if (dataHandler != null) {
+      dataHandler.popCache();
+    }
 
-   ((GwtHbox)box).layout();
-    
+    GwtGroupBox box1 = (GwtGroupBox) document.getElementById("database-options-box");
+
+    XulHbox box = (XulHbox) document.getElementById("connection-access-list-box");
+
+    box1.layout();
+
+    ((GwtHbox) box).layout();
+
   }
-  
+
   private String getSelectedString(XulListbox box) {
     String key = null;
     Object keyObj = box.getSelectedItem();
     if (keyObj instanceof XulListitem) {
-      key = (String)((XulListitem)keyObj).getLabel();
+      key = (String) ((XulListitem) keyObj).getLabel();
     } else {
-      key = (String)keyObj;
+      key = (String) keyObj;
     }
     return key;
   }
 
-  
-  private String getFragment(IDatabaseType database, String extension, String defaultFragment ){
+  private String getFragment(IDatabaseType database, String extension, String defaultFragment) {
     String fragment = database.getShortName().concat(extension).toLowerCase();
     if (!supportedFragments.contains(fragment)) {
-      fragment = defaultFragment;  
+      fragment = defaultFragment;
     }
     return fragment;
   }
 
-  private void showMessage(String message){
-    try{
+  private void showMessage(String message) {
+    try {
       XulMessageBox box = (XulMessageBox) document.createElement("messagebox"); //$NON-NLS-1$
       box.setMessage(message);
       box.open();
-    } catch(XulException e){
-      System.out.println("Error creating messagebox "+e.getMessage());
+    } catch (XulException e) {
+      System.out.println("Error creating messagebox " + e.getMessage());
     }
+  }
+
+  @Override
+  public boolean isRefreshDisabled() {
+    return this.disableRefresh;
   }
 }
