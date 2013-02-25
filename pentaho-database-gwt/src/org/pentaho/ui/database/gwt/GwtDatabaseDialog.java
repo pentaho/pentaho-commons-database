@@ -15,56 +15,77 @@ import org.pentaho.ui.xul.gwt.util.IXulLoaderCallback;
 import com.google.gwt.core.client.GWT;
 
 public class GwtDatabaseDialog {
-  
+
   protected DatabaseTypeHelper databaseTypeHelper;
+
   protected DataHandler dataHandler = new DataHandler();
+
   protected GwtFragmentHandler fragmentHandler = new GwtFragmentHandler();
+
   protected GwtMessages messages = new GwtMessages();
+
   protected String overlay = null; // no overlay by default
+
   protected String overlayResource = "databasedialog"; //$NON-NLS-1$
+
   protected DatabaseDialogListener listener;
+
   protected XulDialog dialog;
-  
+
   public GwtDatabaseDialog(DatabaseTypeHelper databaseTypeHelper, DatabaseDialogListener listener) {
     this.databaseTypeHelper = databaseTypeHelper;
     this.listener = listener;
-    AsyncXulLoader.loadXulFromUrl(GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
+
+    AsyncXulLoader
+        .loadXulFromUrl(
+            GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
   }
-  
+
   public GwtDatabaseDialog(DatabaseTypeHelper databaseTypeHelper, String overlay, DatabaseDialogListener listener) {
     this.databaseTypeHelper = databaseTypeHelper;
     this.overlay = overlay;
     this.listener = listener;
-    AsyncXulLoader.loadXulFromUrl(GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
+
+    AsyncXulLoader
+        .loadXulFromUrl(
+            GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
   }
-  
-  public GwtDatabaseDialog(DatabaseTypeHelper databaseTypeHelper, String overlay, String overlayResource, DatabaseDialogListener listener) {
+
+  public GwtDatabaseDialog(DatabaseTypeHelper databaseTypeHelper, String overlay, String overlayResource,
+      DatabaseDialogListener listener) {
     this.databaseTypeHelper = databaseTypeHelper;
     this.overlay = overlay;
     this.overlayResource = overlayResource;
     this.listener = listener;
-    AsyncXulLoader.loadXulFromUrl(GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
+
+    AsyncXulLoader
+        .loadXulFromUrl(
+            GWT.getModuleBaseURL() + "databasedialog.xul", GWT.getModuleBaseURL() + "databasedialog", new InternalCallback()); //$NON-NLS-1$//$NON-NLS-2$
   }
-  
+
   public void show() {
     dialog.show();
   }
-  
+
   public void setDatabaseConnection(IDatabaseConnection conn) {
     dataHandler.setData(conn);
   }
-  
-  public boolean isDialogReady() { 
+
+  public boolean isDialogReady() {
     return dialog != null;
   }
-  
+
   public IDatabaseConnection getDatabaseConnection() {
-    return (IDatabaseConnection)dataHandler.getData();
+    return (IDatabaseConnection) dataHandler.getData();
   }
-  
+
   private class InternalCallback implements IXulLoaderCallback {
-    public void overlayLoaded() {}
-    public void overlayRemoved() {}
+    public void overlayLoaded() {
+    }
+
+    public void overlayRemoved() {
+    }
+
     public void xulLoaded(GwtXulRunner runner) {
       try {
         // register our event handlers
@@ -79,13 +100,15 @@ public class GwtDatabaseDialog {
         dataHandler.setFragmentHandler(fragmentHandler);
 
         container.addEventHandler(dataHandler);
-        
+
         fragmentHandler.setMessages(messages);
         fragmentHandler.setDatabaseTypeHelper(databaseTypeHelper);
         container.addEventHandler(fragmentHandler);
 
+        fragmentHandler.setDisableRefresh(true);
         runner.initialize();
-        
+        fragmentHandler.setDisableRefresh(false);
+
         if (overlay != null) {
           IXulLoaderCallback callback2 = new IXulLoaderCallback() {
             public void overlayLoaded() {
@@ -94,8 +117,12 @@ public class GwtDatabaseDialog {
                 listener.onDialogReady();
               }
             }
-            public void overlayRemoved() {}
-            public void xulLoaded(GwtXulRunner runner) {}
+
+            public void overlayRemoved() {
+            }
+
+            public void xulLoaded(GwtXulRunner runner) {
+            }
           };
           AsyncXulLoader.loadOverlayFromUrl(overlay, overlayResource, container, callback2);
         } else {

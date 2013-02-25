@@ -279,6 +279,8 @@ public class DataHandler extends AbstractXulEventHandler {
     List<DatabaseAccessType> acc = database.getSupportedAccessTypes();
     Object accessKey = getSelectedString(accessBox);
 
+    boolean refreshInitiallyDisabled = fragmentHandler.isRefreshDisabled();
+
     fragmentHandler.setDisableRefresh(true);
 
     // Remove items from the access box
@@ -289,7 +291,10 @@ public class DataHandler extends AbstractXulEventHandler {
       accessBox.addItem(value.getName());
     }
 
-    fragmentHandler.setDisableRefresh(false);
+    // In case the refresh was disabled externally
+    if (!refreshInitiallyDisabled) {
+      fragmentHandler.setDisableRefresh(false);
+    }
 
     // HACK: Need to force height of list control, as it does not behave 
     // well when using relative layouting
@@ -850,11 +855,12 @@ public class DataHandler extends AbstractXulEventHandler {
       accessBox.setSelectedIndex(0);
     }
 
+    fragmentHandler.setDisableRefresh(false);
+
     // this is broken out so we can set the cache information only when caching 
     // connection values
     fragmentHandler.refreshOptionsWithCallback(new IFragmentHandler.Callback() {
       public void callback() {
-        fragmentHandler.setDisableRefresh(false);
         setConnectionSpecificInfo(databaseConnection);
       }
     });
@@ -1509,5 +1515,17 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     return moduleUrl + "plugin/data-access/api/connection/"; //$NON-NLS-1$
+  }
+
+  /**
+   * Disables the refresh on the {@link IFragmentHandler}
+   * 
+   * @param disableRefresh
+   *        boolean - disables the ability to refresh the options
+   */
+  public void setFragmentHandlerDisableRefresh(boolean disableRefresh) {
+    if (this.fragmentHandler != null) {
+      this.fragmentHandler.setDisableRefresh(disableRefresh);
+    }
   }
 }
