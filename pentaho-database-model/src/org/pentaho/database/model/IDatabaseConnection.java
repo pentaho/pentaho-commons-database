@@ -18,6 +18,8 @@ public interface IDatabaseConnection extends Serializable {
 
   IDatabaseType getDatabaseType();
 
+  void setExtraOptions(Map<String, String> extraOptions);
+
   Map<String, String> getExtraOptions();
 
   void setName(String name);
