@@ -133,6 +133,14 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   }
 
   /* (non-Javadoc)
+   * @see org.pentaho.database.model.IDatabaseConnection#setExtraOptions()
+   */
+  @Override
+  public void setExtraOptions(Map<String, String> extraOptions) {
+    this.extraOptions = extraOptions;
+  }
+
+  /* (non-Javadoc)
    * @see org.pentaho.database.model.IDatabaseConnection#getExtraOptions()
    */
   public Map<String, String> getExtraOptions() {
@@ -511,4 +519,5 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
         + ", partitioningInformation=" + partitioningInformation + ", initialPoolSize=" + initialPoolSize
         + ", maxPoolSize=" + maxPoolSize + ", partitioned=" + partitioned + "]";
   }
+
 }

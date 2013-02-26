@@ -5,7 +5,7 @@
  * this file except in compliance with the license. If you need a copy of the license, 
  * please go to http://www.mozilla.org/MPL/MPL-1.1.txt. The Original Code is the Pentaho 
  * BI Platform.  The Initial Developer is Pentaho Corporation.
- *
+ *setExtr
  * Software distributed under the Mozilla Public License is distributed on an "AS IS" 
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or  implied. Please refer to 
  * the license for the specific language governing your rights and limitations.
@@ -14,8 +14,9 @@
  * @author wseyler
  */
 
-
 package org.pentaho.ui.database.event;
+
+import java.util.HashMap;
 
 import org.pentaho.database.model.IDatabaseConnection;
 
@@ -26,8 +27,14 @@ import com.google.web.bindery.autobean.shared.AutoBean;
  *
  */
 public class ConnectionCategory {
-  public static void addExtraOption(AutoBean<IDatabaseConnection> instance, String databaseTypeCode, String option, String value) {
+  public static void addExtraOption(AutoBean<IDatabaseConnection> instance, String databaseTypeCode, String option,
+      String value) {
     IDatabaseConnection dbConnection = instance.as();
-    dbConnection.getExtraOptions().put(databaseTypeCode + "." + option, value);
+
+    if (dbConnection.getExtraOptions() == null) {
+      dbConnection.setExtraOptions(new HashMap<String, String>());
+    }
+
+    dbConnection.getExtraOptions().put(databaseTypeCode + "." + option, value); //$NON-NLS-1$
   }
 }
