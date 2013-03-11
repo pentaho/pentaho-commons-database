@@ -17,11 +17,15 @@ public class DatabaseUtil {
     Properties props = meta.getDatabaseInterface().getAttributes();
 
     for (String key : conn.getExtraOptions().keySet()) {
-      props.put(BaseDatabaseMeta.ATTRIBUTE_PREFIX_EXTRA_OPTION + key, conn.getExtraOptions().get(key));
+      if (conn.getExtraOptions().get(key) != null) {
+        props.put(BaseDatabaseMeta.ATTRIBUTE_PREFIX_EXTRA_OPTION + key, conn.getExtraOptions().get(key));
+      }
     }
 
     for (String key : conn.getConnectionPoolingProperties().keySet()) {
-      props.put(BaseDatabaseMeta.ATTRIBUTE_POOLING_PARAMETER_PREFIX + key, conn.getConnectionPoolingProperties().get(key));
+      if (conn.getConnectionPoolingProperties().get(key) != null) {
+        props.put(BaseDatabaseMeta.ATTRIBUTE_POOLING_PARAMETER_PREFIX + key, conn.getConnectionPoolingProperties().get(key));
+      }
     }
 
     for (String key : conn.getAttributes().keySet()) {
@@ -34,7 +38,11 @@ public class DatabaseUtil {
     meta.setAccessType(conn.getAccessType().ordinal());
     meta.setHostname(conn.getHostname());
     meta.setDBName(conn.getDatabaseName());
-    meta.setDBPort(conn.getDatabasePort());
+    if (conn.getDatabasePort() != null) {
+      meta.setDBPort(conn.getDatabasePort());
+    } else {
+      meta.setDBPort("" + meta.getDefaultDatabasePort());
+    }
     meta.setUsername(conn.getUsername());
     meta.setPassword(conn.getPassword());
 
