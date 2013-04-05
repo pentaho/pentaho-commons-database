@@ -32,7 +32,7 @@ public class DatabaseUtil {
     for (String key : conn.getAttributes().keySet()) {
       String val = conn.getAttributes().get(key);
       if (val != null) {
-        props.put(key, conn.getAttributes().get(key));
+        props.put(key, val);
       }
     }
 
