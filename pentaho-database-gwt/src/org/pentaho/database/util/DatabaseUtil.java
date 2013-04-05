@@ -24,12 +24,16 @@ public class DatabaseUtil {
 
     for (String key : conn.getConnectionPoolingProperties().keySet()) {
       if (conn.getConnectionPoolingProperties().get(key) != null) {
-        props.put(BaseDatabaseMeta.ATTRIBUTE_POOLING_PARAMETER_PREFIX + key, conn.getConnectionPoolingProperties().get(key));
+        props.put(BaseDatabaseMeta.ATTRIBUTE_POOLING_PARAMETER_PREFIX + key,
+            conn.getConnectionPoolingProperties().get(key));
       }
     }
 
     for (String key : conn.getAttributes().keySet()) {
-      props.put(key, conn.getAttributes().get(key));
+      String val = conn.getAttributes().get(key);
+      if (val != null) {
+        props.put(key, val);
+      }
     }
 
     meta.setAttributes(props);
@@ -46,12 +50,11 @@ public class DatabaseUtil {
     meta.setUsername(conn.getUsername());
     meta.setPassword(conn.getPassword());
 
-
     meta.setServername(conn.getInformixServername());
     meta.setDataTablespace(conn.getDataTablespace());
     meta.setIndexTablespace(conn.getIndexTablespace());
 
-    // addl
+    // add
     if (conn.getConnectSql() != null) {
       meta.setConnectSQL(conn.getConnectSql());
     }
@@ -81,7 +84,6 @@ public class DatabaseUtil {
       meta.setPartitioningInformation(pdmetas);
     }
 
-
     if (conn.getChanged()) {
       meta.setChanged();
     }
@@ -89,7 +91,8 @@ public class DatabaseUtil {
     return meta;
   }
 
-  public static PartitionDatabaseMeta convertToPartitionDatabaseMeta(org.pentaho.database.model.PartitionDatabaseMeta pdm) {
+  public static PartitionDatabaseMeta convertToPartitionDatabaseMeta(
+      org.pentaho.database.model.PartitionDatabaseMeta pdm) {
     PartitionDatabaseMeta pdmeta = new PartitionDatabaseMeta();
     pdmeta.setDatabaseName(pdm.getDatabaseName());
     pdmeta.setHostname(pdm.getHostname());
