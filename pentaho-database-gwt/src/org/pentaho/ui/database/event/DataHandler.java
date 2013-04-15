@@ -60,6 +60,9 @@ public class DataHandler extends AbstractXulEventHandler {
 
   private static final String LINE_SEPARATOR = "\n"; // System.getProperty("line.separator"); //$NON-NLS-1$
 
+  // See http://bugs.jquery.com/ticket/1450 for an explanation
+  private static final int SC_NO_CONTENT_IE = 1223;
+  
   protected DatabaseDialogListener listener;
 
   protected IMessages messages;
@@ -614,7 +617,9 @@ public class DataHandler extends AbstractXulEventHandler {
 
         @Override
         public void onResponseReceived(Request request, Response response) {
-          if (response.getStatusCode() == Response.SC_NO_CONTENT) {
+          int statusCode = response.getStatusCode();
+          
+          if (statusCode == Response.SC_NO_CONTENT || statusCode == SC_NO_CONTENT_IE) {
             RequestBuilder testBuilder = new RequestBuilder(RequestBuilder.PUT, URL.encode(getBaseURL() + "test")); //$NON-NLS-1$
             testBuilder.setHeader("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
             try {
@@ -639,7 +644,7 @@ public class DataHandler extends AbstractXulEventHandler {
               showMessage(
                   messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), e.getMessage(), e.getMessage().length() > 300); //$NON-NLS-1$
             }
-          } else if (response.getStatusCode() == Response.SC_OK && response.getText().equalsIgnoreCase("null")) { //$NON-NLS-1$
+          } else if (statusCode == Response.SC_OK && response.getText().equalsIgnoreCase("null")) { //$NON-NLS-1$
             String message = ""; //$NON-NLS-1$
             String[] remarks = deserializeStringArray(response.getText());
             for (int i = 0; i < remarks.length; i++) {
