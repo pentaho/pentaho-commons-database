@@ -114,9 +114,12 @@
 				<label id="parameter-description-label" value="${DatabaseDialog.USER_PARAMETERS}"/>
 				<label id="spacer" />
 				
-				<!-- SCROLL_TABLE_FIX: scrolltable "grows" when width is set to 100% -->
+				<!-- SCROLL_TABLE_FIX: scrolltable "grows" when width is set to 100% 
+                     DCLEAO: changed width="510" to width="100%" to remove unneded horizontal scrollbar.
+                     Tested and couldn't find any problems with having 100% width.
+                     -->
 				
-				<tree id="options-parameter-tree" flex="1" height="380" width="510" editable="true" onedit="dataHandler.editOptions()" seltype="cell">
+				<tree id="options-parameter-tree" flex="1" height="380" width="100%" editable="true" onedit="dataHandler.editOptions()" seltype="cell">
 
 					<treecols id="option-column-list">
 					  	<treecol id="parameter-col" label="${DatabaseDialog.column.Parameter}" flex="1" editable="true" type="text"/>  
@@ -130,7 +133,9 @@
 				
 				<hbox id="help-button-box">
 					<label id="spacer-label" flex="10" />
-					<button id="help-button" label="${DatabaseDialog.button.ShowHelp}" flex="1" onclick="dataHandler.getOptionHelp()" />
+                    <!-- BISERVER-7680: Removed flex=1 because it was causing the fixed style="height:100%", 
+                         overriding the desired "auto" value -->
+					<button id="help-button" label="${DatabaseDialog.button.ShowHelp}" onclick="dataHandler.getOptionHelp()" />
 				</hbox>
 				
 			</groupbox>				
