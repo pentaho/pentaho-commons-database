@@ -31,7 +31,6 @@
 		<dependency org="jaxen" name="jaxen" rev="1.1.1" transitive="false" />
 		<dependency org="log4j" name="log4j" rev="1.2.8" transitive="false"/>
         <dependency org="pentaho-kettle" name="kettle-core" rev="${dependency.kettle.revision}" transitive="false"/>
-        <dependency org="pentaho-kettle" name="kettle-db" rev="${dependency.kettle.revision}" transitive="false"/>
         <dependency org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" transitive="false"/>
         
         <dependency org="commons-vfs" name="commons-vfs" rev="1.0" transitive="false"/> 
