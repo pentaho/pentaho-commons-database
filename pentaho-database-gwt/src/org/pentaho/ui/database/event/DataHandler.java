@@ -182,12 +182,7 @@ public class DataHandler extends AbstractXulEventHandler {
   public DataHandler() {
     setName("dataHandler"); //$NON-NLS-1$
     connectionAutoBeanFactory = GWT.create(IConnectionAutoBeanFactory.class);
-    cache = connectionAutoBeanFactory.iDatabaseConnection().as();
-
-    // Instantiate attributes map
-    if (cache.getAttributes() == null) {
-      cache.setAttributes(new HashMap<String, String>());
-    }
+    cache = createDatabaseConnection();
   }
 
   public void setFragmentHandler(IFragmentHandler fragmentHandler) {
@@ -208,6 +203,14 @@ public class DataHandler extends AbstractXulEventHandler {
 
   public void setLaunch(ILaunch launch) {
     this.launch = launch;
+  }
+  
+  private IDatabaseConnection createDatabaseConnection() { 
+    IDatabaseConnection database = connectionAutoBeanFactory.iDatabaseConnection().as();
+    database.setAttributes(new HashMap<String, String>());
+    database.setConnectionPoolingProperties(new HashMap<String, String>());
+    database.setExtraOptions(new HashMap<String, String>());
+    return database;
   }
 
   @Bindable
@@ -351,7 +354,7 @@ public class DataHandler extends AbstractXulEventHandler {
   public void getOptionHelp() {
 
     String message = null;
-    IDatabaseConnection database = connectionAutoBeanFactory.iDatabaseConnection().as();
+    IDatabaseConnection database = createDatabaseConnection();
 
     getInfo(database);
     String url = database.getDatabaseType().getExtraOptionsHelpUrl();
@@ -492,7 +495,7 @@ public class DataHandler extends AbstractXulEventHandler {
     // if a null value is passed in, replace it with an 
     // empty database connection
     if (data == null) {
-      data = connectionAutoBeanFactory.iDatabaseConnection().as();
+      data = createDatabaseConnection();
     }
 
     databaseConnection = (IDatabaseConnection) data;
@@ -544,7 +547,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   @Bindable
   public void onOK() {
-    final IDatabaseConnection database = connectionAutoBeanFactory.iDatabaseConnection().as();
+    final IDatabaseConnection database = createDatabaseConnection();
     getInfo(database);
 
     boolean passed = checkPoolingParameters();
@@ -598,7 +601,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   @Bindable
   public void testDatabaseConnection() {
-    final IDatabaseConnection database = connectionAutoBeanFactory.iDatabaseConnection().as();
+    final IDatabaseConnection database = createDatabaseConnection();
     getInfo(database);
 
     RequestBuilder checkParamsBuilder = new RequestBuilder(RequestBuilder.POST,
