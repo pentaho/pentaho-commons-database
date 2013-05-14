@@ -109,13 +109,16 @@ public class DatabaseConnectionServiceTest {
     Assert.assertEquals(null, conn.getDatabasePort());
     Assert.assertEquals("testdb", conn.getDatabaseName());
     
-    try {
-      conn = connectionService.createDatabaseConnection(
-          "org.gjt.mm.mysql.Driver", "jasddbc:mysql://testdb");
-      Assert.fail();
-    } catch (RuntimeException e) {
-      
-    }
+    conn = connectionService.createDatabaseConnection(
+        "org.gjt.mm.mysql.Driver", "jasddbc:mysql://testdb");
+    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
+    Assert.assertEquals(helper.getDatabaseTypeByName("Generic database"), conn.getDatabaseType());
+    Assert.assertEquals(null, conn.getHostname());
+    Assert.assertEquals(null, conn.getDatabasePort());
+    Assert.assertEquals(null, conn.getDatabaseName());
+    Assert.assertEquals(null, conn.getDatabaseName());
+    Assert.assertEquals("jasddbc:mysql://testdb", conn.getAttributes().get(GenericDatabaseDialect.ATTRIBUTE_CUSTOM_URL));
+    Assert.assertEquals("org.gjt.mm.mysql.Driver", conn.getAttributes().get(GenericDatabaseDialect.ATTRIBUTE_CUSTOM_DRIVER_CLASS));
     
     conn = connectionService.createDatabaseConnection(
         "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost:1234/testdb?autoCommit=true&test=FALSE");
@@ -176,13 +179,16 @@ public class DatabaseConnectionServiceTest {
     Assert.assertEquals(null, conn.getDatabasePort());
     Assert.assertEquals(null, conn.getDatabaseName());
     
-    try {
-      conn = connectionService.createDatabaseConnection(
-          "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jasddbc:mysql://testdb");
-      Assert.fail();
-    } catch (RuntimeException e) {
-      
-    }
+    conn = connectionService.createDatabaseConnection(
+        "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jasddbc:mysql://testdb");
+    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
+    Assert.assertEquals(helper.getDatabaseTypeByName("Generic database"), conn.getDatabaseType());
+    Assert.assertEquals(null, conn.getHostname());
+    Assert.assertEquals(null, conn.getDatabasePort());
+    Assert.assertEquals(null, conn.getDatabaseName());
+    Assert.assertEquals(null, conn.getDatabaseName());
+    Assert.assertEquals("jasddbc:mysql://testdb", conn.getAttributes().get(GenericDatabaseDialect.ATTRIBUTE_CUSTOM_URL));
+    Assert.assertEquals("com.microsoft.sqlserver.jdbc.SQLServerDriver", conn.getAttributes().get(GenericDatabaseDialect.ATTRIBUTE_CUSTOM_DRIVER_CLASS));
     
     conn = connectionService.createDatabaseConnection(
         "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://localhost:1234;databaseName=testdb;autoCommit=true;test=FALSE");
@@ -242,13 +248,16 @@ public class DatabaseConnectionServiceTest {
     Assert.assertEquals(null, conn.getDatabasePort());
     Assert.assertEquals("testdb", conn.getDatabaseName());
     
-    try {
-      conn = connectionService.createDatabaseConnection(
-          "oracle.jdbc.driver.OracleDriver", "jdbc:oraasdfcle:thin:@testdb");
-      Assert.fail();
-    } catch (RuntimeException e) {
-      
-    }
+    conn = connectionService.createDatabaseConnection(
+        "oracle.jdbc.driver.OracleDriver", "jdbc:oraasdfcle:thin:@testdb");
+    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
+    Assert.assertEquals(helper.getDatabaseTypeByName("Generic database"), conn.getDatabaseType());
+    Assert.assertEquals(null, conn.getHostname());
+    Assert.assertEquals(null, conn.getDatabasePort());
+    Assert.assertEquals(null, conn.getDatabaseName());
+    Assert.assertEquals(null, conn.getDatabaseName());
+    Assert.assertEquals("jdbc:oraasdfcle:thin:@testdb", conn.getAttributes().get(GenericDatabaseDialect.ATTRIBUTE_CUSTOM_URL));
+    Assert.assertEquals("oracle.jdbc.driver.OracleDriver", conn.getAttributes().get(GenericDatabaseDialect.ATTRIBUTE_CUSTOM_DRIVER_CLASS));
   }
 
   @Test
@@ -298,13 +307,16 @@ public class DatabaseConnectionServiceTest {
     Assert.assertEquals(null, conn.getDatabasePort());
     Assert.assertEquals("file:testdb", conn.getDatabaseName());
     
-    try {
-      conn = connectionService.createDatabaseConnection(
-          "org.hsqldb.jdbcDriver", "jdbc:hsqasdldb:testdb");
-      Assert.fail();
-    } catch (RuntimeException e) {
-      
-    }
+    conn = connectionService.createDatabaseConnection(
+        "org.hsqldb.jdbcDriver", "jdbc:hsqasdldb:testdb");
+    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
+    Assert.assertEquals(helper.getDatabaseTypeByName("Generic database"), conn.getDatabaseType());
+    Assert.assertEquals(null, conn.getHostname());
+    Assert.assertEquals(null, conn.getDatabasePort());
+    Assert.assertEquals(null, conn.getDatabaseName());
+    Assert.assertEquals(null, conn.getDatabaseName());
+    Assert.assertEquals("jdbc:hsqasdldb:testdb", conn.getAttributes().get(GenericDatabaseDialect.ATTRIBUTE_CUSTOM_URL));
+    Assert.assertEquals("org.hsqldb.jdbcDriver", conn.getAttributes().get(GenericDatabaseDialect.ATTRIBUTE_CUSTOM_DRIVER_CLASS));
     
     // test URL parameters
     conn = connectionService.createDatabaseConnection(
