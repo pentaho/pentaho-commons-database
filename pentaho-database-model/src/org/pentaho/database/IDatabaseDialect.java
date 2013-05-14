@@ -332,4 +332,11 @@ public interface IDatabaseDialect {
   String getExtraOptionValueSeparator();
   
   String getExtraOptionIndicator();
+  
+  /**
+   * Returns the jdbc prefix portion of the URL that this dialect is expecting (Everything before the //)
+   * 
+   * @return the jdbc prefix portion of the URL that this dialect is expecting
+   */
+  String getNativeJdbcPre();
 }

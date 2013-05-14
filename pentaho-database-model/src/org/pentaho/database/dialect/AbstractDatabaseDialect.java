@@ -13,6 +13,7 @@ import org.pentaho.database.model.IDatabaseConnection;
 
 
 public abstract class AbstractDatabaseDialect implements IDatabaseDialect, Serializable {
+  private static final long serialVersionUID = 4949841921392501602L;
 
   /**
    * Use this length in a String value to indicate that you want to use a CLOB in stead of a normal text field.
@@ -536,7 +537,7 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, Seria
         return true;
     }
     
-    protected abstract String getNativeJdbcPre();
+    public abstract String getNativeJdbcPre();
     
     public IDatabaseConnection createNativeConnection(String jdbcUrl) {
       if (!jdbcUrl.startsWith(getNativeJdbcPre())) {
