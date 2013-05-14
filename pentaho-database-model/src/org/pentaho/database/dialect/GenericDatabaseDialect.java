@@ -9,7 +9,8 @@ import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
 
 public class GenericDatabaseDialect extends AbstractDatabaseDialect {
-
+  private static final long serialVersionUID = -9108579257849849286L;
+  
   public static final String ATTRIBUTE_CUSTOM_URL          = "CUSTOM_URL"; 
   public static final String ATTRIBUTE_CUSTOM_DRIVER_CLASS = "CUSTOM_DRIVER_CLASS";
 
@@ -164,13 +165,11 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getNativeDriver() {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  protected String getNativeJdbcPre() {
-    // TODO Auto-generated method stub
+  public String getNativeJdbcPre() {
     return null;
   }
 
