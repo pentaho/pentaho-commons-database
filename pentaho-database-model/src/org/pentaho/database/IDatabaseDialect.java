@@ -15,7 +15,7 @@
  * Copyright 2008-2013 Pentaho Corporation.  All rights reserved.
  *
  */
-spackage org.pentaho.database;
+package org.pentaho.database;
 
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
