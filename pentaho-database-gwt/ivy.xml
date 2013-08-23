@@ -74,8 +74,6 @@
         <dependency org="junit" name="junit" rev="4.3.1" transitive="false" conf="test->default"/>
         <dependency org="mysql" name="mysql-connector-java" rev="5.1.10" transitive="false" conf="test->default"/>
         <dependency org="hsqldb" name="hsqldb" rev="1.8.0.7" transitive="false" conf="test->default"/>
-        <dependency org="oracle" name="ojdbc" rev="10.2.0.3.0" transitive="false" conf="test->default"/>
-        <dependency org="oracle" name="orai18n" rev="10.2.0.3.0" transitive="false" conf="test->default"/>
-
+       
     </dependencies>
 </ivy-module>
