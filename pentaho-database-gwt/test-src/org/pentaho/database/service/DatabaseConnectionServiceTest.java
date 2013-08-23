@@ -229,55 +229,6 @@ public class DatabaseConnectionServiceTest {
 
   
   @Test
-  public void testCreateOracleDatabaseConnection() {
-    DatabaseDialectService dialectService = new DatabaseDialectService();
-    DatabaseConnectionService connectionService = new DatabaseConnectionService();
-    DatabaseTypeHelper helper = new DatabaseTypeHelper(dialectService.getDatabaseTypes());
-    
-    IDatabaseConnection conn = connectionService.createDatabaseConnection(
-        "oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@localhost:1234:testdb");
-
-    Assert.assertNotNull(conn);
-    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
-    Assert.assertEquals(helper.getDatabaseTypeByName("Oracle"), conn.getDatabaseType());
-    Assert.assertEquals("localhost", conn.getHostname());
-    Assert.assertEquals("1234", conn.getDatabasePort());
-    Assert.assertEquals("testdb", conn.getDatabaseName());
-    
-    conn = connectionService.createDatabaseConnection(
-        "oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@localhost:testdb");
-
-    Assert.assertNotNull(conn);
-    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
-    Assert.assertEquals(helper.getDatabaseTypeByName("Oracle"), conn.getDatabaseType());
-    Assert.assertEquals("localhost", conn.getHostname());
-    Assert.assertEquals("testdb", conn.getDatabasePort());
-    Assert.assertEquals(null, conn.getDatabaseName());
-
-    
-    conn = connectionService.createDatabaseConnection(
-        "oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@testdb");
-
-    Assert.assertNotNull(conn);
-    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
-    Assert.assertEquals(helper.getDatabaseTypeByName("Oracle"), conn.getDatabaseType());
-    Assert.assertEquals(null, conn.getHostname());
-    Assert.assertEquals(null, conn.getDatabasePort());
-    Assert.assertEquals("testdb", conn.getDatabaseName());
-    
-    conn = connectionService.createDatabaseConnection(
-        "oracle.jdbc.driver.OracleDriver", "jdbc:oraasdfcle:thin:@testdb");
-    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
-    Assert.assertEquals(helper.getDatabaseTypeByName("Generic database"), conn.getDatabaseType());
-    Assert.assertEquals(null, conn.getHostname());
-    Assert.assertEquals(null, conn.getDatabasePort());
-    Assert.assertEquals(null, conn.getDatabaseName());
-    Assert.assertEquals(null, conn.getDatabaseName());
-    Assert.assertEquals("jdbc:oraasdfcle:thin:@testdb", conn.getAttributes().get(GenericDatabaseDialect.ATTRIBUTE_CUSTOM_URL));
-    Assert.assertEquals("oracle.jdbc.driver.OracleDriver", conn.getAttributes().get(GenericDatabaseDialect.ATTRIBUTE_CUSTOM_DRIVER_CLASS));
-  }
-
-  @Test
   public void testCreateHypersonicDatabaseConnection() throws Exception {
     DatabaseDialectService dialectService = new DatabaseDialectService();
     DatabaseConnectionService connectionService = new DatabaseConnectionService();
