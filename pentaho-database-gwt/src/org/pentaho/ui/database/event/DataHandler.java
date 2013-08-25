@@ -400,30 +400,14 @@ public class DataHandler extends AbstractXulEventHandler {
   @Bindable
   public void addEmptyRowsToOptions() {
     Object[][] values = optionsParameterTree.getValues();
-    int emptyRows = 0;
-    int nonEmptyRows = 0;
-    for (int i = 0; i < values.length; i++) {
-      String parameter = (String) values[i][0];
-      if ((parameter != null) && (parameter.trim().length() > 0)) {
-        emptyRows = 0;
-        nonEmptyRows++;
-      } else {
-        emptyRows++;
-      }
+
+    int rowsToAdd = 5 - values.length;
+    while (rowsToAdd-- > 0) {
+      XulTreeRow row = this.optionsParameterTree.getRootChildren().addNewRow();
+      row.addCellText(0, ""); //$NON-NLS-1$
+      row.addCellText(1, ""); //$NON-NLS-1$
     }
-    if (emptyRows == 0) {
-      int numToAdd = 5;
-      if (nonEmptyRows > 0) {
-        numToAdd = 1;
-      }
-      while (numToAdd-- > 0) {
-        XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
-        //easy way of putting new cells in the row
-        row.addCellText(0, ""); //$NON-NLS-1$
-        row.addCellText(1, ""); //$NON-NLS-1$
-      }
-      optionsParameterTree.update();
-    }
+    this.optionsParameterTree.update();
   }
 
   @Bindable
@@ -440,9 +424,7 @@ public class DataHandler extends AbstractXulEventHandler {
       passed = checkPoolingParameters();
     }
 
-    if (originalSelection == 1) {
-      addEmptyRowsToOptions();
-    }
+    addEmptyRowsToOptions();
 
     if (passed) {
       int selected = deckOptionsBox.getSelectedIndex();
