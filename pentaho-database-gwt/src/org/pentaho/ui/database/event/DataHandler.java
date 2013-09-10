@@ -549,6 +549,14 @@ public class DataHandler extends AbstractXulEventHandler {
     final IDatabaseConnection database = createDatabaseConnection();
     getInfo(database);
 
+    String illegals = "&<>/\\";
+    for (int i=0;i<database.getName().length();i++) {
+      if (illegals.contains(""+database.getName().charAt(i))) {
+        showMessage(messages.getString("DatabaseDialog.ErrorConnectionName.title"), messages.getString("DatabaseDialog.ErrorConnectionName.description", illegals), false);
+        return;
+      }
+    }
+    
     boolean passed = checkPoolingParameters();
     if (!passed) {
       return;
@@ -845,6 +853,7 @@ public class DataHandler extends AbstractXulEventHandler {
     // Name:
     connectionNameBox.setValue(databaseConnection.getName());
 
+    
     // disable refresh for now
     fragmentHandler.setDisableRefresh(true);
 
