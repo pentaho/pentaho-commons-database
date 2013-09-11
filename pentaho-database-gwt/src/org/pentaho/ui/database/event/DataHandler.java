@@ -582,7 +582,13 @@ public class DataHandler extends AbstractXulEventHandler {
             if (databaseConnection == null) {
               databaseConnection = connectionAutoBeanFactory.iDatabaseConnection().as();
             }
+
+            // Clear extra options before reapplying all values from web
+            databaseConnection.setExtraOptions(new HashMap<String, String>());
+
+            // Populate database connection with new values
             getInfo(databaseConnection);
+
             databaseConnection.setChanged(true);
             close();
             if (listener != null) {
