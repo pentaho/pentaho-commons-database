@@ -1003,11 +1003,14 @@ public class DataHandler extends AbstractXulEventHandler {
         if (!isChecked) {
           continue;
         }
-        XulTreeItem item = poolParameterTree.getRootChildren().getItem(i);
-        item.getRow().addCellText(0, "true"); // checks the checkbox //$NON-NLS-1$
-
+//        XulTreeRow row = poolParameterTree.getRootChildren().addNewRow();
+//        row.addCellText(0, "true"); //$NON-NLS-1$
+//        row.addCellText(1, parameter);
+//        row.addCellText(2, properties.get(parameter));
+        XulTreeRow row = poolParameterTree.getRootChildren().getItem(i).getRow();
+        row.addCellText(0, "true"); // checks the checkbox //$NON-NLS-1$
         String value = properties.get(parameter);
-        item.getRow().addCellText(2, value);
+        row.addCellText(2, value);
 
       }
     }
