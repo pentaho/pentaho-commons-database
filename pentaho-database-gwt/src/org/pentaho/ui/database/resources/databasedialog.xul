@@ -173,7 +173,7 @@
 						<treecols id="column-list">
 						  	<treecol id="select-col"  fixed="true" type="checkbox" flex="1" editable="true" />  
 							<treecol id="parameter-col" fixed="true" label="${DatabaseDialog.column.PoolParameter}" flex="7" editable="false" />
-							<treecol id="value-col" fixed="true" label="${DatabaseDialog.column.PoolValue}" flex="7" pen:customeditor="variabletextbox" editable="true" />
+							<treecol id="value-col" fixed="true" label="${DatabaseDialog.column.PoolValue}" flex="7" pen:customeditor="variabletextbox" editable="true" type="text" />
 						</treecols>
 	
 						<treechildren id="main-treechildren">
