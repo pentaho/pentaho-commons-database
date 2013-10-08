@@ -1011,7 +1011,7 @@ public class DataHandler extends AbstractXulEventHandler {
         String defaultValue = DatabaseConnectionPoolParameter.findParameter(parameterName, poolingParameters)
             .getDefaultValue();
         if ((defaultValue == null) || (defaultValue.trim().length() <= 0)) {
-          continue;
+        	item.getRow().addCellText(2, "");
         }
         item.getRow().addCellText(2, defaultValue);
       }
@@ -1038,12 +1038,16 @@ public class DataHandler extends AbstractXulEventHandler {
             AutoBean<IDatabaseConnectionPoolParameterList> bean = AutoBeanCodex.decode(connectionAutoBeanFactory,
                 IDatabaseConnectionPoolParameterList.class, response.getText());
             IDatabaseConnectionPoolParameterList paramListWrapper = bean.as();
-            if (poolParameterTree != null) {
+            poolingParameters = new DatabaseConnectionPoolParameter[paramListWrapper.getDatabaseConnectionPoolParameters().size()];
+             if (poolParameterTree != null) {
+              int i=0;
               for (IDatabaseConnectionPoolParameter parameter : paramListWrapper.getDatabaseConnectionPoolParameters()) {
                 XulTreeRow row = poolParameterTree.getRootChildren().addNewRow();
                 row.addCellText(0, "false"); //$NON-NLS-1$
                 row.addCellText(1, parameter.getParameter());
                 row.addCellText(2, parameter.getDefaultValue());
+                poolingParameters[i] = new DatabaseConnectionPoolParameter(parameter.getParameter(), parameter.getDefaultValue(), parameter.getDescription());
+                i++;
               }
             }
 
