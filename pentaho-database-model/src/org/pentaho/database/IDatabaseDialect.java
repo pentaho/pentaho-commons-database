@@ -1,25 +1,24 @@
 /*!
-* This program is free software; you can redistribute it and/or modify it under the
-* terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software
-* Foundation.
-*
-* You should have received a copy of the GNU Lesser General Public License along with this
-* program; if not, you can obtain a copy at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-* or from the Free Software Foundation, Inc.,
-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-* without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-* See the GNU Lesser General Public License for more details.
-*
-* Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
-*/
+ * This program is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software
+ * Foundation.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this
+ * program; if not, you can obtain a copy at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * or from the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+ */
 
 package org.pentaho.database;
 
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
-
 
 public interface IDatabaseDialect {
 
@@ -27,6 +26,7 @@ public interface IDatabaseDialect {
    * Use this length in a String value to indicate that you want to use a CLOB in stead of a normal text field.
    */
   public static final int CLOB_LENGTH = 9999999;
+
   /**
    * @return the default database port number
    */
@@ -35,7 +35,7 @@ public interface IDatabaseDialect {
   /**
    * See if this database supports the setCharacterStream() method on a PreparedStatement.
    * 
-   * @return true if we can set a Stream on a field in a PreparedStatement.  False if not. 
+   * @return true if we can set a Stream on a field in a PreparedStatement. False if not.
    */
   boolean supportsSetCharacterStream();
 
@@ -44,39 +44,47 @@ public interface IDatabaseDialect {
    */
   boolean supportsAutoInc();
 
-  String getLimitClause(int nrRows);
+  String getLimitClause( int nrRows );
 
-  int getNotFoundTK(boolean use_autoinc);
+  int getNotFoundTK( boolean use_autoinc );
 
   /**
-   * Get the SQL to get the next value of a sequence. (Oracle/PGSQL only) 
-   * @param sequenceName The sequence name
+   * Get the SQL to get the next value of a sequence. (Oracle/PGSQL only)
+   * 
+   * @param sequenceName
+   *          The sequence name
    * @return the SQL to get the next value of a sequence. (Oracle/PGSQL only)
    */
-  String getSQLNextSequenceValue(String sequenceName);
+  String getSQLNextSequenceValue( String sequenceName );
 
   /**
    * Get the current value of a database sequence
-   * @param sequenceName The sequence to check
+   * 
+   * @param sequenceName
+   *          The sequence to check
    * @return The current value of a database sequence
    */
-  String getSQLCurrentSequenceValue(String sequenceName);
+  String getSQLCurrentSequenceValue( String sequenceName );
 
   /**
    * Check if a sequence exists.
-   * @param sequenceName The sequence to check
+   * 
+   * @param sequenceName
+   *          The sequence to check
    * @return The SQL to get the name of the sequence back from the databases data dictionary
    */
-  String getSQLSequenceExists(String sequenceName);
+  String getSQLSequenceExists( String sequenceName );
 
   /**
    * Checks whether or not the command setFetchSize() is supported by the JDBC databaseType...
+   * 
    * @return true is setFetchSize() is supported!
    */
   boolean isFetchSizeSupported();
 
   /**
    * Indicates the need to insert a placeholder (0) for auto increment fields.
+   * 
    * @return true if we need a placeholder for auto increment fields in insert statements.
    */
   boolean needsPlaceHolder();
@@ -93,56 +101,61 @@ public interface IDatabaseDialect {
 
   /**
    * 
-   * @return true when the database engine supports empty transaction.
-   * (for example Informix does not on a non-ANSI database type!)
+   * @return true when the database engine supports empty transaction. (for example Informix does not on a non-ANSI
+   *         database type!)
    */
   boolean supportsEmptyTransactions();
 
   /**
-   * @return the function for SUM agrregate 
+   * @return the function for SUM agrregate
    */
   String getFunctionSum();
 
   /**
-   * @return the function for Average agrregate 
+   * @return the function for Average agrregate
    */
   String getFunctionAverage();
 
   /**
-   * @return the function for Minimum agrregate 
+   * @return the function for Minimum agrregate
    */
   String getFunctionMinimum();
 
   /**
-   * @return the function for Maximum agrregate 
+   * @return the function for Maximum agrregate
    */
   String getFunctionMaximum();
 
   /**
-   * @return the function for Count agrregate 
+   * @return the function for Count agrregate
    */
   String getFunctionCount();
 
   /**
-   * Get the schema-table combination to query the right table.
-   * Usually that is SCHEMA.TABLENAME, however there are exceptions to this rule...
-   * @param schema_name The schema name
-   * @param table_part The tablename
+   * Get the schema-table combination to query the right table. Usually that is SCHEMA.TABLENAME, however there are
+   * exceptions to this rule...
+   * 
+   * @param schema_name
+   *          The schema name
+   * @param table_part
+   *          The tablename
    * @return the schema-table combination to query the right table.
    */
-  String getSchemaTableCombination(String schema_name, String table_part);
+  String getSchemaTableCombination( String schema_name, String table_part );
 
   /**
-   * Get the maximum length of a text field for this database connection.
-   * This includes optional CLOB, Memo and Text fields. (the maximum!)
+   * Get the maximum length of a text field for this database connection. This includes optional CLOB, Memo and Text
+   * fields. (the maximum!)
+   * 
    * @return The maximum text field length for this database type. (mostly CLOB_LENGTH)
    */
   int getMaxTextFieldLength();
 
   /**
-   * Get the maximum length of a text field (VARCHAR) for this database connection.
-   * If this size is exceeded use a CLOB.
-   * @return The maximum VARCHAR field length for this database type. (mostly identical to getMaxTextFieldLength() - CLOB_LENGTH)
+   * Get the maximum length of a text field (VARCHAR) for this database connection. If this size is exceeded use a CLOB.
+   * 
+   * @return The maximum VARCHAR field length for this database type. (mostly identical to getMaxTextFieldLength() -
+   *         CLOB_LENGTH)
    */
   int getMaxVARCHARLength();
 
@@ -168,16 +181,23 @@ public interface IDatabaseDialect {
 
   /**
    * Generates the SQL statement to drop a column from the specified table
-   * @param tablename The table to add
-   * @param v The column defined as a value
-   * @param tk the name of the technical key field
-   * @param use_autoinc whether or not this field uses auto increment
-   * @param pk the name of the primary key field
-   * @param semicolon whether or not to add a semi-colon behind the statement.
+   * 
+   * @param tablename
+   *          The table to add
+   * @param v
+   *          The column defined as a value
+   * @param tk
+   *          the name of the technical key field
+   * @param use_autoinc
+   *          whether or not this field uses auto increment
+   * @param pk
+   *          the name of the primary key field
+   * @param semicolon
+   *          whether or not to add a semi-colon behind the statement.
    * @return the SQL statement to drop a column from the specified table
    */
-  String getDropColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc,
-      String pk, boolean semicolon);
+  String getDropColumnStatement( String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk,
+      boolean semicolon );
 
   /**
    * @return an array of reserved words for the database type...
@@ -235,68 +255,70 @@ public interface IDatabaseDialect {
   boolean supportsSynonyms();
 
   /**
-   * @param connection username may be required in sql generation
+   * @param connection
+   *          username may be required in sql generation
    * 
    * @return The SQL on this database to get a list of stored procedures.
    */
-  String getSQLListOfProcedures(IDatabaseConnection connection);
+  String getSQLListOfProcedures( IDatabaseConnection connection );
 
   /**
-   * @param tableName The table to be truncated.
+   * @param tableName
+   *          The table to be truncated.
    * @return The SQL statement to truncate a table: remove all rows from it without a transaction
    */
-  String getTruncateTableStatement(String tableName);
+  String getTruncateTableStatement( String tableName );
 
   /**
    * Returns the minimal SQL to launch in order to determine the layout of the resultset for a given database table
-   * @param tableName The name of the table to determine the layout for
+   * 
+   * @param tableName
+   *          The name of the table to determine the layout for
    * @return The SQL to launch.
    */
-  String getSQLQueryFields(String tableName);
+  String getSQLQueryFields( String tableName );
 
   /**
    * Most databases round number(7,2) 17.29999999 to 17.30, but some don't.
+   * 
    * @return true if the database supports roundinf of floating point data on update/insert
    */
   boolean supportsFloatRoundingOnUpdate();
 
   /**
-   * @param tableNames The names of the tables to lock
-   * @return The SQL command to lock database tables for write purposes.
-   *         null is returned in case locking is not supported on the target database.
-   *         null is the default value
+   * @param tableNames
+   *          The names of the tables to lock
+   * @return The SQL command to lock database tables for write purposes. null is returned in case locking is not
+   *         supported on the target database. null is the default value
    */
-  String getSQLLockTables(String tableNames[]);
+  String getSQLLockTables( String tableNames[] );
 
   /**
-   * @param tableNames The names of the tables to unlock
-   * @return The SQL command to unlock database tables. 
-   *         null is returned in case locking is not supported on the target database.
-   *         null is the default value
+   * @param tableNames
+   *          The names of the tables to unlock
+   * @return The SQL command to unlock database tables. null is returned in case locking is not supported on the target
+   *         database. null is the default value
    */
-  String getSQLUnlockTables(String tableNames[]);
+  String getSQLUnlockTables( String tableNames[] );
 
   /**
-   * @return true if the database supports timestamp to date conversion.
-   * For example Interbase doesn't support this!
+   * @return true if the database supports timestamp to date conversion. For example Interbase doesn't support this!
    */
   boolean supportsTimeStampToDateConversion();
 
   /**
-   * @return true if the database JDBC databaseType supports batch updates
-   * For example Interbase doesn't support this!
+   * @return true if the database JDBC databaseType supports batch updates For example Interbase doesn't support this!
    */
   boolean supportsBatchUpdates();
 
   /**
-   * @return true if the database supports a boolean, bit, logical, ... datatype
-   * The default is false: map to a string.
+   * @return true if the database supports a boolean, bit, logical, ... datatype The default is false: map to a string.
    */
   boolean supportsBooleanDataType();
 
   /**
-   * @return true if the database defaults to naming tables and fields in uppercase.
-   * True for most databases except for stuborn stuff like Postgres ;-)
+   * @return true if the database defaults to naming tables and fields in uppercase. True for most databases except for
+   *         stuborn stuff like Postgres ;-)
    */
   boolean isDefaultingToUppercase();
 
@@ -305,9 +327,9 @@ public interface IDatabaseDialect {
    */
   boolean supportsSetMaxRows();
 
-  String getSQLTableExists(String tablename);
+  String getSQLTableExists( String tablename );
 
-  String getSQLColumnExists(String columnname, String tablename);
+  String getSQLColumnExists( String columnname, String tablename );
 
   boolean needsToLockAllTables();
 
@@ -315,41 +337,44 @@ public interface IDatabaseDialect {
    * @return true if this database needs a transaction to perform a query (auto-commit turned off).
    */
   boolean isRequiringTransactionsOnQueries();
-  
-  String getDriverClass(IDatabaseConnection connection);
-  
-  String getURL(IDatabaseConnection connection) throws DatabaseDialectException;
-  
-  String getURLWithExtraOptions(IDatabaseConnection connection) throws DatabaseDialectException;
-  
+
+  String getDriverClass( IDatabaseConnection connection );
+
+  String getURL( IDatabaseConnection connection ) throws DatabaseDialectException;
+
+  String getURLWithExtraOptions( IDatabaseConnection connection ) throws DatabaseDialectException;
+
   // String getSQLQueryColumnFields(String columnname, String tableName);
-  
+
   boolean supportsOptionsInURL();
-  
-  String getAddColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon);
-  
-  String getModifyColumnStatement(String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk, boolean semicolon);
-  
-  String getFieldDefinition(IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname, boolean add_cr);
-  
+
+  String getAddColumnStatement( String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk,
+      boolean semicolon );
+
+  String getModifyColumnStatement( String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk,
+      boolean semicolon );
+
+  String getFieldDefinition( IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname,
+      boolean add_cr );
+
   String getExtraOptionsHelpText();
-  
+
   String[] getUsedLibraries();
-  
+
   String getNativeDriver();
-  
-  IDatabaseConnection createNativeConnection(String jdbcUrl);
-  
+
+  IDatabaseConnection createNativeConnection( String jdbcUrl );
+
   IDatabaseType getDatabaseType();
-  
+
   boolean supportsGetBlob();
-  
+
   String getExtraOptionSeparator();
-  
+
   String getExtraOptionValueSeparator();
-  
+
   String getExtraOptionIndicator();
-  
+
   /**
    * Returns the jdbc prefix portion of the URL that this dialect is expecting (Everything before the //)
    * 
