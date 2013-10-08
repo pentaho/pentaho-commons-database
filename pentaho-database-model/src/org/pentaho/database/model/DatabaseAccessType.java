@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public enum DatabaseAccessType {
+
   NATIVE( "Native (JDBC)" ), ODBC( "ODBC" ), OCI( "OCI" ), PLUGIN( "Plugin specific access method" ), JNDI( "JNDI" ), CUSTOM(
       "Custom" );
 

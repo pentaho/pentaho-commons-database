@@ -109,7 +109,7 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
    *         supported on the target database. null is the default value
    */
   @Override
-  public String getSQLLockTables( String tableNames[] ) {
+  public String getSQLLockTables( String[] tableNames ) {
     StringBuffer sql = new StringBuffer( 128 );
     for ( int i = 0; i < tableNames.length; i++ ) {
       sql.append( "SELECT top 0 * FROM " ).append( tableNames[i] ).append( " WITH (TABLOCKX, HOLDLOCK);" ).append( CR );
@@ -195,73 +195,75 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
     int length = v.getLength();
     int precision = v.getPrecision();
 
-    if ( add_fieldname )
+    if ( add_fieldname ) {
       retval += fieldname + " ";
+    }
 
     int type = v.getType();
     switch ( type ) {
-    case IValueMeta.TYPE_DATE:
-      retval += "DATETIME";
-      break;
-    case IValueMeta.TYPE_BOOLEAN:
-      if ( supportsBooleanDataType() ) {
-        retval += "BIT";
-      } else {
-        retval += "CHAR(1)";
-      }
-      break;
-    case IValueMeta.TYPE_NUMBER:
-    case IValueMeta.TYPE_INTEGER:
-    case IValueMeta.TYPE_BIGNUMBER:
-      if ( fieldname.equalsIgnoreCase( tk ) || // Technical key
-          fieldname.equalsIgnoreCase( pk ) // Primary key
-      ) {
-        if ( use_autoinc ) {
-          retval += "BIGINT PRIMARY KEY IDENTITY(0,1)";
+      case IValueMeta.TYPE_DATE:
+        retval += "DATETIME";
+        break;
+      case IValueMeta.TYPE_BOOLEAN:
+        if ( supportsBooleanDataType() ) {
+          retval += "BIT";
         } else {
-          retval += "BIGINT PRIMARY KEY";
+          retval += "CHAR(1)";
         }
-      } else {
-        if ( precision == 0 ) {
-          if ( length > 18 ) {
-            retval += "DECIMAL(" + length + ",0)";
+        break;
+      case IValueMeta.TYPE_NUMBER:
+      case IValueMeta.TYPE_INTEGER:
+      case IValueMeta.TYPE_BIGNUMBER:
+        if ( fieldname.equalsIgnoreCase( tk ) || // Technical key
+            fieldname.equalsIgnoreCase( pk ) // Primary key
+        ) {
+          if ( use_autoinc ) {
+            retval += "BIGINT PRIMARY KEY IDENTITY(0,1)";
           } else {
-            if ( length > 9 ) {
-              retval += "BIGINT";
+            retval += "BIGINT PRIMARY KEY";
+          }
+        } else {
+          if ( precision == 0 ) {
+            if ( length > 18 ) {
+              retval += "DECIMAL(" + length + ",0)";
             } else {
-              retval += "INT";
-            }
-          }
-        } else {
-          if ( precision > 0 ) {
-            if ( length > 0 ) {
-              retval += "DECIMAL(" + length + "," + precision + ")";
+              if ( length > 9 ) {
+                retval += "BIGINT";
+              } else {
+                retval += "INT";
+              }
             }
           } else {
-            retval += "FLOAT(53)";
+            if ( precision > 0 ) {
+              if ( length > 0 ) {
+                retval += "DECIMAL(" + length + "," + precision + ")";
+              }
+            } else {
+              retval += "FLOAT(53)";
+            }
           }
         }
-      }
-      break;
-    case IValueMeta.TYPE_STRING:
-      if ( length < 8000 ) {
-        // Maybe use some default DB String length in case length<=0
-        if ( length > 0 ) {
-          retval += "VARCHAR(" + length + ")";
+        break;
+      case IValueMeta.TYPE_STRING:
+        if ( length < 8000 ) {
+          // Maybe use some default DB String length in case length<=0
+          if ( length > 0 ) {
+            retval += "VARCHAR(" + length + ")";
+          } else {
+            retval += "VARCHAR(100)";
+          }
         } else {
-          retval += "VARCHAR(100)";
+          retval += "TEXT"; // Up to 2bilion characters.
         }
-      } else {
-        retval += "TEXT"; // Up to 2bilion characters.
-      }
-      break;
-    default:
-      retval += " UNKNOWN";
-      break;
+        break;
+      default:
+        retval += " UNKNOWN";
+        break;
     }
 
-    if ( add_cr )
+    if ( add_cr ) {
       retval += CR;
+    }
 
     return retval;
   }
@@ -291,41 +293,41 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
      * QUOTED_IDENTIFIER is OFF, identifiers cannot be quoted and must follow all Transact-SQL rules for identifiers.
      */
     "ABSOLUTE", "ACTION", "ADD", "ADMIN", "AFTER", "AGGREGATE", "ALIAS", "ALL", "ALLOCATE", "ALTER", "AND", "ANY",
-        "ARE", "ARRAY", "AS", "ASC", "ASSERTION", "AT", "AUTHORIZATION", "BACKUP", "BEFORE", "BEGIN", "BETWEEN",
-        "BINARY", "BIT", "BLOB", "BOOLEAN", "BOTH", "BREADTH", "BREAK", "BROWSE", "BULK", "BY", "CALL", "CASCADE",
-        "CASCADED", "CASE", "CAST", "CATALOG", "CHAR", "CHARACTER", "CHECK", "CHECKPOINT", "CLASS", "CLOB", "CLOSE",
-        "CLUSTERED", "COALESCE", "COLLATE", "COLLATION", "COLUMN", "COMMIT", "COMPLETION", "COMPUTE", "CONNECT",
-        "CONNECTION", "CONSTRAINT", "CONSTRAINTS", "CONSTRUCTOR", "CONTAINS", "CONTAINSTABLE", "CONTINUE", "CONVERT",
-        "CORRESPONDING", "CREATE", "CROSS", "CUBE", "CURRENT", "CURRENT_DATE", "CURRENT_PATH", "CURRENT_ROLE",
-        "CURRENT_TIME", "CURRENT_TIMESTAMP", "CURRENT_USER", "CURSOR", "CYCLE", "DATA", "DATABASE", "DATE", "DAY",
-        "DBCC", "DEALLOCATE", "DEC", "DECIMAL", "DECLARE", "DEFAULT", "DEFERRABLE", "DEFERRED", "DELETE", "DENY",
-        "DEPTH", "DEREF", "DESC", "DESCRIBE", "DESCRIPTOR", "DESTROY", "DESTRUCTOR", "DETERMINISTIC", "DIAGNOSTICS",
-        "DICTIONARY", "DISCONNECT", "DISK", "DISTINCT", "DISTRIBUTED", "DOMAIN", "DOUBLE", "DROP", "DUMMY", "DUMP",
-        "DYNAMIC", "EACH", "ELSE", "END", "END-EXEC", "EQUALS", "ERRLVL", "ESCAPE", "EVERY", "EXCEPT", "EXCEPTION",
-        "EXEC", "EXECUTE", "EXISTS", "EXIT", "EXTERNAL", "FALSE", "FETCH", "FILE", "FILLFACTOR", "FIRST", "FLOAT",
-        "FOR", "FOREIGN", "FOUND", "FREE", "FREETEXT", "FREETEXTTABLE", "FROM", "FULL", "FUNCTION", "GENERAL", "GET",
-        "GLOBAL", "GO", "GOTO", "GRANT", "GROUP", "GROUPING", "HAVING", "HOLDLOCK", "HOST", "HOUR", "IDENTITY",
-        "IDENTITY_INSERT", "IDENTITYCOL", "IF", "IGNORE", "IMMEDIATE", "IN", "INDEX", "INDICATOR", "INITIALIZE",
-        "INITIALLY", "INNER", "INOUT", "INPUT", "INSERT", "INT", "INTEGER", "INTERSECT", "INTERVAL", "INTO", "IS",
-        "ISOLATION", "ITERATE", "JOIN", "KEY", "KILL", "LANGUAGE", "LARGE", "LAST", "LATERAL", "LEADING", "LEFT",
-        "LESS", "LEVEL", "LIKE", "LIMIT", "LINENO", "LOAD", "LOCAL", "LOCALTIME", "LOCALTIMESTAMP", "LOCATOR", "MAP",
-        "MATCH", "MINUTE", "MODIFIES", "MODIFY", "MODULE", "MONTH", "NAMES", "NATIONAL", "NATURAL", "NCHAR", "NCLOB",
-        "NEW", "NEXT", "NO", "NOCHECK", "NONCLUSTERED", "NONE", "NOT", "NULL", "NULLIF", "NUMERIC", "OBJECT", "OF",
-        "OFF", "OFFSETS", "OLD", "ON", "ONLY", "OPEN", "OPENDATASOURCE", "OPENQUERY", "OPENROWSET", "OPENXML",
-        "OPERATION", "OPTION", "OR", "ORDER", "ORDINALITY", "OUT", "OUTER", "OUTPUT", "OVER", "PAD", "PARAMETER",
-        "PARAMETERS", "PARTIAL", "PATH", "PERCENT", "PLAN", "POSTFIX", "PRECISION", "PREFIX", "PREORDER", "PREPARE",
-        "PRESERVE", "PRIMARY", "PRINT", "PRIOR", "PRIVILEGES", "PROC", "PROCEDURE", "PUBLIC", "RAISERROR", "READ",
-        "READS", "READTEXT", "REAL", "RECONFIGURE", "RECURSIVE", "REF", "REFERENCES", "REFERENCING", "RELATIVE",
-        "REPLICATION", "RESTORE", "RESTRICT", "RESULT", "RETURN", "RETURNS", "REVOKE", "RIGHT", "ROLE", "ROLLBACK",
-        "ROLLUP", "ROUTINE", "ROW", "ROWCOUNT", "ROWGUIDCOL", "ROWS", "RULE", "SAVE", "SAVEPOINT", "SCHEMA", "SCOPE",
-        "SCROLL", "SEARCH", "SECOND", "SECTION", "SELECT", "SEQUENCE", "SESSION", "SESSION_USER", "SET", "SETS",
-        "SETUSER", "SHUTDOWN", "SIZE", "SMALLINT", "SOME", "SPACE", "SPECIFIC", "SPECIFICTYPE", "SQL", "SQLEXCEPTION",
-        "SQLSTATE", "SQLWARNING", "START", "STATE", "STATEMENT", "STATIC", "STATISTICS", "STRUCTURE", "SYSTEM_USER",
-        "TABLE", "TEMPORARY", "TERMINATE", "TEXTSIZE", "THAN", "THEN", "TIME", "TIMESTAMP", "TIMEZONE_HOUR",
-        "TIMEZONE_MINUTE", "TO", "TOP", "TRAILING", "TRAN", "TRANSACTION", "TRANSLATION", "TREAT", "TRIGGER", "TRUE",
-        "TRUNCATE", "TSEQUAL", "UNDER", "UNION", "UNIQUE", "UNKNOWN", "UNNEST", "UPDATE", "UPDATETEXT", "USAGE", "USE",
-        "USER", "USING", "VALUE", "VALUES", "VARCHAR", "VARIABLE", "VARYING", "VIEW", "WAITFOR", "WHEN", "WHENEVER",
-        "WHERE", "WHILE", "WITH", "WITHOUT", "WORK", "WRITE", "WRITETEXT", "YEAR", "ZONE" };
+      "ARE", "ARRAY", "AS", "ASC", "ASSERTION", "AT", "AUTHORIZATION", "BACKUP", "BEFORE", "BEGIN", "BETWEEN",
+      "BINARY", "BIT", "BLOB", "BOOLEAN", "BOTH", "BREADTH", "BREAK", "BROWSE", "BULK", "BY", "CALL", "CASCADE",
+      "CASCADED", "CASE", "CAST", "CATALOG", "CHAR", "CHARACTER", "CHECK", "CHECKPOINT", "CLASS", "CLOB", "CLOSE",
+      "CLUSTERED", "COALESCE", "COLLATE", "COLLATION", "COLUMN", "COMMIT", "COMPLETION", "COMPUTE", "CONNECT",
+      "CONNECTION", "CONSTRAINT", "CONSTRAINTS", "CONSTRUCTOR", "CONTAINS", "CONTAINSTABLE", "CONTINUE", "CONVERT",
+      "CORRESPONDING", "CREATE", "CROSS", "CUBE", "CURRENT", "CURRENT_DATE", "CURRENT_PATH", "CURRENT_ROLE",
+      "CURRENT_TIME", "CURRENT_TIMESTAMP", "CURRENT_USER", "CURSOR", "CYCLE", "DATA", "DATABASE", "DATE", "DAY",
+      "DBCC", "DEALLOCATE", "DEC", "DECIMAL", "DECLARE", "DEFAULT", "DEFERRABLE", "DEFERRED", "DELETE", "DENY",
+      "DEPTH", "DEREF", "DESC", "DESCRIBE", "DESCRIPTOR", "DESTROY", "DESTRUCTOR", "DETERMINISTIC", "DIAGNOSTICS",
+      "DICTIONARY", "DISCONNECT", "DISK", "DISTINCT", "DISTRIBUTED", "DOMAIN", "DOUBLE", "DROP", "DUMMY", "DUMP",
+      "DYNAMIC", "EACH", "ELSE", "END", "END-EXEC", "EQUALS", "ERRLVL", "ESCAPE", "EVERY", "EXCEPT", "EXCEPTION",
+      "EXEC", "EXECUTE", "EXISTS", "EXIT", "EXTERNAL", "FALSE", "FETCH", "FILE", "FILLFACTOR", "FIRST", "FLOAT", "FOR",
+      "FOREIGN", "FOUND", "FREE", "FREETEXT", "FREETEXTTABLE", "FROM", "FULL", "FUNCTION", "GENERAL", "GET", "GLOBAL",
+      "GO", "GOTO", "GRANT", "GROUP", "GROUPING", "HAVING", "HOLDLOCK", "HOST", "HOUR", "IDENTITY", "IDENTITY_INSERT",
+      "IDENTITYCOL", "IF", "IGNORE", "IMMEDIATE", "IN", "INDEX", "INDICATOR", "INITIALIZE", "INITIALLY", "INNER",
+      "INOUT", "INPUT", "INSERT", "INT", "INTEGER", "INTERSECT", "INTERVAL", "INTO", "IS", "ISOLATION", "ITERATE",
+      "JOIN", "KEY", "KILL", "LANGUAGE", "LARGE", "LAST", "LATERAL", "LEADING", "LEFT", "LESS", "LEVEL", "LIKE",
+      "LIMIT", "LINENO", "LOAD", "LOCAL", "LOCALTIME", "LOCALTIMESTAMP", "LOCATOR", "MAP", "MATCH", "MINUTE",
+      "MODIFIES", "MODIFY", "MODULE", "MONTH", "NAMES", "NATIONAL", "NATURAL", "NCHAR", "NCLOB", "NEW", "NEXT", "NO",
+      "NOCHECK", "NONCLUSTERED", "NONE", "NOT", "NULL", "NULLIF", "NUMERIC", "OBJECT", "OF", "OFF", "OFFSETS", "OLD",
+      "ON", "ONLY", "OPEN", "OPENDATASOURCE", "OPENQUERY", "OPENROWSET", "OPENXML", "OPERATION", "OPTION", "OR",
+      "ORDER", "ORDINALITY", "OUT", "OUTER", "OUTPUT", "OVER", "PAD", "PARAMETER", "PARAMETERS", "PARTIAL", "PATH",
+      "PERCENT", "PLAN", "POSTFIX", "PRECISION", "PREFIX", "PREORDER", "PREPARE", "PRESERVE", "PRIMARY", "PRINT",
+      "PRIOR", "PRIVILEGES", "PROC", "PROCEDURE", "PUBLIC", "RAISERROR", "READ", "READS", "READTEXT", "REAL",
+      "RECONFIGURE", "RECURSIVE", "REF", "REFERENCES", "REFERENCING", "RELATIVE", "REPLICATION", "RESTORE", "RESTRICT",
+      "RESULT", "RETURN", "RETURNS", "REVOKE", "RIGHT", "ROLE", "ROLLBACK", "ROLLUP", "ROUTINE", "ROW", "ROWCOUNT",
+      "ROWGUIDCOL", "ROWS", "RULE", "SAVE", "SAVEPOINT", "SCHEMA", "SCOPE", "SCROLL", "SEARCH", "SECOND", "SECTION",
+      "SELECT", "SEQUENCE", "SESSION", "SESSION_USER", "SET", "SETS", "SETUSER", "SHUTDOWN", "SIZE", "SMALLINT",
+      "SOME", "SPACE", "SPECIFIC", "SPECIFICTYPE", "SQL", "SQLEXCEPTION", "SQLSTATE", "SQLWARNING", "START", "STATE",
+      "STATEMENT", "STATIC", "STATISTICS", "STRUCTURE", "SYSTEM_USER", "TABLE", "TEMPORARY", "TERMINATE", "TEXTSIZE",
+      "THAN", "THEN", "TIME", "TIMESTAMP", "TIMEZONE_HOUR", "TIMEZONE_MINUTE", "TO", "TOP", "TRAILING", "TRAN",
+      "TRANSACTION", "TRANSLATION", "TREAT", "TRIGGER", "TRUE", "TRUNCATE", "TSEQUAL", "UNDER", "UNION", "UNIQUE",
+      "UNKNOWN", "UNNEST", "UPDATE", "UPDATETEXT", "USAGE", "USE", "USER", "USING", "VALUE", "VALUES", "VARCHAR",
+      "VARIABLE", "VARYING", "VIEW", "WAITFOR", "WHEN", "WHENEVER", "WHERE", "WHILE", "WITH", "WITHOUT", "WORK",
+      "WRITE", "WRITETEXT", "YEAR", "ZONE" };
   }
 
   @Override

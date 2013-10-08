@@ -291,7 +291,7 @@ public interface IDatabaseDialect {
    * @return The SQL command to lock database tables for write purposes. null is returned in case locking is not
    *         supported on the target database. null is the default value
    */
-  String getSQLLockTables( String tableNames[] );
+  String getSQLLockTables( String[] tableNames );
 
   /**
    * @param tableNames
@@ -299,7 +299,7 @@ public interface IDatabaseDialect {
    * @return The SQL command to unlock database tables. null is returned in case locking is not supported on the target
    *         database. null is the default value
    */
-  String getSQLUnlockTables( String tableNames[] );
+  String getSQLUnlockTables( String[] tableNames );
 
   /**
    * @return true if the database supports timestamp to date conversion. For example Interbase doesn't support this!
