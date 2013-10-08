@@ -423,7 +423,7 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, Seria
    * 
    * @see org.pentaho.database.dialect.IDatabaseDialect#getSQLLockTables(java.lang.String[])
    */
-  public String getSQLLockTables( String tableNames[] ) {
+  public String getSQLLockTables( String[] tableNames ) {
     return null;
   }
 
@@ -432,7 +432,7 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, Seria
    * 
    * @see org.pentaho.database.dialect.IDatabaseDialect#getSQLUnlockTables(java.lang.String[])
    */
-  public String getSQLUnlockTables( String tableNames[] ) {
+  public String getSQLUnlockTables( String[] tableNames ) {
     return null;
   }
 
@@ -567,9 +567,6 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, Seria
           }
         }
       }
-    } else {
-      // We need to put all these options in a Properties file later (Oracle & Co.)
-      // This happens at connect time...
     }
     return url.toString();
   }
@@ -656,9 +653,9 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, Seria
       if ( paramIndex >= 0 ) {
         String params = databaseNameAndParams.substring( paramIndex + 1 );
         databaseNameAndParams = databaseNameAndParams.substring( 0, paramIndex );
-        String paramData[] = params.split( getExtraOptionSeparator() );
+        String[] paramData = params.split( getExtraOptionSeparator() );
         for ( String param : paramData ) {
-          String nameAndValue[] = param.split( getExtraOptionValueSeparator() );
+          String[] nameAndValue = param.split( getExtraOptionValueSeparator() );
           if ( nameAndValue[0] != null && nameAndValue[0].trim().length() > 0 ) {
             if ( nameAndValue.length == 1 ) {
               dbconn.addExtraOption( dbconn.getDatabaseType().getShortName(), nameAndValue[0], "" );

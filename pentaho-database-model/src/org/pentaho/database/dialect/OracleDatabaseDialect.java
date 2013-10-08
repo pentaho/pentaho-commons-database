@@ -117,16 +117,20 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
         // host2-vip)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(SERVICE_NAME =
         // db-service)(FAILOVER_MODE =(TYPE = SELECT)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))
         // or
-        // (DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=PRIMARY_NODE_HOSTNAME)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=SECONDARY_NODE_HOSTNAME)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=DATABASE_SERVICENAME)))
+        // (DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=PRIMARY_NODE_HOSTNAME)(PORT=1521))
+        // (ADDRESS=(PROTOCOL=TCP)(HOST=SECONDARY_NODE_HOSTNAME)(PORT=1521)))
+        // (CONNECT_DATA=(SERVICE_NAME=DATABASE_SERVICENAME)))
         // or
-        // (DESCRIPTION=(FAILOVER=ON)(ADDRESS_LIST=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=xxxxx)(PORT=1526))(ADDRESS=(PROTOCOL=TCP)(HOST=xxxx)(PORT=1526)))(CONNECT_DATA=(SERVICE_NAME=somesid)))
+        // (DESCRIPTION=(FAILOVER=ON)(ADDRESS_LIST=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=xxxxx)(PORT=1526))
+        // (ADDRESS=(PROTOCOL=TCP)(HOST=xxxx)(PORT=1526)))
+        // (CONNECT_DATA=(SERVICE_NAME=somesid)))
         return getNativeJdbcPre() + databaseName;
       } else {
         // by default we assume a SID
         return getNativeJdbcPre() + hostname + ":" + port + ":" + databaseName;
       }
-    } else // OCI
-    {
+    } else {
+      // OCI
       // Let's see if we have an database name
       if ( databaseName != null && databaseName.length() > 0 ) {
         // Has the user specified hostname & port number?
@@ -315,60 +319,61 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
     int length = v.getLength();
     int precision = v.getPrecision();
 
-    if ( add_fieldname )
+    if ( add_fieldname ) {
       retval.append( fieldname ).append( ' ' );
+    }
 
     int type = v.getType();
     switch ( type ) {
-    case IValueMeta.TYPE_DATE:
-      retval.append( "DATE" );
-      break;
-    case IValueMeta.TYPE_BOOLEAN:
-      retval.append( "CHAR(1)" );
-      break;
-    case IValueMeta.TYPE_NUMBER:
-    case IValueMeta.TYPE_BIGNUMBER:
-      retval.append( "NUMBER" );
-      if ( length > 0 ) {
-        retval.append( '(' ).append( length );
-        if ( precision > 0 ) {
-          retval.append( ", " ).append( precision );
+      case IValueMeta.TYPE_DATE:
+        retval.append( "DATE" );
+        break;
+      case IValueMeta.TYPE_BOOLEAN:
+        retval.append( "CHAR(1)" );
+        break;
+      case IValueMeta.TYPE_NUMBER:
+      case IValueMeta.TYPE_BIGNUMBER:
+        retval.append( "NUMBER" );
+        if ( length > 0 ) {
+          retval.append( '(' ).append( length );
+          if ( precision > 0 ) {
+            retval.append( ", " ).append( precision );
+          }
+          retval.append( ')' );
         }
-        retval.append( ')' );
-      }
-      break;
-    case IValueMeta.TYPE_INTEGER:
-      retval.append( "INTEGER" );
-      break;
-    case IValueMeta.TYPE_STRING:
-      if ( length >= CLOB_LENGTH ) {
-        retval.append( "CLOB" );
-      } else {
-        if ( length == 1 ) {
-          retval.append( "CHAR(1)" );
-        } else if ( length > 0 && length <= 2000 ) {
-          retval.append( "VARCHAR2(" ).append( length ).append( ')' );
+        break;
+      case IValueMeta.TYPE_INTEGER:
+        retval.append( "INTEGER" );
+        break;
+      case IValueMeta.TYPE_STRING:
+        if ( length >= CLOB_LENGTH ) {
+          retval.append( "CLOB" );
         } else {
-          if ( length <= 0 ) {
-            retval.append( "VARCHAR2(2000)" ); // We don't know, so we just use the maximum...
+          if ( length == 1 ) {
+            retval.append( "CHAR(1)" );
+          } else if ( length > 0 && length <= 2000 ) {
+            retval.append( "VARCHAR2(" ).append( length ).append( ')' );
           } else {
-            retval.append( "CLOB" );
+            if ( length <= 0 ) {
+              retval.append( "VARCHAR2(2000)" ); // We don't know, so we just use the maximum...
+            } else {
+              retval.append( "CLOB" );
+            }
           }
         }
-      }
-      break;
-    case IValueMeta.TYPE_BINARY: // the BLOB can contain binary data.
-    {
-      retval.append( "BLOB" );
-    }
-      break;
-    default:
-      retval.append( " UNKNOWN" );
-      break;
+        break;
+      case IValueMeta.TYPE_BINARY:
+        // the BLOB can contain binary data.
+        retval.append( "BLOB" );
+        break;
+      default:
+        retval.append( " UNKNOWN" );
+        break;
     }
 
-    if ( add_cr )
+    if ( add_cr ) {
       retval.append( CR );
+    }
 
     return retval.toString();
   }
@@ -381,16 +386,15 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
   @Override
   public String[] getReservedWords() {
     return new String[] { "ACCESS", "ADD", "ALL", "ALTER", "AND", "ANY", "ARRAYLEN", "AS", "ASC", "AUDIT", "BETWEEN",
-        "BY", "CHAR", "CHECK", "CLUSTER", "COLUMN", "COMMENT", "COMPRESS", "CONNECT", "CREATE", "CURRENT", "DATE",
-        "DECIMAL", "DEFAULT", "DELETE", "DESC", "DISTINCT", "DROP", "ELSE", "EXCLUSIVE", "EXISTS", "FILE", "FLOAT",
-        "FOR", "FROM", "GRANT", "GROUP", "HAVING", "IDENTIFIED", "IMMEDIATE", "IN", "INCREMENT", "INDEX", "INITIAL",
-        "INSERT", "INTEGER", "INTERSECT", "INTO", "IS", "LEVEL", "LIKE", "LOCK", "LONG", "MAXEXTENTS", "MINUS", "MODE",
-        "MODIFY", "NOAUDIT", "NOCOMPRESS", "NOT", "NOTFOUND", "NOWAIT", "NULL", "NUMBER", "OF", "OFFLINE", "ON",
-        "ONLINE", "OPTION", "OR", "ORDER", "PCTFREE", "PRIOR", "PRIVILEGES", "PUBLIC", "RAW", "RENAME", "RESOURCE",
-        "REVOKE", "ROW", "ROWID", "ROWLABEL", "ROWNUM", "ROWS", "SELECT", "SESSION", "SET", "SHARE", "SIZE",
-        "SMALLINT", "SQLBUF", "START", "SUCCESSFUL", "SYNONYM", "SYSDATE", "TABLE", "THEN", "TO", "TRIGGER", "UID",
-        "UNION", "UNIQUE", "UPDATE", "USER", "VALIDATE", "VALUES", "VARCHAR", "VARCHAR2", "VIEW", "WHENEVER", "WHERE",
-        "WITH" };
+      "BY", "CHAR", "CHECK", "CLUSTER", "COLUMN", "COMMENT", "COMPRESS", "CONNECT", "CREATE", "CURRENT", "DATE",
+      "DECIMAL", "DEFAULT", "DELETE", "DESC", "DISTINCT", "DROP", "ELSE", "EXCLUSIVE", "EXISTS", "FILE", "FLOAT",
+      "FOR", "FROM", "GRANT", "GROUP", "HAVING", "IDENTIFIED", "IMMEDIATE", "IN", "INCREMENT", "INDEX", "INITIAL",
+      "INSERT", "INTEGER", "INTERSECT", "INTO", "IS", "LEVEL", "LIKE", "LOCK", "LONG", "MAXEXTENTS", "MINUS", "MODE",
+      "MODIFY", "NOAUDIT", "NOCOMPRESS", "NOT", "NOTFOUND", "NOWAIT", "NULL", "NUMBER", "OF", "OFFLINE", "ON",
+      "ONLINE", "OPTION", "OR", "ORDER", "PCTFREE", "PRIOR", "PRIVILEGES", "PUBLIC", "RAW", "RENAME", "RESOURCE",
+      "REVOKE", "ROW", "ROWID", "ROWLABEL", "ROWNUM", "ROWS", "SELECT", "SESSION", "SET", "SHARE", "SIZE", "SMALLINT",
+      "SQLBUF", "START", "SUCCESSFUL", "SYNONYM", "SYSDATE", "TABLE", "THEN", "TO", "TRIGGER", "UID", "UNION",
+      "UNIQUE", "UPDATE", "USER", "VALIDATE", "VALUES", "VARCHAR", "VARCHAR2", "VIEW", "WHENEVER", "WHERE", "WITH" };
   }
 
   /**
@@ -402,7 +406,7 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
   }
 
   @Override
-  public String getSQLLockTables( String tableNames[] ) {
+  public String getSQLLockTables( String[] tableNames ) {
     StringBuffer sql = new StringBuffer( 128 );
     for ( int i = 0; i < tableNames.length; i++ ) {
       sql.append( "LOCK TABLE " ).append( tableNames[i] ).append( " IN EXCLUSIVE MODE;" ).append( CR );
@@ -411,7 +415,7 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
   }
 
   @Override
-  public String getSQLUnlockTables( String tableNames[] ) {
+  public String getSQLUnlockTables( String[] tableNames ) {
     return null; // commit handles the unlocking!
   }
 

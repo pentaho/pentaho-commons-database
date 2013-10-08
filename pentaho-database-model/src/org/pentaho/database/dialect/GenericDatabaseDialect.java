@@ -31,9 +31,8 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
   public static final String ATTRIBUTE_CUSTOM_URL = "CUSTOM_URL";
   public static final String ATTRIBUTE_CUSTOM_DRIVER_CLASS = "CUSTOM_DRIVER_CLASS";
 
-  private static final IDatabaseType DBTYPE = new DatabaseType( "Generic database", "GENERIC",
-      DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), -1,
-      null );
+  private static final IDatabaseType DBTYPE = new DatabaseType( "Generic database", "GENERIC", DatabaseAccessType
+      .getList( DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), -1, null );
 
   public GenericDatabaseDialect() {
   }
@@ -75,69 +74,71 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
     int length = v.getLength();
     int precision = v.getPrecision();
 
-    if ( add_fieldname )
+    if ( add_fieldname ) {
       retval += fieldname + " ";
+    }
 
     int type = v.getType();
     switch ( type ) {
-    case IValueMeta.TYPE_DATE:
-      retval += "TIMESTAMP";
-      break;
-    case IValueMeta.TYPE_BOOLEAN:
-      if ( supportsBooleanDataType() ) {
-        retval += "BOOLEAN";
-      } else {
-        retval += "CHAR(1)";
-      }
-      break;
-    case IValueMeta.TYPE_NUMBER:
-    case IValueMeta.TYPE_INTEGER:
-    case IValueMeta.TYPE_BIGNUMBER:
-      if ( fieldname.equalsIgnoreCase( tk ) || // Technical key
-          fieldname.equalsIgnoreCase( pk ) // Primary key
-      ) {
-        retval += "BIGSERIAL";
-      } else {
-        if ( length > 0 ) {
-          if ( precision > 0 || length > 18 ) {
-            retval += "NUMERIC(" + length + ", " + precision + ")";
-          } else {
-            if ( length > 9 ) {
-              retval += "BIGINT";
+      case IValueMeta.TYPE_DATE:
+        retval += "TIMESTAMP";
+        break;
+      case IValueMeta.TYPE_BOOLEAN:
+        if ( supportsBooleanDataType() ) {
+          retval += "BOOLEAN";
+        } else {
+          retval += "CHAR(1)";
+        }
+        break;
+      case IValueMeta.TYPE_NUMBER:
+      case IValueMeta.TYPE_INTEGER:
+      case IValueMeta.TYPE_BIGNUMBER:
+        if ( fieldname.equalsIgnoreCase( tk ) || // Technical key
+            fieldname.equalsIgnoreCase( pk ) // Primary key
+        ) {
+          retval += "BIGSERIAL";
+        } else {
+          if ( length > 0 ) {
+            if ( precision > 0 || length > 18 ) {
+              retval += "NUMERIC(" + length + ", " + precision + ")";
             } else {
-              if ( length < 5 ) {
-                retval += "SMALLINT";
+              if ( length > 9 ) {
+                retval += "BIGINT";
               } else {
-                retval += "INTEGER";
+                if ( length < 5 ) {
+                  retval += "SMALLINT";
+                } else {
+                  retval += "INTEGER";
+                }
               }
             }
-          }
 
-        } else {
-          retval += "DOUBLE PRECISION";
+          } else {
+            retval += "DOUBLE PRECISION";
+          }
         }
-      }
-      break;
-    case IValueMeta.TYPE_STRING:
-      if ( length >= CLOB_LENGTH ) {
-        retval += "TEXT";
-      } else {
-        retval += "VARCHAR";
-        if ( length > 0 ) {
-          retval += "(" + length;
+        break;
+      case IValueMeta.TYPE_STRING:
+        if ( length >= CLOB_LENGTH ) {
+          retval += "TEXT";
         } else {
-          retval += "("; // Maybe use some default DB String length?
+          retval += "VARCHAR";
+          if ( length > 0 ) {
+            retval += "(" + length;
+          } else {
+            retval += "("; // Maybe use some default DB String length?
+          }
+          retval += ")";
         }
-        retval += ")";
-      }
-      break;
-    default:
-      retval += " UNKNOWN";
-      break;
+        break;
+      default:
+        retval += " UNKNOWN";
+        break;
     }
 
-    if ( add_cr )
+    if ( add_cr ) {
       retval += CR;
+    }
 
     return retval;
   }

@@ -30,8 +30,8 @@ public class MSAccessDatabaseDialect extends AbstractDatabaseDialect {
    * 
    */
   private static final long serialVersionUID = 84703860781502052L;
-  private static final IDatabaseType DBTYPE = new DatabaseType( "MS Access", "MSACCESS",
-      DatabaseAccessType.getList( DatabaseAccessType.ODBC ), -1, null );
+  private static final IDatabaseType DBTYPE = new DatabaseType( "MS Access", "MSACCESS", DatabaseAccessType
+      .getList( DatabaseAccessType.ODBC ), -1, null );
 
   public MSAccessDatabaseDialect() {
 
@@ -216,71 +216,72 @@ public class MSAccessDatabaseDialect extends AbstractDatabaseDialect {
     int length = v.getLength();
     int precision = v.getPrecision();
 
-    if ( add_fieldname )
+    if ( add_fieldname ) {
       retval += fieldname + " ";
+    }
 
     int type = v.getType();
     switch ( type ) {
-    case IValueMeta.TYPE_DATE:
-      retval += "DATETIME";
-      break;
-    // Move back to Y/N for bug - [# 1538] Repository on MS ACCESS: error creating repository
-    case IValueMeta.TYPE_BOOLEAN:
-      if ( supportsBooleanDataType() ) {
-        retval += "BIT";
-      } else {
-        retval += "CHAR(1)";
-      }
-      break;
-    case IValueMeta.TYPE_NUMBER:
-    case IValueMeta.TYPE_INTEGER:
-    case IValueMeta.TYPE_BIGNUMBER:
-      if ( fieldname.equalsIgnoreCase( tk ) || // Technical key
-          fieldname.equalsIgnoreCase( pk ) // Primary key
-      ) //
-      {
-        if ( use_autoinc ) {
-          retval += "COUNTER PRIMARY KEY";
+      case IValueMeta.TYPE_DATE:
+        retval += "DATETIME";
+        break;
+      // Move back to Y/N for bug - [# 1538] Repository on MS ACCESS: error creating repository
+      case IValueMeta.TYPE_BOOLEAN:
+        if ( supportsBooleanDataType() ) {
+          retval += "BIT";
         } else {
-          retval += "LONG PRIMARY KEY";
+          retval += "CHAR(1)";
         }
-      } else {
-        if ( precision == 0 ) {
-          if ( length > 9 ) {
-            retval += "DOUBLE";
+        break;
+      case IValueMeta.TYPE_NUMBER:
+      case IValueMeta.TYPE_INTEGER:
+      case IValueMeta.TYPE_BIGNUMBER:
+        if ( fieldname.equalsIgnoreCase( tk ) || // Technical key
+            fieldname.equalsIgnoreCase( pk ) // Primary key
+        ) {
+          if ( use_autoinc ) {
+            retval += "COUNTER PRIMARY KEY";
           } else {
-            if ( length > 5 ) {
-              retval += "LONG";
-            } else {
-              retval += "INTEGER";
-            }
+            retval += "LONG PRIMARY KEY";
           }
         } else {
-          retval += "DOUBLE";
+          if ( precision == 0 ) {
+            if ( length > 9 ) {
+              retval += "DOUBLE";
+            } else {
+              if ( length > 5 ) {
+                retval += "LONG";
+              } else {
+                retval += "INTEGER";
+              }
+            }
+          } else {
+            retval += "DOUBLE";
+          }
         }
-      }
-      break;
-    case IValueMeta.TYPE_STRING:
-      if ( length > 0 ) {
-        if ( length < 256 ) {
-          retval += "TEXT(" + length + ")";
+        break;
+      case IValueMeta.TYPE_STRING:
+        if ( length > 0 ) {
+          if ( length < 256 ) {
+            retval += "TEXT(" + length + ")";
+          } else {
+            retval += "MEMO";
+          }
         } else {
-          retval += "MEMO";
+          retval += "TEXT";
         }
-      } else {
-        retval += "TEXT";
-      }
-      break;
-    case IValueMeta.TYPE_BINARY:
-      retval += " LONGBINARY";
-      break;
-    default:
-      retval += " UNKNOWN";
-      break;
+        break;
+      case IValueMeta.TYPE_BINARY:
+        retval += " LONGBINARY";
+        break;
+      default:
+        retval += " UNKNOWN";
+        break;
     }
 
-    if ( add_cr )
+    if ( add_cr ) {
       retval += CR;
+    }
 
     return retval;
   }
@@ -301,25 +302,25 @@ public class MSAccessDatabaseDialect extends AbstractDatabaseDialect {
      * you can avoid errors by surrounding the object name with brackets [ ], see getStartQuote(),getEndQuote().
      */
     "ADD", "ALL", "ALPHANUMERIC", "ALTER", "AND", "ANY", "APPLICATION", "AS", "ASC", "ASSISTANT", "AUTOINCREMENT",
-        "AVG", "BETWEEN", "BINARY", "BIT", "BOOLEAN", "BY", "BYTE", "CHAR", "CHARACTER", "COLUMN", "COMPACTDATABASE",
-        "CONSTRAINT", "CONTAINER", "COUNT", "COUNTER", "CREATE", "CREATEDATABASE", "CREATEFIELD", "CREATEGROUP",
-        "CREATEINDEX", "CREATEOBJECT", "CREATEPROPERTY", "CREATERELATION", "CREATETABLEDEF", "CREATEUSER",
-        "CREATEWORKSPACE", "CURRENCY", "CURRENTUSER", "DATABASE", "DATE", "DATETIME", "DELETE", "DESC", "DESCRIPTION",
-        "DISALLOW", "DISTINCT", "DISTINCTROW", "DOCUMENT", "DOUBLE", "DROP", "ECHO", "ELSE", "END", "EQV", "ERROR",
-        "EXISTS", "EXIT", "FALSE", "FIELD", "FIELDS", "FILLCACHE", "FLOAT", "FLOAT4", "FLOAT8", "FOREIGN", "FORM",
-        "FORMS", "FROM", "FULL", "FUNCTION", "GENERAL", "GETOBJECT", "GETOPTION", "GOTOPAGE", "GROUP", "GUID",
-        "HAVING", "IDLE", "IEEEDOUBLE", "IEEESINGLE", "IF", "IGNORE", "IMP", "IN", "INDEX", "INDEX", "INDEXES",
-        "INNER", "INSERT", "INSERTTEXT", "INT", "INTEGER", "INTEGER1", "INTEGER2", "INTEGER4", "INTO", "IS", "JOIN",
-        "KEY", "LASTMODIFIED", "LEFT", "LEVEL", "LIKE", "LOGICAL", "LOGICAL1", "LONG", "LONGBINARY", "LONGTEXT",
-        "MACRO", "MATCH", "MAX", "MIN", "MOD", "MEMO", "MODULE", "MONEY", "MOVE", "NAME", "NEWPASSWORD", "NO", "NOT",
-        "NULL", "NUMBER", "NUMERIC", "OBJECT", "OLEOBJECT", "OFF", "ON", "OPENRECORDSET", "OPTION", "OR", "ORDER",
-        "OUTER", "OWNERACCESS", "PARAMETER", "PARAMETERS", "PARTIAL", "PERCENT", "PIVOT", "PRIMARY", "PROCEDURE",
-        "PROPERTY", "QUERIES", "QUERY", "QUIT", "REAL", "RECALC", "RECORDSET", "REFERENCES", "REFRESH", "REFRESHLINK",
-        "REGISTERDATABASE", "RELATION", "REPAINT", "REPAIRDATABASE", "REPORT", "REPORTS", "REQUERY", "RIGHT", "SCREEN",
-        "SECTION", "SELECT", "SET", "SETFOCUS", "SETOPTION", "SHORT", "SINGLE", "SMALLINT", "SOME", "SQL", "STDEV",
-        "STDEVP", "STRING", "SUM", "TABLE", "TABLEDEF", "TABLEDEFS", "TABLEID", "TEXT", "TIME", "TIMESTAMP", "TOP",
-        "TRANSFORM", "TRUE", "TYPE", "UNION", "UNIQUE", "UPDATE", "USER", "VALUE", "VALUES", "VAR", "VARP",
-        "VARBINARY", "VARCHAR", "WHERE", "WITH", "WORKSPACE", "XOR", "YEAR", "YES", "YESNO" };
+      "AVG", "BETWEEN", "BINARY", "BIT", "BOOLEAN", "BY", "BYTE", "CHAR", "CHARACTER", "COLUMN", "COMPACTDATABASE",
+      "CONSTRAINT", "CONTAINER", "COUNT", "COUNTER", "CREATE", "CREATEDATABASE", "CREATEFIELD", "CREATEGROUP",
+      "CREATEINDEX", "CREATEOBJECT", "CREATEPROPERTY", "CREATERELATION", "CREATETABLEDEF", "CREATEUSER",
+      "CREATEWORKSPACE", "CURRENCY", "CURRENTUSER", "DATABASE", "DATE", "DATETIME", "DELETE", "DESC", "DESCRIPTION",
+      "DISALLOW", "DISTINCT", "DISTINCTROW", "DOCUMENT", "DOUBLE", "DROP", "ECHO", "ELSE", "END", "EQV", "ERROR",
+      "EXISTS", "EXIT", "FALSE", "FIELD", "FIELDS", "FILLCACHE", "FLOAT", "FLOAT4", "FLOAT8", "FOREIGN", "FORM",
+      "FORMS", "FROM", "FULL", "FUNCTION", "GENERAL", "GETOBJECT", "GETOPTION", "GOTOPAGE", "GROUP", "GUID", "HAVING",
+      "IDLE", "IEEEDOUBLE", "IEEESINGLE", "IF", "IGNORE", "IMP", "IN", "INDEX", "INDEX", "INDEXES", "INNER", "INSERT",
+      "INSERTTEXT", "INT", "INTEGER", "INTEGER1", "INTEGER2", "INTEGER4", "INTO", "IS", "JOIN", "KEY", "LASTMODIFIED",
+      "LEFT", "LEVEL", "LIKE", "LOGICAL", "LOGICAL1", "LONG", "LONGBINARY", "LONGTEXT", "MACRO", "MATCH", "MAX", "MIN",
+      "MOD", "MEMO", "MODULE", "MONEY", "MOVE", "NAME", "NEWPASSWORD", "NO", "NOT", "NULL", "NUMBER", "NUMERIC",
+      "OBJECT", "OLEOBJECT", "OFF", "ON", "OPENRECORDSET", "OPTION", "OR", "ORDER", "OUTER", "OWNERACCESS",
+      "PARAMETER", "PARAMETERS", "PARTIAL", "PERCENT", "PIVOT", "PRIMARY", "PROCEDURE", "PROPERTY", "QUERIES", "QUERY",
+      "QUIT", "REAL", "RECALC", "RECORDSET", "REFERENCES", "REFRESH", "REFRESHLINK", "REGISTERDATABASE", "RELATION",
+      "REPAINT", "REPAIRDATABASE", "REPORT", "REPORTS", "REQUERY", "RIGHT", "SCREEN", "SECTION", "SELECT", "SET",
+      "SETFOCUS", "SETOPTION", "SHORT", "SINGLE", "SMALLINT", "SOME", "SQL", "STDEV", "STDEVP", "STRING", "SUM",
+      "TABLE", "TABLEDEF", "TABLEDEFS", "TABLEID", "TEXT", "TIME", "TIMESTAMP", "TOP", "TRANSFORM", "TRUE", "TYPE",
+      "UNION", "UNIQUE", "UPDATE", "USER", "VALUE", "VALUES", "VAR", "VARP", "VARBINARY", "VARCHAR", "WHERE", "WITH",
+      "WORKSPACE", "XOR", "YEAR", "YES", "YESNO" };
   }
 
   /**

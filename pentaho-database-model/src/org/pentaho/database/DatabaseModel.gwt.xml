@@ -1,5 +1,5 @@
 <module>
   <source path="">
-        <exclude name ="**/DatabaseDialectService*"/>
+    <exclude name ="**/DatabaseDialectService*"/>
   </source>
 </module>

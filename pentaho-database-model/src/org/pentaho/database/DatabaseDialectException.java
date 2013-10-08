@@ -80,7 +80,7 @@ public class DatabaseDialectException extends Exception {
         retval += message + CR;
       } else {
         // Add with stack trace elements of cause...
-        StackTraceElement ste[] = cause.getStackTrace();
+        StackTraceElement[] ste = cause.getStackTrace();
         for ( int i = ste.length - 1; i >= 0; i-- ) {
           retval +=
               " at " + ste[i].getClassName() + "." + ste[i].getMethodName() + " (" + ste[i].getFileName() + ":"

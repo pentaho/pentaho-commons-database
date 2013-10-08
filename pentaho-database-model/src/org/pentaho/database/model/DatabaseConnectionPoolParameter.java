@@ -91,7 +91,7 @@ public class DatabaseConnectionPoolParameter implements IDatabaseConnectionPoolP
   }
 
   public static final String[] getParameterNames( DatabaseConnectionPoolParameter[] poolParameters ) {
-    String names[] = new String[poolParameters.length];
+    String[] names = new String[poolParameters.length];
     for ( int i = 0; i < names.length; i++ ) {
       names[i] = poolParameters[i].getParameter();
     }
@@ -101,8 +101,9 @@ public class DatabaseConnectionPoolParameter implements IDatabaseConnectionPoolP
   public static final DatabaseConnectionPoolParameter findParameter( String parameterName,
       DatabaseConnectionPoolParameter[] poolParameters ) {
     for ( int i = 0; i < poolParameters.length; i++ ) {
-      if ( poolParameters[i].getParameter().equalsIgnoreCase( parameterName ) )
+      if ( poolParameters[i].getParameter().equalsIgnoreCase( parameterName ) ) {
         return poolParameters[i];
+      }
     }
     return null;
   }
