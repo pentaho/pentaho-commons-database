@@ -69,7 +69,7 @@ public class MSSQLServerNativeDatabaseDialect extends MSSQLServerDatabaseDialect
         try {
           Boolean.parseBoolean( useIntegratedSecurity );
         } catch ( IllegalArgumentException e ) {
-          useIntegratedSecurity = "false";//$NON-NLS-1$
+          useIntegratedSecurity = "false"; //$NON-NLS-1$
         }
       }
       return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + ";databaseName="
@@ -129,9 +129,9 @@ public class MSSQLServerNativeDatabaseDialect extends MSSQLServerDatabaseDialect
 
   @Override
   protected void setDatabaseNameAndParams( DatabaseConnection dbconn, String databaseNameAndParams ) {
-    String paramData[] = databaseNameAndParams.split( getExtraOptionSeparator() );
+    String[] paramData = databaseNameAndParams.split( getExtraOptionSeparator() );
     for ( String param : paramData ) {
-      String nameAndValue[] = param.split( getExtraOptionValueSeparator() );
+      String[] nameAndValue = param.split( getExtraOptionValueSeparator() );
       if ( nameAndValue[0] != null && nameAndValue[0].trim().length() > 0 ) {
         if ( nameAndValue.length == 1 ) {
           if ( nameAndValue[0].equals( "databaseName" ) ) {

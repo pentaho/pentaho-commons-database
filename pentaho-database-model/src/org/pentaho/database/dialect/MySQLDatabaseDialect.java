@@ -101,89 +101,92 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
     int length = v.getLength();
     int precision = v.getPrecision();
 
-    if ( add_fieldname )
+    if ( add_fieldname ) {
       retval += fieldname + " ";
+    }
 
     int type = v.getType();
     switch ( type ) {
-    case IValueMeta.TYPE_DATE:
-      retval += "DATETIME";
-      break;
-    case IValueMeta.TYPE_BOOLEAN:
-      if ( supportsBooleanDataType() ) {
-        retval += "BOOLEAN";
-      } else {
-        retval += "CHAR(1)";
-      }
-      break;
-
-    case IValueMeta.TYPE_NUMBER:
-    case IValueMeta.TYPE_INTEGER:
-    case IValueMeta.TYPE_BIGNUMBER:
-      if ( fieldname.equalsIgnoreCase( tk ) || // Technical key
-          fieldname.equalsIgnoreCase( pk ) // Primary key
-      ) {
-        if ( use_autoinc ) {
-          retval += "BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY";
+      case IValueMeta.TYPE_DATE:
+        retval += "DATETIME";
+        break;
+      case IValueMeta.TYPE_BOOLEAN:
+        if ( supportsBooleanDataType() ) {
+          retval += "BOOLEAN";
         } else {
-          retval += "BIGINT NOT NULL PRIMARY KEY";
+          retval += "CHAR(1)";
         }
-      } else {
-        // Integer values...
-        if ( precision == 0 ) {
-          if ( length > 9 ) {
-            if ( length < 19 ) {
-              // can hold signed values between -9223372036854775808 and 9223372036854775807
-              // 18 significant digits
-              retval += "BIGINT";
+        break;
+
+      case IValueMeta.TYPE_NUMBER:
+      case IValueMeta.TYPE_INTEGER:
+      case IValueMeta.TYPE_BIGNUMBER:
+        if ( fieldname.equalsIgnoreCase( tk ) || // Technical key
+            fieldname.equalsIgnoreCase( pk ) // Primary key
+        ) {
+          if ( use_autoinc ) {
+            retval += "BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY";
+          } else {
+            retval += "BIGINT NOT NULL PRIMARY KEY";
+          }
+        } else {
+          // Integer values...
+          if ( precision == 0 ) {
+            if ( length > 9 ) {
+              if ( length < 19 ) {
+                // can hold signed values between -9223372036854775808 and 9223372036854775807
+                // 18 significant digits
+                retval += "BIGINT";
+              } else {
+                retval += "DECIMAL(" + length + ")";
+              }
             } else {
-              retval += "DECIMAL(" + length + ")";
+              retval += "INT";
             }
           } else {
-            retval += "INT";
+            // Floating point values...
+            if ( length > 15 ) {
+              retval += "DECIMAL(" + length;
+              if ( precision > 0 ) {
+                retval += ", " + precision;
+              }
+              retval += ")";
+            } else {
+              // A double-precision floating-point number is accurate to approximately 15 decimal places.
+              // http://mysql.mirrors-r-us.net/doc/refman/5.1/en/numeric-type-overview.html
+              retval += "DOUBLE";
+            }
           }
         }
-        // Floating point values...
-        else {
-          if ( length > 15 ) {
-            retval += "DECIMAL(" + length;
-            if ( precision > 0 )
-              retval += ", " + precision;
-            retval += ")";
+        break;
+      case IValueMeta.TYPE_STRING:
+        if ( length > 0 ) {
+          if ( length == 1 ) {
+            retval += "CHAR(1)";
+          } else if ( length < 256 ) {
+            retval += "VARCHAR(" + length + ")";
+          } else if ( length < 65536 ) {
+            retval += "TEXT";
+          } else if ( length < 16777215 ) {
+            retval += "MEDIUMTEXT";
           } else {
-            // A double-precision floating-point number is accurate to approximately 15 decimal places.
-            // http://mysql.mirrors-r-us.net/doc/refman/5.1/en/numeric-type-overview.html
-            retval += "DOUBLE";
+            retval += "LONGTEXT";
           }
+        } else {
+          retval += "TINYTEXT";
         }
-      }
-      break;
-    case IValueMeta.TYPE_STRING:
-      if ( length > 0 ) {
-        if ( length == 1 )
-          retval += "CHAR(1)";
-        else if ( length < 256 )
-          retval += "VARCHAR(" + length + ")";
-        else if ( length < 65536 )
-          retval += "TEXT";
-        else if ( length < 16777215 )
-          retval += "MEDIUMTEXT";
-        else
-          retval += "LONGTEXT";
-      } else {
-        retval += "TINYTEXT";
-      }
-      break;
-    case IValueMeta.TYPE_BINARY:
-      retval += "LONGBLOB";
-      break;
-    default:
-      retval += " UNKNOWN";
-      break;
+        break;
+      case IValueMeta.TYPE_BINARY:
+        retval += "LONGBLOB";
+        break;
+      default:
+        retval += " UNKNOWN";
+        break;
     }
 
-    if ( add_cr )
+    if ( add_cr ) {
       retval += CR;
+    }
 
     return retval;
   }
@@ -256,28 +259,27 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
   @Override
   public String[] getReservedWords() {
     return new String[] { "ADD", "ALL", "ALTER", "ANALYZE", "AND", "AS", "ASC", "ASENSITIVE", "BEFORE", "BETWEEN",
-        "BIGINT", "BINARY", "BLOB", "BOTH", "BY", "CALL", "CASCADE", "CASE", "CHANGE", "CHAR", "CHARACTER", "CHECK",
-        "COLLATE", "COLUMN", "CONDITION", "CONNECTION", "CONSTRAINT", "CONTINUE", "CONVERT", "CREATE", "CROSS",
-        "CURRENT_DATE", "CURRENT_TIME", "CURRENT_TIMESTAMP", "CURRENT_USER", "CURSOR", "DATABASE", "DATABASES",
-        "DAY_HOUR", "DAY_MICROSECOND", "DAY_MINUTE", "DAY_SECOND", "DEC", "DECIMAL", "DECLARE", "DEFAULT", "DELAYED",
-        "DELETE", "DESC", "DESCRIBE", "DETERMINISTIC", "DISTINCT", "DISTINCTROW", "DIV", "DOUBLE", "DROP", "DUAL",
-        "EACH", "ELSE", "ELSEIF", "ENCLOSED", "ESCAPED", "EXISTS", "EXIT", "EXPLAIN", "FALSE", "FETCH", "FLOAT", "FOR",
-        "FORCE", "FOREIGN", "FROM", "FULLTEXT", "GOTO", "GRANT", "GROUP", "HAVING", "HIGH_PRIORITY",
-        "HOUR_MICROSECOND", "HOUR_MINUTE", "HOUR_SECOND", "IF", "IGNORE", "IN", "INDEX", "INFILE", "INNER", "INOUT",
-        "INSENSITIVE", "INSERT", "INT", "INTEGER", "INTERVAL", "INTO", "IS", "ITERATE", "JOIN", "KEY", "KEYS", "KILL",
-        "LEADING", "LEAVE", "LEFT", "LIKE", "LIMIT", "LINES", "LOAD", "LOCALTIME", "LOCALTIMESTAMP", "LOCATE", "LOCK",
-        "LONG", "LONGBLOB", "LONGTEXT", "LOOP", "LOW_PRIORITY", "MATCH", "MEDIUMBLOB", "MEDIUMINT", "MEDIUMTEXT",
-        "MIDDLEINT", "MINUTE_MICROSECOND", "MINUTE_SECOND", "MOD", "MODIFIES", "NATURAL", "NOT", "NO_WRITE_TO_BINLOG",
-        "NULL", "NUMERIC", "ON", "OPTIMIZE", "OPTION", "OPTIONALLY", "OR", "ORDER", "OUT", "OUTER", "OUTFILE",
-        "POSITION", "PRECISION", "PRIMARY", "PROCEDURE", "PURGE", "READ", "READS", "REAL", "REFERENCES", "REGEXP",
-        "RENAME", "REPEAT", "REPLACE", "REQUIRE", "RESTRICT", "RETURN", "REVOKE", "RIGHT", "RLIKE", "SCHEMA",
-        "SCHEMAS", "SECOND_MICROSECOND", "SELECT", "SENSITIVE", "SEPARATOR", "SET", "SHOW", "SMALLINT", "SONAME",
-        "SPATIAL", "SPECIFIC", "SQL", "SQLEXCEPTION", "SQLSTATE", "SQLWARNING", "SQL_BIG_RESULT",
-        "SQL_CALC_FOUND_ROWS", "SQL_SMALL_RESULT", "SSL", "STARTING", "STRAIGHT_JOIN", "TABLE", "TERMINATED", "THEN",
-        "TINYBLOB", "TINYINT", "TINYTEXT", "TO", "TRAILING", "TRIGGER", "TRUE", "UNDO", "UNION", "UNIQUE", "UNLOCK",
-        "UNSIGNED", "UPDATE", "USAGE", "USE", "USING", "UTC_DATE", "UTC_TIME", "UTC_TIMESTAMP", "VALUES", "VARBINARY",
-        "VARCHAR", "VARCHARACTER", "VARYING", "WHEN", "WHERE", "WHILE", "WITH", "WRITE", "XOR", "YEAR_MONTH",
-        "ZEROFILL" };
+      "BIGINT", "BINARY", "BLOB", "BOTH", "BY", "CALL", "CASCADE", "CASE", "CHANGE", "CHAR", "CHARACTER", "CHECK",
+      "COLLATE", "COLUMN", "CONDITION", "CONNECTION", "CONSTRAINT", "CONTINUE", "CONVERT", "CREATE", "CROSS",
+      "CURRENT_DATE", "CURRENT_TIME", "CURRENT_TIMESTAMP", "CURRENT_USER", "CURSOR", "DATABASE", "DATABASES",
+      "DAY_HOUR", "DAY_MICROSECOND", "DAY_MINUTE", "DAY_SECOND", "DEC", "DECIMAL", "DECLARE", "DEFAULT", "DELAYED",
+      "DELETE", "DESC", "DESCRIBE", "DETERMINISTIC", "DISTINCT", "DISTINCTROW", "DIV", "DOUBLE", "DROP", "DUAL",
+      "EACH", "ELSE", "ELSEIF", "ENCLOSED", "ESCAPED", "EXISTS", "EXIT", "EXPLAIN", "FALSE", "FETCH", "FLOAT", "FOR",
+      "FORCE", "FOREIGN", "FROM", "FULLTEXT", "GOTO", "GRANT", "GROUP", "HAVING", "HIGH_PRIORITY", "HOUR_MICROSECOND",
+      "HOUR_MINUTE", "HOUR_SECOND", "IF", "IGNORE", "IN", "INDEX", "INFILE", "INNER", "INOUT", "INSENSITIVE", "INSERT",
+      "INT", "INTEGER", "INTERVAL", "INTO", "IS", "ITERATE", "JOIN", "KEY", "KEYS", "KILL", "LEADING", "LEAVE", "LEFT",
+      "LIKE", "LIMIT", "LINES", "LOAD", "LOCALTIME", "LOCALTIMESTAMP", "LOCATE", "LOCK", "LONG", "LONGBLOB",
+      "LONGTEXT", "LOOP", "LOW_PRIORITY", "MATCH", "MEDIUMBLOB", "MEDIUMINT", "MEDIUMTEXT", "MIDDLEINT",
+      "MINUTE_MICROSECOND", "MINUTE_SECOND", "MOD", "MODIFIES", "NATURAL", "NOT", "NO_WRITE_TO_BINLOG", "NULL",
+      "NUMERIC", "ON", "OPTIMIZE", "OPTION", "OPTIONALLY", "OR", "ORDER", "OUT", "OUTER", "OUTFILE", "POSITION",
+      "PRECISION", "PRIMARY", "PROCEDURE", "PURGE", "READ", "READS", "REAL", "REFERENCES", "REGEXP", "RENAME",
+      "REPEAT", "REPLACE", "REQUIRE", "RESTRICT", "RETURN", "REVOKE", "RIGHT", "RLIKE", "SCHEMA", "SCHEMAS",
+      "SECOND_MICROSECOND", "SELECT", "SENSITIVE", "SEPARATOR", "SET", "SHOW", "SMALLINT", "SONAME", "SPATIAL",
+      "SPECIFIC", "SQL", "SQLEXCEPTION", "SQLSTATE", "SQLWARNING", "SQL_BIG_RESULT", "SQL_CALC_FOUND_ROWS",
+      "SQL_SMALL_RESULT", "SSL", "STARTING", "STRAIGHT_JOIN", "TABLE", "TERMINATED", "THEN", "TINYBLOB", "TINYINT",
+      "TINYTEXT", "TO", "TRAILING", "TRIGGER", "TRUE", "UNDO", "UNION", "UNIQUE", "UNLOCK", "UNSIGNED", "UPDATE",
+      "USAGE", "USE", "USING", "UTC_DATE", "UTC_TIME", "UTC_TIMESTAMP", "VALUES", "VARBINARY", "VARCHAR",
+      "VARCHARACTER", "VARYING", "WHEN", "WHERE", "WHILE", "WITH", "WRITE", "XOR", "YEAR_MONTH", "ZEROFILL" };
   }
 
   /*
@@ -306,11 +308,12 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
    * @return The SQL command to lock database tables for write purposes.
    */
   @Override
-  public String getSQLLockTables( String tableNames[] ) {
+  public String getSQLLockTables( String[] tableNames ) {
     String sql = "LOCK TABLES ";
     for ( int i = 0; i < tableNames.length; i++ ) {
-      if ( i > 0 )
+      if ( i > 0 ) {
         sql += ", ";
+      }
       sql += tableNames[i] + " WRITE";
     }
     sql += ";" + CR;
@@ -324,7 +327,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
    * @return The SQL command to unlock a database table.
    */
   @Override
-  public String getSQLUnlockTables( String tableName[] ) {
+  public String getSQLUnlockTables( String[] tableName ) {
     return "UNLOCK TABLES"; // This unlocks all tables
   }
 
