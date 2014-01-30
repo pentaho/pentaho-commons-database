@@ -67,7 +67,7 @@ public class MonetDatabaseDialect extends AbstractDatabaseDialect {
         return getNativeJdbcPre() + databaseConnection.getDatabaseName();
       } else {
         return getNativeJdbcPre()
-            + "monetdb://" + databaseConnection.getHostname() + ":" + databaseConnection.getDatabasePort() + "/" + databaseConnection.getDatabaseName(); //$NON-NLS-1$
+            + "//" + databaseConnection.getHostname() + ":" + databaseConnection.getDatabasePort() + "/" + databaseConnection.getDatabaseName(); //$NON-NLS-1$
       }
     }
   }
