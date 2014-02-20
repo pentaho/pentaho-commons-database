@@ -928,6 +928,15 @@ public class DataHandler extends AbstractXulEventHandler {
       poolingCheck.setChecked(databaseConnection.isUsingConnectionPool());
     }
 
+    // set all of the pooling properties to the defaults
+    restoreDefaults();
+
+    // set any connection specific pooling properties now
+    Map<String, String> poolProperties = databaseConnection.getConnectionPoolingProperties();
+    if( poolProperties != null && poolProperties.size() > 0 ) {
+      setPoolProperties( poolProperties );
+    }
+
     if (databaseConnection.isUsingConnectionPool()) {
       if (poolSizeBox != null) {
         poolSizeBox.setValue(Integer.toString(databaseConnection.getInitialPoolSize()));
@@ -936,8 +945,6 @@ public class DataHandler extends AbstractXulEventHandler {
       if (maxPoolSizeBox != null) {
         maxPoolSizeBox.setValue(Integer.toString(databaseConnection.getMaximumPoolSize()));
       }
-
-      setPoolProperties(databaseConnection.getConnectionPoolingProperties());
     }
 
     dialogDeck.setSelectedIndex(0);
@@ -1029,6 +1036,7 @@ public class DataHandler extends AbstractXulEventHandler {
         	item.getRow().addCellText(2, "");
         }
         item.getRow().addCellText(2, defaultValue);
+        item.getRow().addCellText(0, "false");
       }
     }
 
