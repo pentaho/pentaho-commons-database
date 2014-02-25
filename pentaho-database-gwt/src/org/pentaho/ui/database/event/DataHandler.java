@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseConnectionPoolParameter;
@@ -79,7 +81,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   // See http://bugs.jquery.com/ticket/1450 for an explanation
   private static final int SC_NO_CONTENT_IE = 1223;
-  
+
   protected DatabaseDialogListener listener;
 
   protected IMessages messages;
@@ -578,7 +580,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
         @Override
         public void onResponseReceived(Request request, Response response) {
-          if (response.getStatusCode() == Response.SC_NO_CONTENT) {
+          if ( response.getStatusCode() == Response.SC_NO_CONTENT || response.getStatusCode() == SC_NO_CONTENT_IE ) {
             if (databaseConnection == null) {
               databaseConnection = connectionAutoBeanFactory.iDatabaseConnection().as();
             }
@@ -594,16 +596,8 @@ public class DataHandler extends AbstractXulEventHandler {
             if (listener != null) {
               listener.onDialogAccept(databaseConnection);
             }
-          } else if (response.getStatusCode() == Response.SC_OK && response.getText().equalsIgnoreCase("null")) { //$NON-NLS-1$
-            String message = ""; //$NON-NLS-1$
-            String[] remarks = deserializeStringArray(response.getText());
-            for (int i = 0; i < remarks.length; i++) {
-              message = message.concat("* ").concat(remarks[i]).concat(LINE_SEPARATOR); //$NON-NLS-1$
-            }
-            showMessage(messages.getString("DataHandler.CHECK_PARAMS_TITLE"), message, false); //$NON-NLS-1$
           } else {
-            showMessage(
-                messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), response.getStatusText(), response.getStatusText().length() > 300); //$NON-NLS-1$
+              gatherErrors( response );
           }
         }
       });
@@ -660,21 +654,40 @@ public class DataHandler extends AbstractXulEventHandler {
               showMessage(
                   messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), e.getMessage(), e.getMessage().length() > 300); //$NON-NLS-1$
             }
-          } else if (statusCode == Response.SC_OK && response.getText().equalsIgnoreCase("null")) { //$NON-NLS-1$
-            String message = ""; //$NON-NLS-1$
-            String[] remarks = deserializeStringArray(response.getText());
-            for (int i = 0; i < remarks.length; i++) {
-              message = message.concat("* ").concat(remarks[i]).concat(LINE_SEPARATOR); //$NON-NLS-1$
-            }
-            showMessage(messages.getString("DataHandler.CHECK_PARAMS_TITLE"), message, false); //$NON-NLS-1$
           } else {
-            showMessage(
-                messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), response.getStatusText(), response.getStatusText().length() > 300); //$NON-NLS-1$
+              gatherErrors( response );
           }
         }
       });
     } catch (RequestException e) {
       showMessage(messages.getString("DataHandler.ERROR_MESSAGE_TITLE"), e.getMessage(), e.getMessage().length() > 300); //$NON-NLS-1$
+    }
+  }
+
+  private void gatherErrors( Response response ) {
+    if ( response.getStatusCode() == Response.SC_OK && !response.getText().equalsIgnoreCase( "null" ) ) { //$NON-NLS-1$
+      String message = ""; //$NON-NLS-1$
+      final JSONValue jsonValue = JSONParser.parseStrict(response.getText() );
+      final String keyItems = "items"; //$NON-NLS-1$
+      final String starter = "* "; //$NON-NLS-1$
+      if ( jsonValue.isObject() != null && jsonValue.isObject().containsKey( keyItems ) ) {
+        final JSONValue items = jsonValue.isObject().get( keyItems );
+        if ( items.isArray() != null ) {
+          for ( int i = 0; i < items.isArray().size(); i++ ) {
+            message = message.concat( starter ).concat( items.isArray().get( i ).isString().stringValue() )
+                .concat( LINE_SEPARATOR );
+          }
+        } else if ( items.isString() != null ) {
+          message = message.concat( starter ).concat( items.isString().stringValue() ).concat( LINE_SEPARATOR );
+        } else {
+          message = message.concat( starter ).concat( items.toString() ).concat( LINE_SEPARATOR );
+        }
+      } else {
+        message = message.concat( starter ).concat( jsonValue.toString() ).concat( LINE_SEPARATOR );
+      }
+      showMessage( messages.getString( "DataHandler.CHECK_PARAMS_TITLE" ), message, false ); //$NON-NLS-1$
+    } else {
+      showMessage( messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), response.getStatusText(), response.getStatusText().length() > 300 ); //$NON-NLS-1$
     }
   }
 
@@ -1526,18 +1539,6 @@ public class DataHandler extends AbstractXulEventHandler {
   private native void jsni_showContextHelp()/*-{
                                             $wnd.open($wnd.CONTEXT_PATH+"webHelp/Viewer.jsp?topic=webHelp/concept_adding_a_jdbc_driver.html","webHelp","width=475,height=600,location=no,status=no,toolbar=no");
                                             }-*/;
-
-  private static final native String[] deserializeStringArray(String json)/*-{
-                                                                          var jso
-                                                                          jso = jso = eval('(' + json + ')');
-                                                                          if (jso instanceof Array) {
-                                                                          return jso;
-                                                                          } else {
-                                                                          var arr = new Array();
-                                                                          arr.push(jso);
-                                                                          return arr;
-                                                                          }
-                                                                          }-*/;
 
   public static String getBaseURL() {
     String moduleUrl = GWT.getModuleBaseURL();
