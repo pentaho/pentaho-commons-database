@@ -460,6 +460,7 @@ public class DataHandler extends AbstractXulEventHandler {
       }
       if (poolParameterTree != null) {
         poolParameterTree.setDisabled(dis);
+        traverseDomSetReadOnly( poolParameterTree, dis );
       }
       if (poolingParameterDescriptionLabel != null) {
         poolingParameterDescriptionLabel.setDisabled(dis);
@@ -1564,6 +1565,17 @@ public class DataHandler extends AbstractXulEventHandler {
   public void setFragmentHandlerDisableRefresh(boolean disableRefresh) {
     if (this.fragmentHandler != null) {
       this.fragmentHandler.setDisableRefresh(disableRefresh);
+    }
+  }
+  
+  private void traverseDomSetReadOnly( XulComponent component, boolean readonly ) {
+    component.setDisabled( readonly );
+    List<XulComponent> children = component.getChildNodes();
+    if ( children != null && children.size() > 0 ) {
+      for ( XulComponent child : children ) {
+        child.setDisabled( readonly );
+        traverseDomSetReadOnly( child, readonly );
+      }
     }
   }
 }
