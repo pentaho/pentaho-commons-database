@@ -939,7 +939,12 @@ public class DataHandler extends AbstractXulEventHandler {
     // Pooling panel settings 
 
     if (poolingCheck != null) {
-      poolingCheck.setChecked(databaseConnection.isUsingConnectionPool());
+      //BISERVER-11276 connection pooling should default to checked
+      if( databaseConnection.getId() != null ) {
+        poolingCheck.setChecked(databaseConnection.isUsingConnectionPool());
+      } else {
+        poolingCheck.setChecked( true ); // new connection, default to true
+      }
     }
 
     // set all of the pooling properties to the defaults
