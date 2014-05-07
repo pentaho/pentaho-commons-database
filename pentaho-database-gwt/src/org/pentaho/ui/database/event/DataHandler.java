@@ -33,6 +33,7 @@ import org.pentaho.database.model.IDatabaseConnectionPoolParameter;
 import org.pentaho.database.model.IDatabaseType;
 import org.pentaho.database.model.PartitionDatabaseMeta;
 import org.pentaho.database.util.DatabaseTypeHelper;
+import org.pentaho.gwt.widgets.client.utils.NameUtils;
 import org.pentaho.ui.database.event.ILaunch.Status;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
@@ -552,21 +553,19 @@ public class DataHandler extends AbstractXulEventHandler {
     final IDatabaseConnection database = createDatabaseConnection();
     getInfo(database);
 
-    String illegals = "&<>/\\";
-    for (int i=0;i<database.getName().length();i++) {
-      if (illegals.contains(""+database.getName().charAt(i))) {
-        showMessage(messages.getString("DatabaseDialog.ErrorConnectionName.title"), messages.getString("DatabaseDialog.ErrorConnectionName.description", illegals), false);
-        return;
-      }
+    String illegals = NameUtils.getReservedChars();
+    if ( !NameUtils.isValidFileName( database.getName() )) {
+      showMessage(messages.getString("DatabaseDialog.ErrorConnectionName.title"), messages.getString("DatabaseDialog.ErrorConnectionName.description", illegals), false);
+      return;
     }
+
     
     boolean passed = checkPoolingParameters();
     if (!passed) {
       return;
     }
 
-    RequestBuilder checkParamsBuilder = new RequestBuilder(RequestBuilder.POST,
-        URL.encode(getBaseURL() + "checkParams")); //$NON-NLS-1$
+    RequestBuilder checkParamsBuilder = new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
     checkParamsBuilder.setHeader("Content-Type", "application/json"); //$NON-NLS-1$//$NON-NLS-2$
     try {
       AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean(database);
@@ -612,8 +611,7 @@ public class DataHandler extends AbstractXulEventHandler {
     final IDatabaseConnection database = createDatabaseConnection();
     getInfo(database);
 
-    RequestBuilder checkParamsBuilder = new RequestBuilder(RequestBuilder.POST,
-        URL.encode(getBaseURL() + "checkParams")); //$NON-NLS-1$
+    RequestBuilder checkParamsBuilder = new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
     checkParamsBuilder.setHeader("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
     try {
       AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean(database);
@@ -631,7 +629,7 @@ public class DataHandler extends AbstractXulEventHandler {
           int statusCode = response.getStatusCode();
           
           if (statusCode == Response.SC_NO_CONTENT || statusCode == SC_NO_CONTENT_IE) {
-            RequestBuilder testBuilder = new RequestBuilder(RequestBuilder.PUT, URL.encode(getBaseURL() + "test")); //$NON-NLS-1$
+            RequestBuilder testBuilder = new RequestBuilder( RequestBuilder.PUT, getBaseURL() + "test" ); //$NON-NLS-1$
             testBuilder.setHeader("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
             try {
               AutoBean<IDatabaseConnection> autoBean = AutoBeanUtils.getAutoBean(database);
@@ -1062,8 +1060,7 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   private void setDefaultPoolParameters() {
-    RequestBuilder poolingParamsBuilder = new RequestBuilder(RequestBuilder.GET, URL.encode(getBaseURL()
-        + "poolingParameters")); //$NON-NLS-1$
+    RequestBuilder poolingParamsBuilder = new RequestBuilder( RequestBuilder.GET, getBaseURL() + "poolingParameters" ); //$NON-NLS-1$
     try {
       poolingParamsBuilder.sendRequest(null, new RequestCallback() {
 
