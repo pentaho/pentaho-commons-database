@@ -82,7 +82,7 @@ public class GwtXulAsyncDatabaseDialectService implements IXulAsyncDatabaseDiale
 
   @Override
   public void registerDatabaseDialect(final IDatabaseDialect databaseDialect, final XulServiceCallback<Void> callback) {
-    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.POST, getBaseUrl() + "registerDatabaseDialect" );
+    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.POST, NameUtils.URLEncode( "{0}", getBaseUrl() + "registerDatabaseDialect" ));
     registerDialectRequestBuilder.setHeader("Content-Type", "application/json");
     AutoBean<IDatabaseDialect> bean = AutoBeanUtils.getAutoBean(databaseDialect);
     String databaseDialectJson = AutoBeanCodex.encode(bean).getPayload();
@@ -109,7 +109,8 @@ public class GwtXulAsyncDatabaseDialectService implements IXulAsyncDatabaseDiale
   @Override
   public void registerDatabaseDialect(final IDatabaseDialect databaseDialect, final boolean validateClassExists,
       final XulServiceCallback<Void> callback) {
-    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.POST, getBaseUrl() + "registerDatabaseDialectWithValidation/" + Boolean.toString(validateClassExists) );
+    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.POST, NameUtils.URLEncode(getBaseUrl() +
+        "registerDatabaseDialectWithValidation/" + Boolean.toString(validateClassExists) ));
     registerDialectRequestBuilder.setHeader("Content-Type", "application/json");
     AutoBean<IDatabaseDialect> bean = AutoBeanUtils.getAutoBean(databaseDialect);
     String databaseDialectJson = AutoBeanCodex.encode(bean).getPayload();
@@ -135,7 +136,8 @@ public class GwtXulAsyncDatabaseDialectService implements IXulAsyncDatabaseDiale
 
   @Override
   public void getDialect(final IDatabaseType databaseType, final XulServiceCallback<IDatabaseDialect> callback) {
-    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.POST, getBaseUrl() + "getDialectByType" );
+    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.POST,
+        NameUtils.URLEncode( "{0}", getBaseUrl() + "getDialectByType" ));
     registerDialectRequestBuilder.setHeader("Content-Type", "application/json");
     AutoBean<IDatabaseType> bean = AutoBeanUtils.getAutoBean(databaseType);
     String databaseDialectJson = AutoBeanCodex.encode(bean).getPayload();
@@ -162,7 +164,8 @@ public class GwtXulAsyncDatabaseDialectService implements IXulAsyncDatabaseDiale
 
   @Override
   public void getDialect(final IDatabaseConnection connection, final XulServiceCallback<IDatabaseDialect> callback) {
-    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.POST, getBaseUrl() + "getDialectByConnection" );
+    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.POST,
+        NameUtils.URLEncode( "{0}", getBaseUrl() + "getDialectByConnection" ));
     registerDialectRequestBuilder.setHeader("Content-Type", "application/json");
     AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean(connection);
     String connectionJson = AutoBeanCodex.encode(bean).getPayload();
@@ -189,7 +192,8 @@ public class GwtXulAsyncDatabaseDialectService implements IXulAsyncDatabaseDiale
 
   @Override
   public void getDatabaseDialects(final XulServiceCallback<List<IDatabaseDialect>> callback) {
-    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.GET, getBaseUrl() + "getDatabaseDialects" );
+    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.GET,
+        NameUtils.URLEncode( "{0}", getBaseUrl() + "getDatabaseDialects" ));
     registerDialectRequestBuilder.setHeader("Content-Type", "application/json");
   
     try {
@@ -214,7 +218,8 @@ public class GwtXulAsyncDatabaseDialectService implements IXulAsyncDatabaseDiale
 
   @Override
   public void getDatabaseTypes(final XulServiceCallback<List<IDatabaseType>> callback) {
-    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.GET, getBaseUrl() + "getDatabaseTypes" );
+    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.GET,
+        NameUtils.URLEncode( "{0}", getBaseUrl() + "getDatabaseTypes" ));
     registerDialectRequestBuilder.setHeader("Content-Type", "application/json");
   
     try {
@@ -239,7 +244,8 @@ public class GwtXulAsyncDatabaseDialectService implements IXulAsyncDatabaseDiale
 
   @Override
   public void validateJdbcDriverClassExists(final String classname, final XulServiceCallback<Boolean> callback) {
-    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.POST, getBaseUrl() + "validateJdbcDriverClassExists" );
+    RequestBuilder registerDialectRequestBuilder = new RequestBuilder( RequestBuilder.POST,
+        NameUtils.URLEncode( "{0}", getBaseUrl() + "validateJdbcDriverClassExists" ));
     registerDialectRequestBuilder.setHeader("Content-Type", "application/json");
   
     try {
