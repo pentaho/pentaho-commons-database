@@ -565,7 +565,7 @@ public class DataHandler extends AbstractXulEventHandler {
       return;
     }
 
-    RequestBuilder checkParamsBuilder = new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
+    RequestBuilder checkParamsBuilder = new RequestBuilder( RequestBuilder.POST, NameUtils.URLEncode( "{0}", getBaseURL() + "checkParams" )); //$NON-NLS-1$
     checkParamsBuilder.setHeader("Content-Type", "application/json"); //$NON-NLS-1$//$NON-NLS-2$
     try {
       AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean(database);
@@ -611,7 +611,7 @@ public class DataHandler extends AbstractXulEventHandler {
     final IDatabaseConnection database = createDatabaseConnection();
     getInfo(database);
 
-    RequestBuilder checkParamsBuilder = new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
+    RequestBuilder checkParamsBuilder = new RequestBuilder( RequestBuilder.POST, NameUtils.URLEncode( "{0}", getBaseURL() + "checkParams" )); //$NON-NLS-1$
     checkParamsBuilder.setHeader("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
     try {
       AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean(database);
@@ -629,7 +629,7 @@ public class DataHandler extends AbstractXulEventHandler {
           int statusCode = response.getStatusCode();
           
           if (statusCode == Response.SC_NO_CONTENT || statusCode == SC_NO_CONTENT_IE) {
-            RequestBuilder testBuilder = new RequestBuilder( RequestBuilder.PUT, getBaseURL() + "test" ); //$NON-NLS-1$
+            RequestBuilder testBuilder = new RequestBuilder( RequestBuilder.PUT, NameUtils.URLEncode( "{0}", getBaseURL() + "test" )); //$NON-NLS-1$
             testBuilder.setHeader("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
             try {
               AutoBean<IDatabaseConnection> autoBean = AutoBeanUtils.getAutoBean(database);
@@ -1060,7 +1060,7 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   private void setDefaultPoolParameters() {
-    RequestBuilder poolingParamsBuilder = new RequestBuilder( RequestBuilder.GET, getBaseURL() + "poolingParameters" ); //$NON-NLS-1$
+    RequestBuilder poolingParamsBuilder = new RequestBuilder( RequestBuilder.GET, NameUtils.URLEncode( "{0}", getBaseURL() + "poolingParameters" )); //$NON-NLS-1$
     try {
       poolingParamsBuilder.sendRequest(null, new RequestCallback() {
 
