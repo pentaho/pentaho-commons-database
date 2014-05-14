@@ -227,7 +227,33 @@ public class DatabaseConnectionServiceTest {
     
   }
 
-  
+  @Test
+  public void testCreateNuoDBDatabaseConnection() throws Exception {
+    DatabaseDialectService dialectService = new DatabaseDialectService(false);
+    DatabaseConnectionService connectionService = new DatabaseConnectionService(dialectService);
+    DatabaseTypeHelper helper = new DatabaseTypeHelper(dialectService.getDatabaseTypes());
+
+    IDatabaseConnection conn = connectionService.createDatabaseConnection(
+        "com.nuodb.jdbc.Driver", "jdbc:com.nuodb://localhost:1234/hockey?schema=players");
+
+    Assert.assertNotNull(conn);
+    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
+    Assert.assertEquals(helper.getDatabaseTypeByName("NuoDB"), conn.getDatabaseType());
+    Assert.assertEquals("localhost", conn.getHostname());
+    Assert.assertEquals("1234", conn.getDatabasePort());
+    Assert.assertEquals("hockey", conn.getDatabaseName());
+
+    conn = connectionService.createDatabaseConnection(
+        "com.nuodb.jdbc.Driver", "jdbc:com.nuodb://localhost/hockey?schema=players");
+
+    Assert.assertNotNull(conn);
+    Assert.assertEquals(DatabaseAccessType.NATIVE, conn.getAccessType());
+    Assert.assertEquals(helper.getDatabaseTypeByName("NuoDB"), conn.getDatabaseType());
+    Assert.assertEquals("localhost", conn.getHostname());
+    Assert.assertEquals(null, conn.getDatabasePort());
+    Assert.assertEquals("hockey", conn.getDatabaseName());
+  }
+
   @Test
   public void testCreateHypersonicDatabaseConnection() throws Exception {
     DatabaseDialectService dialectService = new DatabaseDialectService();

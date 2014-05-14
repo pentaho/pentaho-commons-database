@@ -36,6 +36,7 @@ import org.pentaho.database.dialect.MSSQLServerDatabaseDialect;
 import org.pentaho.database.dialect.MSSQLServerNativeDatabaseDialect;
 import org.pentaho.database.dialect.MonetDatabaseDialect;
 import org.pentaho.database.dialect.MySQLDatabaseDialect;
+import org.pentaho.database.dialect.NuoDBDatabaseDialect;
 import org.pentaho.database.dialect.OracleDatabaseDialect;
 import org.pentaho.database.dialect.PostgreSQLDatabaseDialect;
 import org.pentaho.database.dialect.Vertica5DatabaseDialect;
@@ -60,6 +61,7 @@ public class DatabaseDialectService implements IDatabaseDialectService{
     // temporary until we have a better approach
     registerDatabaseDialect(new OracleDatabaseDialect(), validateClasses);
     registerDatabaseDialect(new MySQLDatabaseDialect(), validateClasses);
+    registerDatabaseDialect(new NuoDBDatabaseDialect(), validateClasses);
     registerDatabaseDialect(new HiveDatabaseDialect(), validateClasses);
     registerDatabaseDialect(new HypersonicDatabaseDialect(), validateClasses);
     registerDatabaseDialect( new Hive2DatabaseDialect(), validateClasses );
