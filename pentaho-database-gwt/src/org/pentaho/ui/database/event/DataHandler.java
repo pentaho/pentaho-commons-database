@@ -286,57 +286,78 @@ public class DataHandler extends AbstractXulEventHandler {
   @Bindable
   public void loadAccessData() {
 
-    getControls();
+    try {
 
-    pushCache();
+      jsni_showLoadingIndicator(); // prevent successive calls
 
-    String key = getSelectedString(connectionBox);
+      getControls();
 
-    // Nothing selected yet...
-    if (key == null) {
-      key = databaseTypeHelper.getDatabaseTypeNames().get(0);
-      connectionBox.setSelectedItem(key);
-      return;
+      pushCache();
+
+      String key = getSelectedString(connectionBox);
+
+      // Nothing selected yet...
+      if (key == null) {
+        key = databaseTypeHelper.getDatabaseTypeNames().get(0);
+        connectionBox.setSelectedItem(key);
+        return;
+      }
+
+      // DatabaseInterface database = connectionMap.get(key);
+      IDatabaseType database = databaseTypeHelper.getDatabaseTypeByName(key);
+
+      List<DatabaseAccessType> acc = database.getSupportedAccessTypes();
+      Object accessKey = getSelectedString(accessBox);
+
+      boolean refreshInitiallyDisabled = fragmentHandler.isRefreshDisabled();
+
+      fragmentHandler.setDisableRefresh(true);
+
+      // Remove items from the access box
+      accessBox.removeItems();
+
+      // Add those access types applicable to this connection type
+      for (DatabaseAccessType value : acc) {
+        accessBox.addItem(value.getName());
+      }
+
+      // In case the refresh was disabled externally
+      if (!refreshInitiallyDisabled) {
+        fragmentHandler.setDisableRefresh(false);
+      }
+
+      // HACK: Need to force height of list control, as it does not behave
+      // well when using relative layouting
+      accessBox.setRows(accessBox.getRows());
+
+      // May not exist for this connection type.
+      accessBox.setSelectedItem(accessKey);
+
+      // Refreshes the options since the above selection may not fire the  selected item event
+      fragmentHandler.refreshOptionsWithCallback(null);
+
+      setOptionsData(databaseConnection != null ? databaseConnection.getExtraOptions() : null);
+      setClusterData(databaseConnection != null ? databaseConnection.getPartitioningInformation() : null);
+
+      popCache();
     }
-
-    // DatabaseInterface database = connectionMap.get(key);
-    IDatabaseType database = databaseTypeHelper.getDatabaseTypeByName(key);
-
-    List<DatabaseAccessType> acc = database.getSupportedAccessTypes();
-    Object accessKey = getSelectedString(accessBox);
-
-    boolean refreshInitiallyDisabled = fragmentHandler.isRefreshDisabled();
-
-    fragmentHandler.setDisableRefresh(true);
-
-    // Remove items from the access box
-    accessBox.removeItems();
-
-    // Add those access types applicable to this connection type
-    for (DatabaseAccessType value : acc) {
-      accessBox.addItem(value.getName());
+    finally {
+      jsni_hideLoadingIndicator();
     }
-
-    // In case the refresh was disabled externally
-    if (!refreshInitiallyDisabled) {
-      fragmentHandler.setDisableRefresh(false);
-    }
-
-    // HACK: Need to force height of list control, as it does not behave 
-    // well when using relative layouting
-    accessBox.setRows(accessBox.getRows());
-
-    // May not exist for this connection type.
-    accessBox.setSelectedItem(accessKey);
-
-    // Refreshes the options since the above selection may not fire the selected item event
-    fragmentHandler.refreshOptionsWithCallback(null);
-
-    setOptionsData(databaseConnection != null ? databaseConnection.getExtraOptions() : null);
-    setClusterData(databaseConnection != null ? databaseConnection.getPartitioningInformation() : null);
-
-    popCache();
   }
+
+  private native void jsni_showLoadingIndicator()/*-{
+    if($wnd.top && $wnd.top.showLoadingIndicator){
+      $wnd.top.showLoadingIndicator();
+    }
+  }-*/;
+
+  private native void jsni_hideLoadingIndicator()/*-{
+    if($wnd.top && $wnd.top.hideLoadingIndicator){
+      $wnd.top.hideLoadingIndicator();
+    }
+  }-*/;
+
 
   private String getSelectedString(XulListbox box) {
     String key = null;
