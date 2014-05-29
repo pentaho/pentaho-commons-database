@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Command;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseConnectionPoolParameter;
@@ -59,7 +60,6 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.http.client.URL;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
@@ -423,15 +423,17 @@ public class DataHandler extends AbstractXulEventHandler {
 
   @Bindable
   public void addEmptyRowsToOptions() {
-    Object[][] values = optionsParameterTree.getValues();
-
-    int rowsToAdd = 5 - values.length;
-    while (rowsToAdd-- > 0) {
-      XulTreeRow row = this.optionsParameterTree.getRootChildren().addNewRow();
-      row.addCellText(0, ""); //$NON-NLS-1$
-      row.addCellText(1, ""); //$NON-NLS-1$
-    }
-    this.optionsParameterTree.update();
+    final Object[][] values = optionsParameterTree.getValues();
+    GwtLayoutHandler.deferUpdateUI( this.optionsParameterTree, new Command() {
+      @Override public void execute() {
+        int rowsToAdd = 5 - values.length;
+        while ( rowsToAdd-- > 0 ) {
+          XulTreeRow row = DataHandler.this.optionsParameterTree.getRootChildren().addNewRow();
+          row.addCellText( 0, "" ); //$NON-NLS-1$
+          row.addCellText( 1, "" ); //$NON-NLS-1$
+        }
+      }
+    } );
   }
 
   @Bindable
@@ -467,7 +469,7 @@ public class DataHandler extends AbstractXulEventHandler {
   @Bindable
   public void onPoolingCheck() {
     if (poolingCheck != null) {
-      boolean dis = !poolingCheck.isChecked();
+      final boolean dis = !poolingCheck.isChecked();
       if (poolSizeBox != null) {
         poolSizeBox.setDisabled(dis);
       }
@@ -481,8 +483,12 @@ public class DataHandler extends AbstractXulEventHandler {
         maxPoolSizeLabel.setDisabled(dis);
       }
       if (poolParameterTree != null) {
-        poolParameterTree.setDisabled(dis);
-        traverseDomSetReadOnly( poolParameterTree, dis );
+        GwtLayoutHandler.deferUpdateUI( poolParameterTree, new Command() {
+          @Override public void execute() {
+            poolParameterTree.setDisabled( dis );
+            traverseDomSetReadOnly( poolParameterTree, dis );
+          }
+        } );
       }
       if (poolingParameterDescriptionLabel != null) {
         poolingParameterDescriptionLabel.setDisabled(dis);
@@ -966,14 +972,7 @@ public class DataHandler extends AbstractXulEventHandler {
       }
     }
 
-    // set all of the pooling properties to the defaults
-    restoreDefaults();
-
-    // set any connection specific pooling properties now
-    Map<String, String> poolProperties = databaseConnection.getConnectionPoolingProperties();
-    if( poolProperties != null && poolProperties.size() > 0 ) {
-      setPoolProperties( poolProperties );
-    }
+    applyPoolProperties();
 
     if (databaseConnection.isUsingConnectionPool()) {
       if (poolSizeBox != null) {
@@ -1037,6 +1036,22 @@ public class DataHandler extends AbstractXulEventHandler {
     return returnList.size() <= 0;
   }
 
+  private void applyPoolProperties() {
+    GwtLayoutHandler.deferUpdateUI( poolParameterTree, new Command() {
+      @Override public void execute() {
+
+        // set all of the pooling properties to the defaults
+        restoreDefaults();
+
+        // set any connection specific pooling properties now
+        Map<String, String> poolProperties = databaseConnection.getConnectionPoolingProperties();
+        if ( poolProperties != null && poolProperties.size() > 0 ) {
+          setPoolProperties( poolProperties );
+        }
+      }
+    } );
+  }
+
   private void setPoolProperties(Map<String, String> properties) {
     if (poolParameterTree != null) {
       Object[][] values = poolParameterTree.getValues();
@@ -1092,29 +1107,36 @@ public class DataHandler extends AbstractXulEventHandler {
         }
 
         @Override
-        public void onResponseReceived(Request request, Response response) {
+        public void onResponseReceived( Request request, Response response ) {
           Boolean success = response.getStatusCode() == Response.SC_OK;
-          if (success) {
-            AutoBean<IDatabaseConnectionPoolParameterList> bean = AutoBeanCodex.decode(connectionAutoBeanFactory,
-                IDatabaseConnectionPoolParameterList.class, response.getText());
-            IDatabaseConnectionPoolParameterList paramListWrapper = bean.as();
-            poolingParameters = new DatabaseConnectionPoolParameter[paramListWrapper.getDatabaseConnectionPoolParameters().size()];
-             if (poolParameterTree != null) {
-              int i=0;
-              for (IDatabaseConnectionPoolParameter parameter : paramListWrapper.getDatabaseConnectionPoolParameters()) {
-                XulTreeRow row = poolParameterTree.getRootChildren().addNewRow();
-                row.addCellText(0, "false"); //$NON-NLS-1$
-                row.addCellText(1, parameter.getParameter());
-                row.addCellText(2, parameter.getDefaultValue());
-                poolingParameters[i] = new DatabaseConnectionPoolParameter(parameter.getParameter(), parameter.getDefaultValue(), parameter.getDescription());
-                i++;
-              }
-            }
+          if ( success ) {
+            AutoBean<IDatabaseConnectionPoolParameterList> bean = AutoBeanCodex.decode( connectionAutoBeanFactory,
+              IDatabaseConnectionPoolParameterList.class, response.getText() );
+            final IDatabaseConnectionPoolParameterList paramListWrapper = bean.as();
+            poolingParameters =
+              new DatabaseConnectionPoolParameter[ paramListWrapper.getDatabaseConnectionPoolParameters().size() ];
 
-            // HACK: reDim the pooling table
-            if (poolParameterTree != null) {
-              poolParameterTree.setRows(poolParameterTree.getRows());
-            }
+            GwtLayoutHandler.deferUpdateUI( poolParameterTree, new Command() {
+              @Override public void execute() {
+                if ( poolParameterTree != null ) {
+                  int i = 0;
+                  for ( IDatabaseConnectionPoolParameter parameter : paramListWrapper
+                    .getDatabaseConnectionPoolParameters() ) {
+                    XulTreeRow row = poolParameterTree.getRootChildren().addNewRow();
+                    row.addCellText( 0, "false" ); //$NON-NLS-1$
+                    row.addCellText( 1, parameter.getParameter() );
+                    row.addCellText( 2, parameter.getDefaultValue() );
+                    poolingParameters[ i ] =
+                      new DatabaseConnectionPoolParameter( parameter.getParameter(), parameter.getDefaultValue(),
+                        parameter.getDescription() );
+                    i++;
+                  }
+
+                  // HACK: reDim the pooling table
+                  poolParameterTree.setRows( poolParameterTree.getRows() );
+                }
+              }
+            });
           }
         }
       });
@@ -1130,99 +1152,108 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
 
-  private void setOptionsData(Map<String, String> extraOptions) {
+  private void setOptionsData(final Map<String, String> extraOptions) {
 
     if (optionsParameterTree == null) {
       return;
     }
-    clearOptions();
-    if (extraOptions != null) {
-      Iterator<String> keys = extraOptions.keySet().iterator();
-      String connection = getSelectedString(connectionBox);
-      IDatabaseType currentType = null;
 
-      if (connection != null) {
-        currentType = databaseTypeHelper.getDatabaseTypeByName(connection);
-      }
+    GwtLayoutHandler.deferUpdateUI( this.optionsParameterTree, new Command() {
+      @Override public void execute() {
 
-      while (keys.hasNext()) {
+        clearOptions();
+        if ( extraOptions != null ) {
+          Iterator<String> keys = extraOptions.keySet().iterator();
+          String connection = getSelectedString( connectionBox );
+          IDatabaseType currentType = null;
 
-        String parameter = keys.next();
-        String value = extraOptions.get(parameter);
-        if ((value == null) || (value.trim().length() <= 0) || (value.equals(DatabaseConnection.EMPTY_OPTIONS_STRING))) {
-          value = ""; //$NON-NLS-1$
-        }
-
-        // If the parameter starts with a database type code we show it in the options, otherwise we don't.
-        // For example MySQL.defaultFetchSize
-        //
-
-        int dotIndex = parameter.indexOf('.');
-        if (dotIndex >= 0) {
-          String parameterOption = parameter.substring(dotIndex + 1);
-          String databaseTypeString = parameter.substring(0, dotIndex);
-          IDatabaseType databaseType = databaseTypeHelper.getDatabaseTypeByShortName(databaseTypeString);
-          if (currentType == databaseType) {
-            XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
-            row.addCellText(0, parameterOption);
-            row.addCellText(1, value);
+          if ( connection != null ) {
+            currentType = databaseTypeHelper.getDatabaseTypeByName( connection );
           }
+
+          while ( keys.hasNext() ) {
+
+            String parameter = keys.next();
+            String value = extraOptions.get( parameter );
+            if ( ( value == null ) || ( value.trim().length() <= 0 ) || ( value
+              .equals( DatabaseConnection.EMPTY_OPTIONS_STRING ) ) ) {
+              value = ""; //$NON-NLS-1$
+            }
+
+            // If the parameter starts with a database type code we show it in the options, otherwise we don't.
+            // For example MySQL.defaultFetchSize
+            //
+
+            int dotIndex = parameter.indexOf( '.' );
+            if ( dotIndex >= 0 ) {
+              String parameterOption = parameter.substring( dotIndex + 1 );
+              String databaseTypeString = parameter.substring( 0, dotIndex );
+              IDatabaseType databaseType = databaseTypeHelper.getDatabaseTypeByShortName( databaseTypeString );
+              if ( currentType == databaseType ) {
+                XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
+                row.addCellText( 0, parameterOption );
+                row.addCellText( 1, value );
+              }
+            }
+          }
+
+        }
+        // Add 5 blank rows if none are already there, otherwise, just add one.
+        int numToAdd = 5;
+        if ( extraOptions != null && extraOptions.keySet().size() > 0 ) {
+          numToAdd = 1;
+        }
+        while ( numToAdd-- > 0 ) {
+          XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
+          //easy way of putting new cells in the row
+          row.addCellText( 0, "" ); //$NON-NLS-1$
+          row.addCellText( 1, "" ); //$NON-NLS-1$
         }
       }
-
-    }
-    // Add 5 blank rows if none are already there, otherwise, just add one.
-    int numToAdd = 5;
-    if (extraOptions != null && extraOptions.keySet().size() > 0) {
-      numToAdd = 1;
-    }
-    while (numToAdd-- > 0) {
-      XulTreeRow row = optionsParameterTree.getRootChildren().addNewRow();
-      //easy way of putting new cells in the row
-      row.addCellText(0, ""); //$NON-NLS-1$
-      row.addCellText(1, ""); //$NON-NLS-1$
-    }
-
-    optionsParameterTree.update();
-
+    } );
   }
 
-  private void setClusterData(List<PartitionDatabaseMeta> clusterInformation) {
+  private void setClusterData(final List<PartitionDatabaseMeta> clusterInformation) {
 
     if (clusterParameterTree == null) {
       // there's nothing to do 
       return;
     }
 
-    if ((clusterInformation != null) && (clusterParameterTree != null)) {
+    GwtLayoutHandler.deferUpdateUI( this.clusterParameterTree, new Command() {
+      @Override public void execute() {
 
-      for (int i = 0; i < clusterInformation.size(); i++) {
+        if ( ( clusterInformation != null ) && ( clusterParameterTree != null ) ) {
 
-        PartitionDatabaseMeta meta = clusterInformation.get(i);
-        XulTreeRow row = clusterParameterTree.getRootChildren().addNewRow();
-        row.addCellText(0, meta.getPartitionId() == null ? "" : meta.getPartitionId()); //$NON-NLS-1$
-        row.addCellText(1, meta.getHostname() == null ? "" : meta.getHostname()); //$NON-NLS-1$
-        row.addCellText(2, meta.getPort() == null ? "" : meta.getPort()); //$NON-NLS-1$
-        row.addCellText(3, meta.getDatabaseName() == null ? "" : meta.getDatabaseName()); //$NON-NLS-1$
-        row.addCellText(4, meta.getUsername() == null ? "" : meta.getUsername()); //$NON-NLS-1$
-        row.addCellText(5, meta.getPassword() == null ? "" : meta.getPassword()); //$NON-NLS-1$
+          for ( int i = 0; i < clusterInformation.size(); i++ ) {
+
+            PartitionDatabaseMeta meta = clusterInformation.get( i );
+            XulTreeRow row = clusterParameterTree.getRootChildren().addNewRow();
+            row.addCellText( 0, meta.getPartitionId() == null ? "" : meta.getPartitionId() ); //$NON-NLS-1$
+            row.addCellText( 1, meta.getHostname() == null ? "" : meta.getHostname() ); //$NON-NLS-1$
+            row.addCellText( 2, meta.getPort() == null ? "" : meta.getPort() ); //$NON-NLS-1$
+            row.addCellText( 3, meta.getDatabaseName() == null ? "" : meta.getDatabaseName() ); //$NON-NLS-1$
+            row.addCellText( 4, meta.getUsername() == null ? "" : meta.getUsername() ); //$NON-NLS-1$
+            row.addCellText( 5, meta.getPassword() == null ? "" : meta.getPassword() ); //$NON-NLS-1$
+          }
+        }
+        // Add 5 blank rows if none are already there, otherwise, just add one.
+        int numToAdd = 5;
+        if ( clusterInformation != null && clusterInformation.size() > 0 ) {
+          numToAdd = 1;
+        }
+        while ( numToAdd-- > 0 ) {
+          XulTreeRow row = clusterParameterTree.getRootChildren().addNewRow();
+          //easy way of putting new cells in the row
+          row.addCellText( 0, "" ); //$NON-NLS-1$
+          row.addCellText( 1, "" ); //$NON-NLS-1$
+          row.addCellText( 2, "" ); //$NON-NLS-1$
+          row.addCellText( 3, "" ); //$NON-NLS-1$
+          row.addCellText( 4, "" ); //$NON-NLS-1$
+          row.addCellText( 5, "" ); //$NON-NLS-1$
+        }
       }
-    }
-    // Add 5 blank rows if none are already there, otherwise, just add one.
-    int numToAdd = 5;
-    if (clusterInformation != null && clusterInformation.size() > 0) {
-      numToAdd = 1;
-    }
-    while (numToAdd-- > 0) {
-      XulTreeRow row = clusterParameterTree.getRootChildren().addNewRow();
-      //easy way of putting new cells in the row
-      row.addCellText(0, ""); //$NON-NLS-1$
-      row.addCellText(1, ""); //$NON-NLS-1$
-      row.addCellText(2, ""); //$NON-NLS-1$
-      row.addCellText(3, ""); //$NON-NLS-1$
-      row.addCellText(4, ""); //$NON-NLS-1$
-      row.addCellText(5, ""); //$NON-NLS-1$
-    }
+    } );
   }
 
   @Bindable
