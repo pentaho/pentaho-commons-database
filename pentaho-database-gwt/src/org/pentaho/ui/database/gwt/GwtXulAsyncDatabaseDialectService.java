@@ -19,6 +19,7 @@ package org.pentaho.ui.database.gwt;
 
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
 import org.pentaho.database.IDatabaseDialect;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
@@ -226,9 +227,13 @@ public class GwtXulAsyncDatabaseDialectService implements IXulAsyncDatabaseDiale
       registerDialectRequestBuilder.sendRequest(null, new RequestCallback() {
  
         @Override
-        public void onResponseReceived(Request request, Response response) {
-          AutoBean<IDatabaseTypesList> databaseTypesBean = AutoBeanCodex.decode(connectionAutoBeanFactory, IDatabaseTypesList.class, response.getText());
-          callback.success(databaseTypesBean.as().getDbTypes());
+        public void onResponseReceived(final Request request, final Response response) {
+          Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+            @Override public void execute() {
+              AutoBean<IDatabaseTypesList> databaseTypesBean = AutoBeanCodex.decode(connectionAutoBeanFactory, IDatabaseTypesList.class, response.getText());
+              callback.success(databaseTypesBean.as().getDbTypes());
+            }
+          } );
         }
  
         @Override
