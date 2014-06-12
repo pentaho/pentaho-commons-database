@@ -18,15 +18,19 @@
 package org.pentaho.database.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.database.IDatabaseDialect;
-import org.pentaho.database.dialect.DB2DatabaseDialect;
+
+/* 
 import org.pentaho.database.dialect.GenericDatabaseDialect;
+import org.pentaho.database.dialect.DB2DatabaseDialect;
 import org.pentaho.database.dialect.H2DatabaseDialect;
 import org.pentaho.database.dialect.Hive2DatabaseDialect;
 import org.pentaho.database.dialect.HiveDatabaseDialect;
@@ -39,63 +43,49 @@ import org.pentaho.database.dialect.MonetDatabaseDialect;
 import org.pentaho.database.dialect.MySQLDatabaseDialect;
 import org.pentaho.database.dialect.OracleDatabaseDialect;
 import org.pentaho.database.dialect.PostgreSQLDatabaseDialect;
+import org.pentaho.database.dialect.TeradataDatabaseDialect;
 import org.pentaho.database.dialect.Vertica5DatabaseDialect;
 import org.pentaho.database.dialect.VerticaDatabaseDialect;
+*/
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
 
 public class DatabaseDialectService implements IDatabaseDialectService{
   
+  private static ServiceLoader<IDatabaseDialect> dialectLoader = ServiceLoader.load(IDatabaseDialect.class);
+  
   private static final Log logger = LogFactory.getLog(DatabaseDialectService.class);
   
-  List<IDatabaseDialect> databaseDialects = new ArrayList<IDatabaseDialect>();
-  List<IDatabaseType> databaseTypes = new ArrayList<IDatabaseType>();
-  Map<IDatabaseType, IDatabaseDialect> typeToDialectMap = new HashMap<IDatabaseType, IDatabaseDialect>();
-  GenericDatabaseDialect genericDialect = new GenericDatabaseDialect();
+  private static final List<IDatabaseDialect> databaseDialects = new ArrayList<IDatabaseDialect>();
+  private static final List<IDatabaseType> databaseTypes = new ArrayList<IDatabaseType>();
+  private static final Map<IDatabaseType, IDatabaseDialect> typeToDialectMap = new HashMap<IDatabaseType, IDatabaseDialect>();
   
-  public DatabaseDialectService() {
-    this(true);
-  }
-
-  public DatabaseDialectService(boolean validateClasses) {
-    // temporary until we have a better approach
-    registerDatabaseDialect(new OracleDatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new MySQLDatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new HiveDatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new HypersonicDatabaseDialect(), validateClasses);
-    registerDatabaseDialect( new Hive2DatabaseDialect(), validateClasses );
-    registerDatabaseDialect(new ImpalaDatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new MSSQLServerDatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new MSSQLServerNativeDatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new DB2DatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new PostgreSQLDatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new H2DatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new MonetDatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new VerticaDatabaseDialect(), validateClasses);
-    registerDatabaseDialect(new Vertica5DatabaseDialect(), validateClasses);
-    registerDatabaseDialect( new InformixDatabaseDialect(), validateClasses );
-    // the generic service is special, because it plays a role
-    // in generation from a URL and Driver
-    registerDatabaseDialect(genericDialect, validateClasses);
-  }
-  
-  public void registerDatabaseDialect(IDatabaseDialect databaseDialect) {
-    registerDatabaseDialect(databaseDialect, true);
-  }
-  
-  /**
-   * 
-   * @param databaseDialect
-   * @param validateClassExists
-   */
-  public void registerDatabaseDialect(IDatabaseDialect databaseDialect, boolean validateClassExists) {
-    if (!validateClassExists || validateJdbcDriverClassExists(databaseDialect.getNativeDriver())) {
-      databaseTypes.add(databaseDialect.getDatabaseType());
-      typeToDialectMap.put(databaseDialect.getDatabaseType(), databaseDialect);
-      databaseDialects.add(databaseDialect);
+  static {
+    DatabaseDialectService.validateAndCatalogServices();
+    if (logger.isDebugEnabled()) {
+      logger.debug( "databaseDialects list ..." );
+      for ( IDatabaseDialect dialect : databaseDialects ) {
+        logger.debug(String.format( " ... %s ( %s )", dialect.getDatabaseType().getName(), dialect.getDatabaseType().getShortName() ) );
+      }
     }
   }
-  
+  private static void validateAndCatalogServices() {
+    for (IDatabaseDialect dialect : DatabaseDialectService.dialectLoader) {
+      if (logger.isDebugEnabled()) {
+        logger.debug( String.format("Checking for presence of %s ( %s )", dialect.getDatabaseType().getName(), dialect.getNativeDriver() )  );
+      }
+      if ( validateJdbcDriverClass(dialect.getNativeDriver())) {
+        DatabaseDialectService.databaseTypes.add(dialect.getDatabaseType());
+        DatabaseDialectService.typeToDialectMap.put(dialect.getDatabaseType(), dialect);
+        DatabaseDialectService.databaseDialects.add(dialect);
+      } else {
+        if (logger.isDebugEnabled()) {
+          logger.debug( String.format("%s not detected.", dialect.getDatabaseType().getName()) );
+        }
+        
+      }
+    }
+  }
   /**
    * Attempt to load the JDBC Driver class. If it's not available, return false.
    * 
@@ -103,7 +93,7 @@ public class DatabaseDialectService implements IDatabaseDialectService{
    * 
    * @return true if the class exists
    */
-  public boolean validateJdbcDriverClassExists(String classname) {
+  private static boolean validateJdbcDriverClass(String classname) {
     // no need to test if the class exists if it is null
     if (classname == null) {
       return true;
@@ -129,8 +119,33 @@ public class DatabaseDialectService implements IDatabaseDialectService{
     return false;
   }
   
+  public DatabaseDialectService() {
+    this(true);
+  }
+
+  public DatabaseDialectService(boolean validateClasses) {
+   }
+  
+  public void registerDatabaseDialect(IDatabaseDialect databaseDialect) {
+
+  }
+  
+  /**
+   * 
+   * @param databaseDialect
+   * @param validateClassExists
+   */
+  public void registerDatabaseDialect(IDatabaseDialect databaseDialect, boolean validateClassExists) {
+    
+  }
+  
+  public boolean validateJdbcDriverClassExists(String classname) {
+    return DatabaseDialectService.validateJdbcDriverClass(classname);
+  }
+  
+  
   public List<IDatabaseType> getDatabaseTypes() {
-    return databaseTypes;
+    return Collections.unmodifiableList( databaseTypes );
   }
   
   public IDatabaseDialect getDialect(IDatabaseType databaseType) {
@@ -142,6 +157,6 @@ public class DatabaseDialectService implements IDatabaseDialectService{
   }
   
   public List<IDatabaseDialect> getDatabaseDialects() {
-    return databaseDialects;
+    return Collections.unmodifiableList( databaseDialects );
   }
 }
