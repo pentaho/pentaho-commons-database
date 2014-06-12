@@ -27,26 +27,6 @@ import java.util.ServiceLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.database.IDatabaseDialect;
-
-/* 
-import org.pentaho.database.dialect.GenericDatabaseDialect;
-import org.pentaho.database.dialect.DB2DatabaseDialect;
-import org.pentaho.database.dialect.H2DatabaseDialect;
-import org.pentaho.database.dialect.Hive2DatabaseDialect;
-import org.pentaho.database.dialect.HiveDatabaseDialect;
-import org.pentaho.database.dialect.HypersonicDatabaseDialect;
-import org.pentaho.database.dialect.ImpalaDatabaseDialect;
-import org.pentaho.database.dialect.InformixDatabaseDialect;
-import org.pentaho.database.dialect.MSSQLServerDatabaseDialect;
-import org.pentaho.database.dialect.MSSQLServerNativeDatabaseDialect;
-import org.pentaho.database.dialect.MonetDatabaseDialect;
-import org.pentaho.database.dialect.MySQLDatabaseDialect;
-import org.pentaho.database.dialect.OracleDatabaseDialect;
-import org.pentaho.database.dialect.PostgreSQLDatabaseDialect;
-import org.pentaho.database.dialect.TeradataDatabaseDialect;
-import org.pentaho.database.dialect.Vertica5DatabaseDialect;
-import org.pentaho.database.dialect.VerticaDatabaseDialect;
-*/
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
 
