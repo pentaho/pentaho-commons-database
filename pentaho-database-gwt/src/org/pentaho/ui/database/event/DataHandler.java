@@ -632,6 +632,10 @@ public class DataHandler extends AbstractXulEventHandler {
   public void testDatabaseConnection() {
     final IDatabaseConnection database = createDatabaseConnection();
     getInfo( database );
+    if (databaseConnection != null) {
+      // apply ID from exist database for find password on the server size
+      database.setId(databaseConnection.getId());
+    }
 
     RequestBuilder checkParamsBuilder = new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
     checkParamsBuilder.setHeader( "Content-Type", "application/json" ); //$NON-NLS-1$ //$NON-NLS-2$
