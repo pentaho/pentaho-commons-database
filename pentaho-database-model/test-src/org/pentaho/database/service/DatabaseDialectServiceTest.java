@@ -17,12 +17,13 @@
 
 package org.pentaho.database.service;
 
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.pentaho.database.IDatabaseDialect;
 import org.pentaho.database.model.IDatabaseType;
+
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("nls")
 public class DatabaseDialectServiceTest {
@@ -97,6 +98,25 @@ public class DatabaseDialectServiceTest {
     Assert.assertNotNull( "dbTypes should not come back null.", dbDialects );
     Assert.assertTrue( "There should minimally be found 15 dialects here based on the classes in org.pentaho.database.dialect", (dbDialects.size() >= 15) );    
   }
-  
+
+  @Test
+  public void testDataIntegrationPresent() {
+    DatabaseDialectService dialectService = new DatabaseDialectService( false );
+    IDatabaseType kettleThinType = null;
+    for ( IDatabaseType dbType : dialectService.getDatabaseTypes() ) {
+      if ( dbType.getShortName().equals( "KettleThin" ) ) {
+        kettleThinType = dbType;
+        break;
+      }
+    }
+    Assert.assertNotNull( "Should have found the 'KettleThin' DatabaseType", kettleThinType );
+    IDatabaseDialect dialect = dialectService.getDialect( kettleThinType );
+    Assert.assertEquals( "Types should match", kettleThinType, dialect.getDatabaseType() );
+    Assert.assertEquals( "kettle", kettleThinType.getDefaultDatabaseName() );
+    Map<String, String> options = kettleThinType.getDefaultOptions();
+    Assert.assertEquals( "pentaho-di", options.get( "KettleThin.webappname" ) );
+    Assert.assertEquals( 1, options.size() );
+    System.out.println(kettleThinType);
+  }
   
 }
