@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2014 Pentaho Corporation..  All rights reserved.
  */
 
 package org.pentaho.ui.database.event;
@@ -71,7 +71,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanUtils;
  * and their preferred database object. 3. Needs exception handling, string resourcing and logging
  * 
  * @author gmoran
- * @created Mar 19, 2008
+ * @since Mar 19, 2008
  * 
  */
 public class DataHandler extends AbstractXulEventHandler {
@@ -238,8 +238,9 @@ public class DataHandler extends AbstractXulEventHandler {
     // It is called from XulDatabaseDialog from dcDialog.getSwtInstance(shell); AND dialog.show();
     // Multiple calls lead to multiple numbers of database types.
     // Therefore we check if the connectionBox was already filled.
-    if ( connectionBox != null )
+    if ( connectionBox != null ) {
       return;
+    }
 
     getControls();
 
@@ -334,7 +335,13 @@ public class DataHandler extends AbstractXulEventHandler {
       // Refreshes the options since the above selection may not fire the selected item event
       fragmentHandler.refreshOptionsWithCallback( null );
 
-      setOptionsData( databaseConnection != null ? databaseConnection.getExtraOptions() : null );
+      if ( databaseConnection != null ) {
+        Map<String, String> options = databaseConnection.getExtraOptions();
+        if ( options == null || options.size() == 0 ) {
+          options = database.getDefaultOptions();
+        }
+        setOptionsData( options );
+      }
       setClusterData( databaseConnection != null ? databaseConnection.getPartitioningInformation() : null );
 
       popCache();
@@ -1470,8 +1477,9 @@ public class DataHandler extends AbstractXulEventHandler {
 
     if ( serverInstanceBox != null ) {
       String instance = meta.getSQLServerInstance();
-      if ( !isBlank( instance ) )
+      if ( !isBlank( instance ) ) {
         serverInstanceBox.setValue( instance );
+      }
     }
 
     // SQL Server double decimal separator
