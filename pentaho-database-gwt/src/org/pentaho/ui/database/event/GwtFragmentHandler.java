@@ -12,7 +12,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 * See the GNU Lesser General Public License for more details.
 *
-* Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+* Copyright (c) 2002-2014 Pentaho Corporation..  All rights reserved.
 */
 
 package org.pentaho.ui.database.event;
@@ -80,6 +80,7 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
     supportedFragments.add( "oracle_native.xul" );
     supportedFragments.add( "oracle_oci.xul" );
     supportedFragments.add( "oracle_odbc.xul" );
+    supportedFragments.add( "kettlethin_native.xul" );
     supportedFragments.add( "sapr3_plugin.xul" );
   }
 
