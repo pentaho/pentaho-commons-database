@@ -18,6 +18,7 @@
 package org.pentaho.database.model;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IDatabaseType {
 
@@ -28,6 +29,12 @@ public interface IDatabaseType {
   List<DatabaseAccessType> getSupportedAccessTypes();
 
   int getDefaultDatabasePort();
+
+  String getDefaultDatabaseName();
+
+  Map<String, String> getDefaultOptions();
+
+  void setDefaultOptions( Map<String, String> options );
 
   String getExtraOptionsHelpUrl();
 
