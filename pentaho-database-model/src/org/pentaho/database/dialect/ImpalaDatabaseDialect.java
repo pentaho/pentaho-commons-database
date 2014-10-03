@@ -25,11 +25,11 @@ import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
 
 public class ImpalaDatabaseDialect extends Hive2DatabaseDialect {
-  
+
   public ImpalaDatabaseDialect() {
     super();
   }
-  
+
   /**
    * UID for serialization
    */
@@ -37,11 +37,12 @@ public class ImpalaDatabaseDialect extends Hive2DatabaseDialect {
 
   private static final int DEFAULT_PORT = 21050;
 
-  private static final IDatabaseType DBTYPE = 
-      new DatabaseType( "Impala", "IMPALA", DatabaseAccessType.getList( DatabaseAccessType.NATIVE,
-          DatabaseAccessType.JNDI ), DEFAULT_PORT,
-          "http://www.cloudera.com/content/support/en/documentation/cloudera-impala/cloudera-impala-documentation-v1-latest.html" );
-          
+  private static final IDatabaseType DBTYPE =
+    new DatabaseType( "Impala", "IMPALA", DatabaseAccessType.getList( DatabaseAccessType.NATIVE,
+      DatabaseAccessType.JNDI ), DEFAULT_PORT,
+      "http://www.cloudera.com/content/support/en/documentation/cloudera-impala/cloudera-impala-documentation-v1"
+        + "-latest.html" );
+
   public IDatabaseType getDatabaseType() {
     return DBTYPE;
   }
@@ -52,18 +53,18 @@ public class ImpalaDatabaseDialect extends Hive2DatabaseDialect {
   }
 
   @Override
-  public String getURL(IDatabaseConnection connection) throws DatabaseDialectException {
-    StringBuffer urlBuffer = new StringBuffer(getNativeJdbcPre());
+  public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
+    StringBuffer urlBuffer = new StringBuffer( getNativeJdbcPre() );
     /*
      * String username = connection.getUsername(); if(username != null && !"".equals(username)) {
      * urlBuffer.append(username); String password = connection.getPassword(); if(password != null &&
      * !"".equals(password)) { urlBuffer.append(":"); urlBuffer.append(password); } urlBuffer.append("@"); }
      */
-    urlBuffer.append(connection.getHostname());
-    urlBuffer.append(":");
-    urlBuffer.append(connection.getDatabasePort());
-    urlBuffer.append("/");
-    urlBuffer.append(connection.getDatabaseName());
+    urlBuffer.append( connection.getHostname() );
+    urlBuffer.append( ":" );
+    urlBuffer.append( connection.getDatabasePort() );
+    urlBuffer.append( "/" );
+    urlBuffer.append( connection.getDatabaseName() );
 
     String principalPropertyName = getDatabaseType().getShortName() + ".principal";
     String principal = connection.getExtraOptions().get( principalPropertyName );
@@ -86,7 +87,7 @@ public class ImpalaDatabaseDialect extends Hive2DatabaseDialect {
   public String[] getUsedLibraries() {
     return new String[] { "pentaho-hadoop-hive-jdbc-shim-1.4-SNAPSHOT.jar" };
   }
-  
+
   @Override
   public int getDefaultDatabasePort() {
     return DEFAULT_PORT;
