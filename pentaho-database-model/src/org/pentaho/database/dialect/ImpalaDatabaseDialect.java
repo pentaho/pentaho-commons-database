@@ -19,6 +19,7 @@ package org.pentaho.database.dialect;
 
 import org.pentaho.database.DatabaseDialectException;
 import org.pentaho.database.model.DatabaseAccessType;
+import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
@@ -63,7 +64,16 @@ public class ImpalaDatabaseDialect extends Hive2DatabaseDialect {
     urlBuffer.append(connection.getDatabasePort());
     urlBuffer.append("/");
     urlBuffer.append(connection.getDatabaseName());
-    urlBuffer.append(";auth=noSasl");
+
+    String principalPropertyName = getDatabaseType().getShortName() + ".principal";
+    String principal = connection.getExtraOptions().get( principalPropertyName );
+    String extraPrincipal =
+      connection.getAttributes().get( DatabaseConnection.ATTRIBUTE_PREFIX_EXTRA_OPTION + principalPropertyName );
+    if ( principal != null || extraPrincipal != null ) {
+      return urlBuffer.toString();
+    }
+
+    urlBuffer.append( ";auth=noSasl" );
     return urlBuffer.toString();
   }
 
