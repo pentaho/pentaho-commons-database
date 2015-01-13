@@ -1,14 +1,14 @@
 /*
- * This program is free software; you can redistribute it and/or modify it under the 
- * terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software 
+ * This program is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software
  * Foundation.
  *
- * You should have received a copy of the GNU Lesser General Public License along with this 
- * program; if not, you can obtain a copy at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html 
- * or from the Free Software Foundation, Inc., 
+ * You should have received a copy of the GNU Lesser General Public License along with this
+ * program; if not, you can obtain a copy at http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * or from the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
@@ -63,12 +63,12 @@ import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
- * 
+ *
  *  TODO:
- *  2. Needs to be abstracted away from the DatabaseMeta object, so other tools 
+ *  2. Needs to be abstracted away from the DatabaseMeta object, so other tools
  *  in the platform can use the dialog and their preferred database object.
  *  3. Needs exception handling, string resourcing and logging
- *   
+ *
  * @author gmoran
  * @created Mar 19, 2008
  *
@@ -79,7 +79,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   // See http://bugs.jquery.com/ticket/1450 for an explanation
   private static final int SC_NO_CONTENT_IE = 1223;
-  
+
   protected DatabaseDialogListener listener;
 
   protected IMessages messages;
@@ -221,8 +221,8 @@ public class DataHandler extends AbstractXulEventHandler {
   public void setLaunch(ILaunch launch) {
     this.launch = launch;
   }
-  
-  private IDatabaseConnection createDatabaseConnection() { 
+
+  private IDatabaseConnection createDatabaseConnection() {
     IDatabaseConnection database = connectionAutoBeanFactory.iDatabaseConnection().as();
     database.setAttributes(new HashMap<String, String>());
     database.setConnectionPoolingProperties(new HashMap<String, String>());
@@ -233,7 +233,7 @@ public class DataHandler extends AbstractXulEventHandler {
   @Bindable
   public void loadConnectionData() {
 
-    // HACK: need to check if onload event was already fired. 
+    // HACK: need to check if onload event was already fired.
     // It is called from XulDatabaseDialog from dcDialog.getSwtInstance(shell); AND dialog.show();
     // Multiple calls lead to multiple numbers of database types.
     // Therefore we check if the connectionBox was already filled.
@@ -248,7 +248,7 @@ public class DataHandler extends AbstractXulEventHandler {
       connectionBox.addItem(key);
     }
 
-    // HACK: Need to force height of list control, as it does not behave 
+    // HACK: Need to force height of list control, as it does not behave
     // well when using relative layouting
 
     connectionBox.setRows(connectionBox.getRows());
@@ -256,7 +256,7 @@ public class DataHandler extends AbstractXulEventHandler {
     Object key = getSelectedString(connectionBox);
 
     // TODO Implement a connection type preference,
-    // and use that type as the default for 
+    // and use that type as the default for
     // new databases.
 
     if (key == null) {
@@ -319,7 +319,7 @@ public class DataHandler extends AbstractXulEventHandler {
       fragmentHandler.setDisableRefresh(false);
     }
 
-    // HACK: Need to force height of list control, as it does not behave 
+    // HACK: Need to force height of list control, as it does not behave
     // well when using relative layouting
     accessBox.setRows(accessBox.getRows());
 
@@ -415,7 +415,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
     getControls();
 
-    // if pooling selected, check the parameter validity before allowing 
+    // if pooling selected, check the parameter validity before allowing
     // a deck panel switch...
     int originalSelection = dialogDeck.getSelectedIndex();
 
@@ -492,7 +492,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   public void setData(Object data) {
 
-    // if a null value is passed in, replace it with an 
+    // if a null value is passed in, replace it with an
     // empty database connection
     if (data == null) {
       data = createDatabaseConnection();
@@ -557,7 +557,7 @@ public class DataHandler extends AbstractXulEventHandler {
         return;
       }
     }
-    
+
     boolean passed = checkPoolingParameters();
     if (!passed) {
       return;
@@ -617,6 +617,10 @@ public class DataHandler extends AbstractXulEventHandler {
   public void testDatabaseConnection() {
     final IDatabaseConnection database = createDatabaseConnection();
     getInfo(database);
+    if (databaseConnection != null) {
+      // apply ID from exist database for find password on the server size
+      database.setId(databaseConnection.getId());
+    }
 
     RequestBuilder checkParamsBuilder = new RequestBuilder(RequestBuilder.POST,
         URL.encode(getBaseURL() + "checkParams")); //$NON-NLS-1$
@@ -635,7 +639,7 @@ public class DataHandler extends AbstractXulEventHandler {
         @Override
         public void onResponseReceived(Request request, Response response) {
           int statusCode = response.getStatusCode();
-          
+
           if (statusCode == Response.SC_NO_CONTENT || statusCode == SC_NO_CONTENT_IE) {
             RequestBuilder testBuilder = new RequestBuilder(RequestBuilder.PUT, URL.encode(getBaseURL() + "test")); //$NON-NLS-1$
             testBuilder.setHeader("Content-Type", "application/json"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -717,7 +721,7 @@ public class DataHandler extends AbstractXulEventHandler {
       dbConnection.setDatabasePort(portNumberBox.getValue());
     }
 
-    // Option parameters: 
+    // Option parameters:
 
     if (optionsParameterTree != null) {
       Object[][] values = optionsParameterTree.getValues();
@@ -860,7 +864,7 @@ public class DataHandler extends AbstractXulEventHandler {
     // Name:
     connectionNameBox.setValue(databaseConnection.getName());
 
-    
+
     // disable refresh for now
     fragmentHandler.setDisableRefresh(true);
 
@@ -880,7 +884,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
     fragmentHandler.setDisableRefresh(false);
 
-    // this is broken out so we can set the cache information only when caching 
+    // this is broken out so we can set the cache information only when caching
     // connection values
     fragmentHandler.refreshOptionsWithCallback(new IFragmentHandler.Callback() {
       public void callback() {
@@ -923,7 +927,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
     setClusterData(databaseConnection.getPartitioningInformation());
 
-    // Pooling panel settings 
+    // Pooling panel settings
 
     if (poolingCheck != null) {
       poolingCheck.setChecked(databaseConnection.isUsingConnectionPool());
@@ -958,8 +962,8 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   /**
-   * 
-   * @return the list of parameters that were enabled, but had invalid 
+   *
+   * @return the list of parameters that were enabled, but had invalid
    * return values (null or empty)
    */
   private boolean checkPoolingParameters() {
@@ -1034,7 +1038,7 @@ public class DataHandler extends AbstractXulEventHandler {
         String defaultValue = DatabaseConnectionPoolParameter.findParameter(parameterName, poolingParameters)
             .getDefaultValue();
         if ((defaultValue == null) || (defaultValue.trim().length() <= 0)) {
-        	item.getRow().addCellText(2, "");
+          item.getRow().addCellText(2, "");
         }
         item.getRow().addCellText(2, defaultValue);
         item.getRow().addCellText(0, "false");
@@ -1154,7 +1158,7 @@ public class DataHandler extends AbstractXulEventHandler {
   private void setClusterData(List<PartitionDatabaseMeta> clusterInformation) {
 
     if (clusterParameterTree == null) {
-      // there's nothing to do 
+      // there's nothing to do
       return;
     }
 
@@ -1480,9 +1484,9 @@ public class DataHandler extends AbstractXulEventHandler {
     poolParameterTree = (XulTree) document.getElementById("pool-parameter-tree"); //$NON-NLS-1$
     clusterParameterTree = (XulTree) document.getElementById("cluster-parameter-tree"); //$NON-NLS-1$
     optionsParameterTree = (XulTree) document.getElementById("options-parameter-tree"); //$NON-NLS-1$
-    poolingDescription = (XulTextbox) document.getElementById("pooling-description"); //$NON-NLS-1$ 
-    poolingParameterDescriptionLabel = (XulLabel) document.getElementById("pool-parameter-description-label"); //$NON-NLS-1$ 
-    poolingDescriptionLabel = (XulLabel) document.getElementById("pooling-description-label"); //$NON-NLS-1$ 
+    poolingDescription = (XulTextbox) document.getElementById("pooling-description"); //$NON-NLS-1$
+    poolingParameterDescriptionLabel = (XulLabel) document.getElementById("pool-parameter-description-label"); //$NON-NLS-1$
+    poolingDescriptionLabel = (XulLabel) document.getElementById("pooling-description-label"); //$NON-NLS-1$
     quoteIdentifiersCheck = (XulCheckbox) document.getElementById("quote-identifiers-check"); //$NON-NLS-1$;
     lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-lower-case-check"); //$NON-NLS-1$;
     upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById("force-upper-case-check"); //$NON-NLS-1$;
@@ -1546,7 +1550,7 @@ public class DataHandler extends AbstractXulEventHandler {
     //Set the base url appropriately based on the context in which we are running this client
     //
     if (moduleUrl.indexOf("content") > -1) { //$NON-NLS-1$
-      //we are running the client in the context of a BI Server plugin, so 
+      //we are running the client in the context of a BI Server plugin, so
       //point the request to the GWT rpc proxy servlet
       String baseUrl = moduleUrl.substring(0, moduleUrl.indexOf("content")); //$NON-NLS-1$
       return baseUrl + "plugin/data-access/api/connection/"; //$NON-NLS-1$
@@ -1557,7 +1561,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   /**
    * Disables the refresh on the {@link IFragmentHandler}
-   * 
+   *
    * @param disableRefresh
    *        boolean - disables the ability to refresh the options
    */
@@ -1566,7 +1570,7 @@ public class DataHandler extends AbstractXulEventHandler {
       this.fragmentHandler.setDisableRefresh(disableRefresh);
     }
   }
-  
+
   private void traverseDomSetReadOnly( XulComponent component, boolean readonly ) {
     component.setDisabled( readonly );
     List<XulComponent> children = component.getChildNodes();
