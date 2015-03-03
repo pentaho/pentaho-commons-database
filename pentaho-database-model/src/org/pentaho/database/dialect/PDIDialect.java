@@ -54,7 +54,7 @@ public class PDIDialect extends GenericDatabaseDialect {
   }
 
   public String getNativeDriver() {
-    return "org.pentaho.di.core.jdbc.ThinDriver";
+    return "org.pentaho.di.trans.dataservice.jdbc.ThinDriver";
   }
 
   @Override
