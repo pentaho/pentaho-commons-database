@@ -17,18 +17,17 @@
 
 package org.pentaho.database.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
+/**
+ * @author wseyler
+ */
 @XmlRootElement
 public class DatabaseType implements Serializable, IDatabaseType {
 
-  /**
-   * @author wseyler
-   * 
-   */
   private static final long serialVersionUID = 1955013893420806385L;
 
   private String name;
@@ -36,6 +35,8 @@ public class DatabaseType implements Serializable, IDatabaseType {
   private int defaultPort;
   private List<DatabaseAccessType> supportedAccessTypes;
   private String extraOptionsHelpUrl;
+  private String defaultDatabaseName;
+  private Map<String, String> defaultOptions;
 
   public DatabaseType() {
     super();
@@ -49,6 +50,17 @@ public class DatabaseType implements Serializable, IDatabaseType {
     this.defaultPort = defaultPort;
     this.supportedAccessTypes = supportedAccessTypes;
     this.extraOptionsHelpUrl = extraOptionsHelpUrl;
+  }
+
+  public DatabaseType( String name, String shortName,
+                       List<DatabaseAccessType> supportedAccessTypes,
+                       int defaultPort,
+                       String extraOptionsHelpUrl,
+                       String defaultDatabaseName,
+                       Map<String, String> defaultOptions ) {
+    this( name, shortName, supportedAccessTypes, defaultPort, extraOptionsHelpUrl );
+    this.defaultDatabaseName = defaultDatabaseName;
+    this.defaultOptions = defaultOptions;
   }
 
   /*
@@ -116,7 +128,26 @@ public class DatabaseType implements Serializable, IDatabaseType {
     this.extraOptionsHelpUrl = extraOptionsHelpUrl;
   }
 
+  public String getDefaultDatabaseName() {
+    return defaultDatabaseName;
+  }
+
+  public void setDefaultDatabaseName( String defaultDBName ) {
+    defaultDatabaseName = defaultDBName;
+  }
+
+  public Map<String, String> getDefaultOptions() {
+    return defaultOptions;
+  }
+
+  public void setDefaultOptions( Map<String, String> defOptions ) {
+    defaultOptions = defOptions;
+  }
+
   public boolean equals( Object obj ) {
+    if ( !( obj instanceof DatabaseType ) ) {
+      return false;
+    }
     DatabaseType dbtype = (DatabaseType) obj;
     return ( getShortName().equals( dbtype.getShortName() ) );
   }
@@ -128,7 +159,8 @@ public class DatabaseType implements Serializable, IDatabaseType {
   @Override
   public String toString() {
     return "DatabaseType [name=" + name + ", shortName=" + shortName + ", defaultPort=" + defaultPort
-        + ", supportedAccessTypes=" + supportedAccessTypes + ", extraOptionsHelpUrl=" + extraOptionsHelpUrl + "]";
+        + ", supportedAccessTypes=" + supportedAccessTypes + ", extraOptionsHelpUrl=" + extraOptionsHelpUrl
+        + ", defaultDatabaseName=" + defaultDatabaseName
+        + ", defaultOptions=" + defaultOptions + "]";
   }
-
 }
