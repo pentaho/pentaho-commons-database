@@ -5,6 +5,7 @@ org.pentaho.database.dialect.Hive2DatabaseDialect
 org.pentaho.database.dialect.HiveDatabaseDialect
 org.pentaho.database.dialect.HypersonicDatabaseDialect
 org.pentaho.database.dialect.ImpalaDatabaseDialect
+org.pentaho.database.dialect.ImpalaSimbaDatabaseDialect
 org.pentaho.database.dialect.InformixDatabaseDialect
 org.pentaho.database.dialect.MSSQLServerDatabaseDialect
 org.pentaho.database.dialect.MSSQLServerNativeDatabaseDialect

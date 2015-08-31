@@ -35,12 +35,13 @@ public class Hive2DatabaseDialect extends AbstractDatabaseDialect {
    */
   private static final long serialVersionUID = -8456961348836455937L;
 
-  private static final int DEFAULT_PORT = 10000;
+  protected static final int DEFAULT_PORT = 10000;
 
   private static final IDatabaseType DBTYPE =
-      new DatabaseType( "Hadoop Hive 2", "HIVE2", DatabaseAccessType.getList( DatabaseAccessType.NATIVE,
-          DatabaseAccessType.JNDI ), DEFAULT_PORT,
-          "http://www.cloudera.com/content/support/en/documentation/cloudera-impala/cloudera-impala-documentation-v1-latest.html" );
+    new DatabaseType( "Hadoop Hive 2", "HIVE2", DatabaseAccessType.getList( DatabaseAccessType.NATIVE,
+      DatabaseAccessType.JNDI ), DEFAULT_PORT,
+      "http://www.cloudera.com/content/support/en/documentation/cloudera-impala/cloudera-impala-documentation-v1"
+        + "-latest.html" );
 
   public IDatabaseType getDatabaseType() {
     return DBTYPE;
@@ -74,62 +75,50 @@ public class Hive2DatabaseDialect extends AbstractDatabaseDialect {
 
   /**
    * Generates the SQL statement to add a column to the specified table
-   * 
-   * @param tablename
-   *          The table to add
-   * @param v
-   *          The column defined as a value
-   * @param tk
-   *          the name of the technical key field
-   * @param use_autoinc
-   *          whether or not this field uses auto increment
-   * @param pk
-   *          the name of the primary key field
-   * @param semicolon
-   *          whether or not to add a semi-colon behind the statement.
+   *
+   * @param tablename   The table to add
+   * @param v           The column defined as a value
+   * @param tk          the name of the technical key field
+   * @param use_autoinc whether or not this field uses auto increment
+   * @param pk          the name of the primary key field
+   * @param semicolon   whether or not to add a semi-colon behind the statement.
    * @return the SQL statement to add a column to the specified table
    */
   @Override
   public String getAddColumnStatement( String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk,
-      boolean semicolon ) {
+                                       boolean semicolon ) {
     return "ALTER TABLE " + tablename + " ADD " + getFieldDefinition( v, tk, pk, use_autoinc, true, false );
   }
 
   /**
    * Generates the SQL statement to modify a column in the specified table
-   * 
-   * @param tablename
-   *          The table to add
-   * @param v
-   *          The column defined as a value
-   * @param tk
-   *          the name of the technical key field
-   * @param use_autoinc
-   *          whether or not this field uses auto increment
-   * @param pk
-   *          the name of the primary key field
-   * @param semicolon
-   *          whether or not to add a semi-colon behind the statement.
+   *
+   * @param tablename   The table to add
+   * @param v           The column defined as a value
+   * @param tk          the name of the technical key field
+   * @param use_autoinc whether or not this field uses auto increment
+   * @param pk          the name of the primary key field
+   * @param semicolon   whether or not to add a semi-colon behind the statement.
    * @return the SQL statement to modify a column in the specified table
    */
   @Override
   public String getModifyColumnStatement( String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk,
-      boolean semicolon ) {
+                                          boolean semicolon ) {
     return "ALTER TABLE " + tablename + " MODIFY " + getFieldDefinition( v, tk, pk, use_autoinc, true, false );
   }
 
   @Override
   public String getFieldDefinition( IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname,
-      boolean add_cr ) {
+                                    boolean add_cr ) {
     String retval = "";
 
     String fieldname = v.getName();
     int length = v.getLength();
     int precision = v.getPrecision();
 
-    if ( add_fieldname )
+    if ( add_fieldname ) {
       retval += fieldname + " ";
-
+    }
     int type = v.getType();
     switch ( type ) {
       case IValueMeta.TYPE_DATE:
@@ -147,7 +136,7 @@ public class Hive2DatabaseDialect extends AbstractDatabaseDialect {
       case IValueMeta.TYPE_INTEGER:
       case IValueMeta.TYPE_BIGNUMBER:
         if ( fieldname.equalsIgnoreCase( tk ) || // Technical key
-            fieldname.equalsIgnoreCase( pk ) // Primary key
+          fieldname.equalsIgnoreCase( pk ) // Primary key
         ) {
           if ( use_autoinc ) {
             retval += "BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY";
@@ -168,13 +157,13 @@ public class Hive2DatabaseDialect extends AbstractDatabaseDialect {
             } else {
               retval += "INT";
             }
-          }
-          // Floating point values...
-          else {
+          } else {
+            // Floating point values...
             if ( length > 15 ) {
               retval += "DECIMAL(" + length;
-              if ( precision > 0 )
+              if ( precision > 0 ) {
                 retval += ", " + precision;
+              }
               retval += ")";
             } else {
               // A double-precision floating-point number is accurate to approximately 15 decimal places.
@@ -186,16 +175,17 @@ public class Hive2DatabaseDialect extends AbstractDatabaseDialect {
         break;
       case IValueMeta.TYPE_STRING:
         if ( length > 0 ) {
-          if ( length == 1 )
+          if ( length == 1 ) {
             retval += "CHAR(1)";
-          else if ( length < 256 )
+          } else if ( length < 256 ) {
             retval += "VARCHAR(" + length + ")";
-          else if ( length < 65536 )
+          } else if ( length < 65536 ) {
             retval += "TEXT";
-          else if ( length < 16777215 )
+          } else if ( length < 16777215 ) {
             retval += "MEDIUMTEXT";
-          else
+          } else {
             retval += "LONGTEXT";
+          }
         } else {
           retval += "TINYTEXT";
         }
@@ -208,8 +198,9 @@ public class Hive2DatabaseDialect extends AbstractDatabaseDialect {
         break;
     }
 
-    if ( add_cr )
+    if ( add_cr ) {
       retval += CR;
+    }
 
     return retval;
   }
