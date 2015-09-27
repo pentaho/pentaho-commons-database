@@ -32,7 +32,7 @@ public class PDIDialect extends GenericDatabaseDialect {
   private static final long serialVersionUID = -661020279493753135L;
 
   private static final IDatabaseType DBTYPE =
-    new DatabaseType( "Pentaho Data Integration", "KettleThin",
+    new DatabaseType( "Pentaho Data Services", "KettleThin",
       DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ),
       9080,
       "https://help.pentaho.com/Documentation/5.1/0L0/0Y0/0G0",
