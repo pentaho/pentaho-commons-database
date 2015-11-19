@@ -18,11 +18,25 @@
 package org.pentaho.database.dialect;
 
 import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertThat;
+
+
+@RunWith( MockitoJUnitRunner.class )
 public class PDIDialectTest {
+
+  @Mock
+  DatabaseConnection connection;
 
   private PDIDialect dialect;
 
@@ -30,11 +44,21 @@ public class PDIDialectTest {
     this.dialect = new PDIDialect();
   }
 
+  @Before
+  public void setUp() {
+    when( connection.getAccessType() ).thenReturn( DatabaseAccessType.NATIVE );
+    when( connection.getDatabasePort() ).thenReturn( "9080" );
+    when( connection.getHostname() ).thenReturn( "localhost" );
+  }
+
   @Test
   public void testGetURL() throws Exception {
-    DatabaseConnection conn = new DatabaseConnection();
-    conn.setAccessType( DatabaseAccessType.NATIVE );
-    Assert.assertEquals( dialect.getURL( conn ), "jdbc:pdi://null/null" );
+    assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:9080/kettle" ) );
+  }
+
+  @Test
+  public void testGetDatabaseName() throws Exception {
+    assertThat( dialect.getDatabaseType().getDefaultDatabaseName(), equalTo( "Data Services" ) );
   }
 
   @Test

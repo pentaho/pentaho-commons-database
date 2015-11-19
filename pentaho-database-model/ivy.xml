@@ -23,7 +23,9 @@
         <dependency org="commons-logging" name="commons-logging" rev="1.1.1" transitive="false"/>
         
         <!--  Testing dependencies -->
-        <dependency org="junit" name="junit" rev="4.3.1" transitive="false" conf="test->default"/>
+        <dependency org="junit" name="junit" rev="4.11" transitive="false" conf="test->default"/>
+        <dependency org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" conf="test->default"/>
+        <dependency org="org.hamcrest" name="java-hamcrest" rev="2.0.0.0" transitive="false" conf="test->default"/>
         
         
     </dependencies>

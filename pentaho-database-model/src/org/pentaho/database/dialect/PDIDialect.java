@@ -31,12 +31,14 @@ public class PDIDialect extends GenericDatabaseDialect {
 
   private static final long serialVersionUID = -661020279493753135L;
 
+  private static final String URI_PATH = "kettle";
+
   private static final IDatabaseType DBTYPE =
     new DatabaseType( "Pentaho Data Services", "KettleThin",
       DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ),
       9080,
       "https://help.pentaho.com/Documentation/5.1/0L0/0Y0/0G0",
-      "kettle",  // Default database name
+      "Data Services",  // Default database name
       Collections.unmodifiableMap(
         new HashMap<String, String>() {
           {
@@ -89,10 +91,10 @@ public class PDIDialect extends GenericDatabaseDialect {
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
     if ( isEmpty( connection.getDatabasePort() ) ) {
-      return getNativeJdbcPre() + connection.getHostname() + "/" + connection.getDatabaseName();
+      return getNativeJdbcPre() + connection.getHostname() + "/" + URI_PATH;
     } else {
       return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
-        + connection.getDatabaseName();
+        + URI_PATH;
     }
   }
 
