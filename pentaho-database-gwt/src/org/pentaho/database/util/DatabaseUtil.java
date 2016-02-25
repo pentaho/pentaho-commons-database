@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
  */
 
 package org.pentaho.database.util;
@@ -33,6 +33,13 @@ public class DatabaseUtil {
 
     Properties props = meta.getDatabaseInterface().getAttributes();
 
+    for ( String key : conn.getAttributes().keySet() ) {
+      String val = conn.getAttributes().get( key );
+      if ( val != null ) {
+        props.put( key, val );
+      }
+    }
+
     for ( String key : conn.getExtraOptions().keySet() ) {
       if ( conn.getExtraOptions().get( key ) != null ) {
         props.put( BaseDatabaseMeta.ATTRIBUTE_PREFIX_EXTRA_OPTION + key, conn.getExtraOptions().get( key ) );
@@ -43,13 +50,6 @@ public class DatabaseUtil {
       if ( conn.getConnectionPoolingProperties().get( key ) != null ) {
         props.put( BaseDatabaseMeta.ATTRIBUTE_POOLING_PARAMETER_PREFIX + key, conn.getConnectionPoolingProperties()
             .get( key ) );
-      }
-    }
-
-    for ( String key : conn.getAttributes().keySet() ) {
-      String val = conn.getAttributes().get( key );
-      if ( val != null ) {
-        props.put( key, val );
       }
     }
 
@@ -88,7 +88,7 @@ public class DatabaseUtil {
     meta.setUsingDoubleDecimalAsSchemaTableSeparator( conn.isUsingDoubleDecimalAsSchemaTableSeparator() );
 
     if ( conn.getPartitioningInformation() != null ) {
-      PartitionDatabaseMeta pdmetas[] = new PartitionDatabaseMeta[conn.getPartitioningInformation().size()];
+      PartitionDatabaseMeta[] pdmetas = new PartitionDatabaseMeta[conn.getPartitioningInformation().size()];
 
       // TODO
       int c = 0;
