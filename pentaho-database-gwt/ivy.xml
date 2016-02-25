@@ -75,5 +75,6 @@
         <dependency org="org.hsqldb" name="hsqldb" rev="2.3.2" transitive="false" conf="test->default"/>
         <dependency org="org.apache.commons" name="commons-vfs2" rev="2.0" transitive="true" conf="test->default" />
         <dependency org="com.google.guava" name="guava" rev="17.0" transitive="false" conf="test->default"/>
+        <dependency org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" conf="test->default"/>
     </dependencies>
 </ivy-module>
