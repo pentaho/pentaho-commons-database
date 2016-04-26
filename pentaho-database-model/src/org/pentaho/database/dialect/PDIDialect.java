@@ -12,11 +12,13 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2014 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
  */
 
 package org.pentaho.database.dialect;
 
+import java.util.Collections;
+import java.util.HashMap;
 import org.pentaho.database.DatabaseDialectException;
 import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
@@ -24,14 +26,13 @@ import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
 
-import java.util.Collections;
-import java.util.HashMap;
-
 public class PDIDialect extends GenericDatabaseDialect {
 
   private static final long serialVersionUID = -661020279493753135L;
 
   private static final String URI_PATH = "kettle";
+
+  private static final String WEB_APPLICATION_NAME = "WEB_APPLICATION_NAME";
 
   private static final IDatabaseType DBTYPE =
     new DatabaseType( "Pentaho Data Services", "KettleThin",
@@ -42,7 +43,6 @@ public class PDIDialect extends GenericDatabaseDialect {
       Collections.unmodifiableMap(
         new HashMap<String, String>() {
           {
-            put( "KettleThin.webappname", "pentaho-di" ); // Default options
           }
           private static final long serialVersionUID = 6526668749527213238L;
         } ) );
@@ -90,11 +90,17 @@ public class PDIDialect extends GenericDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
-    if ( isEmpty( connection.getDatabasePort() ) ) {
-      return getNativeJdbcPre() + connection.getHostname() + "/" + URI_PATH;
+    String path;
+
+    if ( connection.getAttributes().containsKey( WEB_APPLICATION_NAME ) ) {
+      path = connection.getAttributes().get( WEB_APPLICATION_NAME ) + "/" + URI_PATH;
     } else {
-      return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
-        + URI_PATH;
+      path = URI_PATH;
+    }
+    if ( isEmpty( connection.getDatabasePort() ) ) {
+      return getNativeJdbcPre() + connection.getHostname() + "/" + path;
+    } else {
+      return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/" + path;
     }
   }
 

@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2014 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
  */
 
 package org.pentaho.ui.database.event;
@@ -80,6 +80,10 @@ public class DataHandler extends AbstractXulEventHandler {
 
   // See http://bugs.jquery.com/ticket/1450 for an explanation
   private static final int SC_NO_CONTENT_IE = 1223;
+
+  // Kettle thin related
+  private static final String WEB_APPLICATION_NAME = "WEB_APPLICATION_NAME";
+  private static final String EXTRA_OPTION_WEB_APPLICATION_NAME = "KettleThin.webappname";
 
   protected DatabaseDialogListener listener;
 
@@ -152,6 +156,9 @@ public class DataHandler extends AbstractXulEventHandler {
 
   // MySQL specific
   private XulCheckbox resultStreamingCursorCheck;
+
+  // Pentaho data services specific
+  private XulTextbox webAppName;
 
   // ==== Options Panel ==== //
 
@@ -897,6 +904,13 @@ public class DataHandler extends AbstractXulEventHandler {
       databaseConnection.setAttributes( new HashMap<String, String>() );
     }
 
+    if ( databaseConnection.getExtraOptions().containsKey( EXTRA_OPTION_WEB_APPLICATION_NAME ) ) {
+      databaseConnection.getAttributes().put( WEB_APPLICATION_NAME, databaseConnection.getExtraOptions()
+          .get( EXTRA_OPTION_WEB_APPLICATION_NAME ) );
+      databaseConnection.getExtraOptions().remove( EXTRA_OPTION_WEB_APPLICATION_NAME );
+      databaseConnection.setChanged( true );
+    }
+
     getControls();
 
     // TODO: Delete method: copyConnectionSpecificInfo(meta, cache);
@@ -1188,9 +1202,9 @@ public class DataHandler extends AbstractXulEventHandler {
             }
 
             String value = extraOptions.get( parameter );
-            // if ( isBlank( value ) ) {
-            // continue;
-            // }
+            if ( isBlank( value ) ) {
+              continue;
+            }
 
             // If the parameter starts with a database type code we show it in the options, otherwise we don't.
             // For example MySQL.defaultFetchSize
@@ -1435,6 +1449,9 @@ public class DataHandler extends AbstractXulEventHandler {
       meta.setInformixServername( serverNameBox.getValue() );
     }
 
+    if ( webAppName != null ) {
+      meta.getAttributes().put( WEB_APPLICATION_NAME, webAppName.getValue() );
+    }
   }
 
   private void setConnectionSpecificInfo( IDatabaseConnection meta ) {
@@ -1515,6 +1532,13 @@ public class DataHandler extends AbstractXulEventHandler {
       serverNameBox.setValue( meta.getInformixServername() );
     }
 
+    if ( webAppName != null ) {
+      if ( databaseConnection != null && databaseConnection.getAttributes().containsKey( WEB_APPLICATION_NAME ) ) {
+        webAppName.setValue( databaseConnection.getAttributes().get( WEB_APPLICATION_NAME ) );
+      } else {
+        webAppName.setValue( "pentaho-di" );
+      }
+    }
   }
 
   protected void getControls() {
@@ -1561,6 +1585,7 @@ public class DataHandler extends AbstractXulEventHandler {
     lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById( "force-lower-case-check" ); //$NON-NLS-1$;
     upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById( "force-upper-case-check" ); //$NON-NLS-1$;
     sqlBox = (XulTextbox) document.getElementById( "sql-text" ); //$NON-NLS-1$;
+    webAppName = (XulTextbox) document.getElementById( "web-application-name-text" );
   }
 
   private void showMessage( String title, String message, boolean scroll ) {
