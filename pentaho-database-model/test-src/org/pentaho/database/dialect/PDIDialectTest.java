@@ -12,11 +12,13 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 * See the GNU Lesser General Public License for more details.
 *
-* Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+* Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
 */
 
 package org.pentaho.database.dialect;
 
+import java.util.HashMap;
+import java.util.Map;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +28,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 
-
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 
 @RunWith( MockitoJUnitRunner.class )
@@ -49,11 +50,14 @@ public class PDIDialectTest {
     when( connection.getAccessType() ).thenReturn( DatabaseAccessType.NATIVE );
     when( connection.getDatabasePort() ).thenReturn( "9080" );
     when( connection.getHostname() ).thenReturn( "localhost" );
+    Map attributes = new HashMap();
+    attributes.put( "WEB_APPLICATION_NAME", "pentaho-di" );
+    when( connection.getAttributes() ).thenReturn( attributes );
   }
 
   @Test
   public void testGetURL() throws Exception {
-    assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:9080/kettle" ) );
+    assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:9080/pentaho-di/kettle" ) );
   }
 
   @Test
