@@ -115,9 +115,7 @@ import java.util.Map;
     Assert.assertEquals( "Types should match", kettleThinType, dialect.getDatabaseType() );
     Assert.assertEquals( "Data Services", kettleThinType.getDefaultDatabaseName() );
     Map<String, String> options = kettleThinType.getDefaultOptions();
-    Assert.assertEquals( "pentaho-di", options.get( "KettleThin.webappname" ) );
-    Assert.assertEquals( 1, options.size() );
+    Assert.assertEquals( 0, options.size() );
     System.out.println( kettleThinType );
   }
-
 }
