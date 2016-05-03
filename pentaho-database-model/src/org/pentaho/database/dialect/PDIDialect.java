@@ -42,8 +42,6 @@ public class PDIDialect extends GenericDatabaseDialect {
       "Data Services",  // Default database name
       Collections.unmodifiableMap(
         new HashMap<String, String>() {
-          {
-          }
           private static final long serialVersionUID = 6526668749527213238L;
         } ) );
 
