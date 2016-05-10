@@ -12,13 +12,19 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
  */
-
 package org.pentaho.database;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
+import org.pentaho.database.util.ClassUtil;
+
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public interface IDatabaseDialect {
 
@@ -381,4 +387,41 @@ public interface IDatabaseDialect {
    * @return the jdbc prefix portion of the URL that this dialect is expecting
    */
   String getNativeJdbcPre();
+
+  /**
+   * Attempt to determine if driver is available. If it's not available, return false.
+   *
+   * @return true if the driver is available
+   */
+  default boolean isUsable() {
+    return initialize( getNativeDriver() );
+  }
+
+  /**
+   * Performs any necessary actions to initialise the class via the dialect
+   *
+   * @param classname
+   * @return a boolean indicating whether the class was accessable and initializable
+   */
+  default boolean initialize( String classname ) {
+    return ClassUtil.canLoadClass( classname );
+  }
+
+  /**
+   * Returns a driver for the given url
+   *
+   * @param url the url
+   * @return the driver
+   */
+  default Driver getDriver( String url ) {
+    try {
+      return DriverManager.getDriver( url );
+    } catch ( SQLException e ) {
+      Log logger = LogFactory.getLog( IDatabaseDialect.class );
+      if ( logger.isDebugEnabled() ) {
+        logger.debug( "Unable to get driver for url " + url, e );
+      }
+    }
+    return null;
+  }
 }
