@@ -50,13 +50,15 @@ public class PDIDialectTest {
     when( connection.getAccessType() ).thenReturn( DatabaseAccessType.NATIVE );
     when( connection.getDatabasePort() ).thenReturn( "9080" );
     when( connection.getHostname() ).thenReturn( "localhost" );
-    Map attributes = new HashMap();
-    attributes.put( "WEB_APPLICATION_NAME", "pentaho-di" );
-    when( connection.getAttributes() ).thenReturn( attributes );
   }
 
   @Test
   public void testGetURL() throws Exception {
+    when( connection.getDatabaseName() ).thenReturn( "pentaho-di" );
+    assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:9080/pentaho-di/kettle" ) );
+    Map attributes = new HashMap();
+    attributes.put( "KettleThin.webappname", "pentaho-di" );
+    when( connection.getAttributes() ).thenReturn( attributes );
     assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:9080/pentaho-di/kettle" ) );
   }
 

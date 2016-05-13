@@ -17,6 +17,23 @@
 
 package org.pentaho.ui.database.event;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Command;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseConnectionPoolParameter;
@@ -45,34 +62,14 @@ import org.pentaho.ui.xul.containers.XulWindow;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.stereotype.Bindable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Command;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
- * 
+ * <p>
  * TODO: 2. Needs to be abstracted away from the DatabaseMeta object, so other tools in the platform can use the dialog
  * and their preferred database object. 3. Needs exception handling, string resourcing and logging
- * 
+ *
  * @author gmoran
  * @since Mar 19, 2008
- * 
  */
 public class DataHandler extends AbstractXulEventHandler {
 
@@ -82,7 +79,6 @@ public class DataHandler extends AbstractXulEventHandler {
   private static final int SC_NO_CONTENT_IE = 1223;
 
   // Kettle thin related
-  private static final String WEB_APPLICATION_NAME = "WEB_APPLICATION_NAME";
   private static final String EXTRA_OPTION_WEB_APPLICATION_NAME = "KettleThin.webappname";
 
   protected DatabaseDialogListener listener;
@@ -600,7 +596,9 @@ public class DataHandler extends AbstractXulEventHandler {
       return;
     }
 
-    RequestBuilder checkParamsBuilder = new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
+    RequestBuilder
+        checkParamsBuilder =
+        new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
     checkParamsBuilder.setHeader( "Content-Type", "application/json" ); //$NON-NLS-1$//$NON-NLS-2$
     try {
       AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean( database );
@@ -610,7 +608,8 @@ public class DataHandler extends AbstractXulEventHandler {
         @Override
         public void onError( Request request, Throwable exception ) {
           showMessage(
-              messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), exception.getMessage(), exception.getMessage().length() > 300 ); //$NON-NLS-1$
+              messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), exception.getMessage(),
+              exception.getMessage().length() > 300 ); //$NON-NLS-1$
         }
 
         @Override
@@ -638,7 +637,8 @@ public class DataHandler extends AbstractXulEventHandler {
       } );
     } catch ( RequestException e ) {
       showMessage(
-          messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), e.getMessage(), e.getMessage().length() > 300 ); //$NON-NLS-1$
+          messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), e.getMessage(),
+          e.getMessage().length() > 300 ); //$NON-NLS-1$
     }
   }
 
@@ -646,12 +646,14 @@ public class DataHandler extends AbstractXulEventHandler {
   public void testDatabaseConnection() {
     final IDatabaseConnection database = createDatabaseConnection();
     getInfo( database );
-    if (databaseConnection != null) {
+    if ( databaseConnection != null ) {
       // apply ID from exist database for find password on the server size
-      database.setId(databaseConnection.getId());
+      database.setId( databaseConnection.getId() );
     }
 
-    RequestBuilder checkParamsBuilder = new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
+    RequestBuilder
+        checkParamsBuilder =
+        new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
     checkParamsBuilder.setHeader( "Content-Type", "application/json" ); //$NON-NLS-1$ //$NON-NLS-2$
     try {
       AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean( database );
@@ -661,7 +663,8 @@ public class DataHandler extends AbstractXulEventHandler {
         @Override
         public void onError( Request request, Throwable exception ) {
           showMessage(
-              messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), exception.getMessage(), exception.getMessage().length() > 300 ); //$NON-NLS-1$
+              messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), exception.getMessage(),
+              exception.getMessage().length() > 300 ); //$NON-NLS-1$
         }
 
         @Override
@@ -679,19 +682,22 @@ public class DataHandler extends AbstractXulEventHandler {
                 @Override
                 public void onError( Request request1, Throwable exception ) {
                   showMessage(
-                      messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), exception.getMessage(), exception.getMessage().length() > 300 ); //$NON-NLS-1$
+                      messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), exception.getMessage(),
+                      exception.getMessage().length() > 300 ); //$NON-NLS-1$
                 }
 
                 @Override
                 public void onResponseReceived( Request request1, Response response1 ) {
                   showMessage(
-                      messages.getString( "DataHandler.TEST_MESSAGE_TITLE" ), response1.getText(), response1.getText().length() > 300 ); //$NON-NLS-1$
+                      messages.getString( "DataHandler.TEST_MESSAGE_TITLE" ), response1.getText(),
+                      response1.getText().length() > 300 ); //$NON-NLS-1$
                 }
 
               } );
             } catch ( RequestException e ) {
               showMessage(
-                  messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), e.getMessage(), e.getMessage().length() > 300 ); //$NON-NLS-1$
+                  messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), e.getMessage(),
+                  e.getMessage().length() > 300 ); //$NON-NLS-1$
             }
           } else {
             gatherErrors( response );
@@ -700,7 +706,8 @@ public class DataHandler extends AbstractXulEventHandler {
       } );
     } catch ( RequestException e ) {
       showMessage(
-          messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), e.getMessage(), e.getMessage().length() > 300 ); //$NON-NLS-1$
+          messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), e.getMessage(),
+          e.getMessage().length() > 300 ); //$NON-NLS-1$
     }
   }
 
@@ -729,7 +736,8 @@ public class DataHandler extends AbstractXulEventHandler {
       showMessage( messages.getString( "DataHandler.CHECK_PARAMS_TITLE" ), message, false ); //$NON-NLS-1$
     } else {
       showMessage(
-          messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), response.getStatusText(), response.getStatusText().length() > 300 ); //$NON-NLS-1$
+          messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), response.getStatusText(),
+          response.getStatusText().length() > 300 ); //$NON-NLS-1$
     }
   }
 
@@ -905,7 +913,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     if ( databaseConnection.getExtraOptions().containsKey( EXTRA_OPTION_WEB_APPLICATION_NAME ) ) {
-      databaseConnection.getAttributes().put( WEB_APPLICATION_NAME, databaseConnection.getExtraOptions()
+      databaseConnection.setDatabaseName( databaseConnection.getExtraOptions()
           .get( EXTRA_OPTION_WEB_APPLICATION_NAME ) );
       databaseConnection.getExtraOptions().remove( EXTRA_OPTION_WEB_APPLICATION_NAME );
       databaseConnection.setChanged( true );
@@ -969,7 +977,8 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     if ( sqlBox != null ) {
-      sqlBox.setValue( databaseConnection.getConnectSql() == null ? "" : databaseConnection.getConnectSql() ); //$NON-NLS-1$
+      sqlBox.setValue(
+          databaseConnection.getConnectSql() == null ? "" : databaseConnection.getConnectSql() ); //$NON-NLS-1$
     }
 
     // Clustering panel settings
@@ -1013,7 +1022,6 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   /**
-   * 
    * @return the list of parameters that were enabled, but had invalid return values (null or empty)
    */
   private boolean checkPoolingParameters() {
@@ -1115,14 +1123,17 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   private void setDefaultPoolParameters() {
-    RequestBuilder poolingParamsBuilder = new RequestBuilder( RequestBuilder.GET, getBaseURL() + "poolingParameters" ); //$NON-NLS-1$
+    RequestBuilder
+        poolingParamsBuilder =
+        new RequestBuilder( RequestBuilder.GET, getBaseURL() + "poolingParameters" ); //$NON-NLS-1$
     try {
       poolingParamsBuilder.sendRequest( null, new RequestCallback() {
 
         @Override
         public void onError( Request request, Throwable exception ) {
           showMessage(
-              messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), exception.getMessage(), exception.getMessage().length() > 300 ); //$NON-NLS-1$
+              messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), exception.getMessage(),
+              exception.getMessage().length() > 300 ); //$NON-NLS-1$
         }
 
         @Override
@@ -1163,7 +1174,8 @@ public class DataHandler extends AbstractXulEventHandler {
       } );
     } catch ( RequestException e ) {
       showMessage(
-          messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), e.getMessage(), e.getMessage().length() > 300 ); //$NON-NLS-1$
+          messages.getString( "DataHandler.ERROR_MESSAGE_TITLE" ), e.getMessage(),
+          e.getMessage().length() > 300 ); //$NON-NLS-1$
     }
   }
 
@@ -1349,7 +1361,8 @@ public class DataHandler extends AbstractXulEventHandler {
       to.getAttributes().put( "SAPLanguage", from.getAttributes().get( "SAPLanguage" ) ); //$NON-NLS-1$ //$NON-NLS-2$
     }
     if ( from.getAttributes().get( "SAPSystemNumber" ) != null ) { //$NON-NLS-1$
-      to.getAttributes().put( "SAPSystemNumber", from.getAttributes().get( "SAPSystemNumber" ) ); //$NON-NLS-1$//$NON-NLS-2$
+      to.getAttributes()
+          .put( "SAPSystemNumber", from.getAttributes().get( "SAPSystemNumber" ) ); //$NON-NLS-1$//$NON-NLS-2$
     }
     if ( from.getAttributes().get( "SAPClient" ) != null ) { //$NON-NLS-1$
       to.getAttributes().put( "SAPClient", from.getAttributes().get( "SAPClient" ) ); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1421,7 +1434,8 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     if ( useIntegratedSecurityCheck != null ) {
-      meta.getAttributes().put( "MSSQLUseIntegratedSecurity", "" + useIntegratedSecurityCheck.isChecked() ); //$NON-NLS-1$//$NON-NLS-2$
+      meta.getAttributes()
+          .put( "MSSQLUseIntegratedSecurity", "" + useIntegratedSecurityCheck.isChecked() ); //$NON-NLS-1$//$NON-NLS-2$
     }
 
     // SAP Attributes...
@@ -1450,7 +1464,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     if ( webAppName != null ) {
-      meta.getAttributes().put( WEB_APPLICATION_NAME, webAppName.getValue() );
+      meta.setDatabaseName( webAppName.getValue() );
     }
   }
 
@@ -1505,7 +1519,8 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     if ( useIntegratedSecurityCheck != null ) {
-      useIntegratedSecurityCheck.setChecked( "true".equals( meta.getAttributes().get( "MSSQLUseIntegratedSecurity" ) ) ); //$NON-NLS-1$//$NON-NLS-2$
+      useIntegratedSecurityCheck.setChecked(
+          "true".equals( meta.getAttributes().get( "MSSQLUseIntegratedSecurity" ) ) ); //$NON-NLS-1$//$NON-NLS-2$
     }
 
     // SAP Attributes...
@@ -1533,8 +1548,8 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     if ( webAppName != null ) {
-      if ( databaseConnection != null && databaseConnection.getAttributes().containsKey( WEB_APPLICATION_NAME ) ) {
-        webAppName.setValue( databaseConnection.getAttributes().get( WEB_APPLICATION_NAME ) );
+      if ( databaseConnection != null && databaseConnection.getDatabaseName() != null && !databaseConnection.getDatabaseName().isEmpty() ) {
+        webAppName.setValue( databaseConnection.getDatabaseName() );
       } else {
         webAppName.setValue( "pentaho-di" );
       }
@@ -1570,7 +1585,8 @@ public class DataHandler extends AbstractXulEventHandler {
     resultStreamingCursorCheck = (XulCheckbox) document.getElementById( "result-streaming-check" ); //$NON-NLS-1$
     poolingCheck = (XulCheckbox) document.getElementById( "use-pool-check" ); //$NON-NLS-1$
     clusteringCheck = (XulCheckbox) document.getElementById( "use-cluster-check" ); //$NON-NLS-1$
-    clusterParameterDescriptionLabel = (XulLabel) document.getElementById( "cluster-parameter-description-label" ); //$NON-NLS-1$
+    clusterParameterDescriptionLabel =
+        (XulLabel) document.getElementById( "cluster-parameter-description-label" ); //$NON-NLS-1$
     poolSizeLabel = (XulLabel) document.getElementById( "pool-size-label" ); //$NON-NLS-1$
     poolSizeBox = (XulTextbox) document.getElementById( "pool-size-text" ); //$NON-NLS-1$
     maxPoolSizeLabel = (XulLabel) document.getElementById( "max-pool-size-label" ); //$NON-NLS-1$
@@ -1579,7 +1595,8 @@ public class DataHandler extends AbstractXulEventHandler {
     clusterParameterTree = (XulTree) document.getElementById( "cluster-parameter-tree" ); //$NON-NLS-1$
     optionsParameterTree = (XulTree) document.getElementById( "options-parameter-tree" ); //$NON-NLS-1$
     poolingDescription = (XulTextbox) document.getElementById( "pooling-description" ); //$NON-NLS-1$ 
-    poolingParameterDescriptionLabel = (XulLabel) document.getElementById( "pool-parameter-description-label" ); //$NON-NLS-1$ 
+    poolingParameterDescriptionLabel =
+        (XulLabel) document.getElementById( "pool-parameter-description-label" ); //$NON-NLS-1$
     poolingDescriptionLabel = (XulLabel) document.getElementById( "pooling-description-label" ); //$NON-NLS-1$ 
     quoteIdentifiersCheck = (XulCheckbox) document.getElementById( "quote-identifiers-check" ); //$NON-NLS-1$;
     lowerCaseIdentifiersCheck = (XulCheckbox) document.getElementById( "force-lower-case-check" ); //$NON-NLS-1$;
@@ -1593,7 +1610,8 @@ public class DataHandler extends AbstractXulEventHandler {
       XulMessageBox box = (XulMessageBox) document.createElement( "messagebox" ); //$NON-NLS-1$
       box.setTitle( title );
       box.setMessage( message );
-      box.setModalParent( ( (XulRoot) document.getElementById( "general-datasource-window" ) ).getRootObject() ); //$NON-NLS-1$
+      box.setModalParent(
+          ( (XulRoot) document.getElementById( "general-datasource-window" ) ).getRootObject() ); //$NON-NLS-1$
       if ( scroll ) {
         box.setScrollable( true );
         box.setWidth( 500 );
@@ -1644,9 +1662,8 @@ public class DataHandler extends AbstractXulEventHandler {
 
   /**
    * Disables the refresh on the {@link IFragmentHandler}
-   * 
-   * @param disableRefresh
-   *          boolean - disables the ability to refresh the options
+   *
+   * @param disableRefresh boolean - disables the ability to refresh the options
    */
   public void setFragmentHandlerDisableRefresh( boolean disableRefresh ) {
     if ( this.fragmentHandler != null ) {
