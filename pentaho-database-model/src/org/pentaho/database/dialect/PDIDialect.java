@@ -31,8 +31,7 @@ public class PDIDialect extends GenericDatabaseDialect {
   private static final long serialVersionUID = -661020279493753135L;
 
   private static final String URI_PATH = "kettle";
-
-  private static final String WEB_APPLICATION_NAME = "WEB_APPLICATION_NAME";
+  private static final String EXTRA_OPTION_WEB_APPLICATION_NAME = "KettleThin.webappname";
 
   private static final IDatabaseType DBTYPE =
     new DatabaseType( "Pentaho Data Services", "KettleThin",
@@ -42,8 +41,6 @@ public class PDIDialect extends GenericDatabaseDialect {
       "Data Services",  // Default database name
       Collections.unmodifiableMap(
         new HashMap<String, String>() {
-          {
-          }
           private static final long serialVersionUID = 6526668749527213238L;
         } ) );
 
@@ -92,8 +89,8 @@ public class PDIDialect extends GenericDatabaseDialect {
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
     String path;
 
-    if ( connection.getAttributes().containsKey( WEB_APPLICATION_NAME ) ) {
-      path = connection.getAttributes().get( WEB_APPLICATION_NAME ) + "/" + URI_PATH;
+    if ( !connection.getExtraOptions().containsKey( EXTRA_OPTION_WEB_APPLICATION_NAME ) ) {
+      path = connection.getDatabaseName() + "/" + URI_PATH;
     } else {
       path = URI_PATH;
     }
