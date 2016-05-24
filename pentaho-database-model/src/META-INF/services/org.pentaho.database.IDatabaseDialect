@@ -1,0 +1,16 @@
+org.pentaho.database.dialect.DB2DatabaseDialect
+org.pentaho.database.dialect.GenericDatabaseDialect
+org.pentaho.database.dialect.H2DatabaseDialect
+org.pentaho.database.dialect.HypersonicDatabaseDialect
+org.pentaho.database.dialect.InformixDatabaseDialect
+org.pentaho.database.dialect.MSSQLServerDatabaseDialect
+org.pentaho.database.dialect.MSSQLServerNativeDatabaseDialect
+org.pentaho.database.dialect.MonetDatabaseDialect
+org.pentaho.database.dialect.MySQLDatabaseDialect
+org.pentaho.database.dialect.OracleDatabaseDialect
+org.pentaho.database.dialect.PDIDialect
+org.pentaho.database.dialect.RedshiftDatabaseDialect
+org.pentaho.database.dialect.PostgreSQLDatabaseDialect
+org.pentaho.database.dialect.TeradataDatabaseDialect
+org.pentaho.database.dialect.Vertica5DatabaseDialect
+org.pentaho.database.dialect.VerticaDatabaseDialect

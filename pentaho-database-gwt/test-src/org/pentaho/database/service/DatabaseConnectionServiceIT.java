@@ -29,7 +29,7 @@ import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.DatabaseMeta;
 
 @SuppressWarnings("nls")
-public class DatabaseConnectionServiceTest {
+public class DatabaseConnectionServiceIT {
   
   @Test
   public void testMSSQL() throws Exception {

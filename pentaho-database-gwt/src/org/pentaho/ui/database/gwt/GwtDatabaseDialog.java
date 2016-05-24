@@ -17,12 +17,14 @@
 
 package org.pentaho.ui.database.gwt;
 
+import com.google.gwt.core.client.Scheduler;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.util.DatabaseTypeHelper;
 import org.pentaho.gwt.widgets.client.utils.i18n.ResourceBundle;
 import org.pentaho.ui.database.event.DataHandler;
 import org.pentaho.ui.database.event.DatabaseDialogListener;
 import org.pentaho.ui.database.event.GwtFragmentHandler;
+import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.gwt.GwtXulDomContainer;
 import org.pentaho.ui.xul.gwt.GwtXulRunner;
@@ -84,8 +86,12 @@ public class GwtDatabaseDialog {
     dialog.show();
   }
 
-  public void setDatabaseConnection(IDatabaseConnection conn) {
-    dataHandler.setData(conn);
+  public void setDatabaseConnection(final IDatabaseConnection conn) {
+    Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+      @Override public void execute() {
+        dataHandler.setData(conn);
+      }
+    } );
   }
 
   public boolean isDialogReady() {
@@ -103,7 +109,7 @@ public class GwtDatabaseDialog {
     public void overlayRemoved() {
     }
 
-    public void xulLoaded(GwtXulRunner runner) {
+    public void xulLoaded(final GwtXulRunner runner) {
       try {
         // register our event handlers
         final GwtXulDomContainer container = (GwtXulDomContainer) runner.getXulDomContainers().get(0);
@@ -122,12 +128,20 @@ public class GwtDatabaseDialog {
         fragmentHandler.setDatabaseTypeHelper(databaseTypeHelper);
         container.addEventHandler(fragmentHandler);
 
-        fragmentHandler.setDisableRefresh(true);
-        runner.initialize();
-        fragmentHandler.setDisableRefresh(false);
+        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+          @Override public void execute() {
+            fragmentHandler.setDisableRefresh(true);
+            try {
+              runner.initialize();
+            } catch ( XulException e ) {
+              e.printStackTrace();
+            }
+            fragmentHandler.setDisableRefresh(false);
+          }
+        } );
 
         if (overlay != null) {
-          IXulLoaderCallback callback2 = new IXulLoaderCallback() {
+          final IXulLoaderCallback callback2 = new IXulLoaderCallback() {
             public void overlayLoaded() {
               dialog = (XulDialog) container.getDocumentRoot().getElementById("general-datasource-window"); //$NON-NLS-1$
               if (listener != null) {
@@ -141,7 +155,12 @@ public class GwtDatabaseDialog {
             public void xulLoaded(GwtXulRunner runner) {
             }
           };
-          AsyncXulLoader.loadOverlayFromUrl(overlay, overlayResource, container, callback2);
+
+          Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+            @Override public void execute() {
+              AsyncXulLoader.loadOverlayFromUrl(overlay, overlayResource, container, callback2);
+            }
+          } );
         } else {
           dialog = (XulDialog) container.getDocumentRoot().getElementById("general-datasource-window"); //$NON-NLS-1$
           if (listener != null) {

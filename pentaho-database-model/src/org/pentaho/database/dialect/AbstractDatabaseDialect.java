@@ -12,23 +12,30 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
  */
 
 package org.pentaho.database.dialect;
 
 import java.io.Serializable;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.pentaho.database.DatabaseDialectException;
 import org.pentaho.database.IDatabaseDialect;
+import org.pentaho.database.IDriverLocator;
 import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.IDatabaseConnection;
+import org.pentaho.database.util.ClassUtil;
 
-public abstract class AbstractDatabaseDialect implements IDatabaseDialect, Serializable {
+public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriverLocator, Serializable {
   private static final long serialVersionUID = 4949841921392501602L;
 
   /**
@@ -734,5 +741,25 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, Seria
       retval = def;
     }
     return retval;
+  }
+
+  @Override public boolean isUsable() {
+    return initialize( getNativeDriver() );
+  }
+
+  @Override public boolean initialize( String classname ) {
+    return ClassUtil.canLoadClass( classname );
+  }
+
+  @Override public Driver getDriver( String url ) {
+    try {
+      return DriverManager.getDriver( url );
+    } catch ( SQLException e ) {
+      Log logger = LogFactory.getLog( IDatabaseDialect.class );
+      if ( logger.isDebugEnabled() ) {
+        logger.debug( "Unable to get driver for url " + url, e );
+      }
+    }
+    return null;
   }
 }

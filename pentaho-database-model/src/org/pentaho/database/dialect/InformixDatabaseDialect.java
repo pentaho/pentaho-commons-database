@@ -12,9 +12,8 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2014 Pentaho Corporation..  All rights reserved.
  */
-
 package org.pentaho.database.dialect;
 
 import org.pentaho.database.DatabaseDialectException;
@@ -24,51 +23,33 @@ import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
 
-public class HiveDatabaseDialect extends AbstractDatabaseDialect {
+public class InformixDatabaseDialect extends AbstractDatabaseDialect {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = -3869260264366995990L;
+  private static final IDatabaseType DBTYPE = new DatabaseType( "Informix", "INFORMIX", DatabaseAccessType.getList(
+      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 9088,
+      "http://publib.boulder.ibm.com/infocenter/idshelp/v10/index.jsp?topic=/com.ibm.jdbc_pg.doc/jdbc212.htm" );
+  
+  public InformixDatabaseDialect() {
 
-  public HiveDatabaseDialect() {
-    super();
   }
 
-  /**
-   * UID for serialization
-   */
-  private static final long serialVersionUID = -8456961348836455937L;
-
-  private static final int DEFAULT_PORT = 10000;
-
-  private static final IDatabaseType DBTYPE = new DatabaseType( "Hadoop Hive", "HIVE", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), DEFAULT_PORT,
-      "https://cwiki.apache.org/Hive/hiveclient.html" );
-
+  @Override
   public IDatabaseType getDatabaseType() {
     return DBTYPE;
   }
 
   @Override
-  public String getNativeDriver() {
-    return "org.apache.hadoop.hive.jdbc.HiveDriver";
-  }
-
-  @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
-    StringBuffer urlBuffer = new StringBuffer( getNativeJdbcPre() );
-    /*
-     * String username = connection.getUsername(); if(username != null && !"".equals(username)) {
-     * urlBuffer.append(username); String password = connection.getPassword(); if(password != null &&
-     * !"".equals(password)) { urlBuffer.append(":"); urlBuffer.append(password); } urlBuffer.append("@"); }
-     */
-    urlBuffer.append( connection.getHostname() );
-    urlBuffer.append( ":" );
-    urlBuffer.append( connection.getDatabasePort() );
-    urlBuffer.append( "/" );
-    urlBuffer.append( connection.getDatabaseName() );
-    return urlBuffer.toString();
-  }
-
-  @Override
-  public String getNativeJdbcPre() {
-    return "jdbc:hive://";
+    // jdbc:informix-sqli://192.168.149.128:9088/stores:INFORMIXSERVER=demo_on
+    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
+      return "jdbc:odbc:" + connection.getDatabaseName();
+    } else {
+      return "jdbc:informix-sqli://" + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
+          + connection.getDatabaseName() + ":INFORMIXSERVER=" + connection.getInformixServername() + ";DELIMIDENT=Y";
+    }
   }
 
   /**
@@ -133,7 +114,7 @@ public class HiveDatabaseDialect extends AbstractDatabaseDialect {
     int type = v.getType();
     switch ( type ) {
       case IValueMeta.TYPE_DATE:
-        retval += "DATETIME";
+        retval += "DATETIME YEAR to FRACTION";
         break;
       case IValueMeta.TYPE_BOOLEAN:
         if ( supportsBooleanDataType() ) {
@@ -142,7 +123,6 @@ public class HiveDatabaseDialect extends AbstractDatabaseDialect {
           retval += "CHAR(1)";
         }
         break;
-
       case IValueMeta.TYPE_NUMBER:
       case IValueMeta.TYPE_INTEGER:
       case IValueMeta.TYPE_BIGNUMBER:
@@ -150,59 +130,35 @@ public class HiveDatabaseDialect extends AbstractDatabaseDialect {
             fieldname.equalsIgnoreCase( pk ) // Primary key
         ) {
           if ( use_autoinc ) {
-            retval += "BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY";
+            retval += "SERIAL8";
           } else {
-            retval += "BIGINT NOT NULL PRIMARY KEY";
+            retval += "INTEGER PRIMARY KEY";
           }
         } else {
-          // Integer values...
-          if ( precision == 0 ) {
-            if ( length > 9 ) {
-              if ( length < 19 ) {
-                // can hold signed values between -9223372036854775808 and 9223372036854775807
-                // 18 significant digits
-                retval += "BIGINT";
-              } else {
-                retval += "DECIMAL(" + length + ")";
-              }
-            } else {
-              retval += "INT";
-            }
-          } else {
-            // Floating point values...
-            if ( length > 15 ) {
-              retval += "DECIMAL(" + length;
-              if ( precision > 0 ) {
-                retval += ", " + precision;
-              }
-              retval += ")";
-            } else {
-              // A double-precision floating-point number is accurate to approximately 15 decimal places.
-              // http://mysql.mirrors-r-us.net/doc/refman/5.1/en/numeric-type-overview.html
-              retval += "DOUBLE";
-            }
+          if ( ( length < 0 && precision < 0 ) || precision > 0 || length > 9 ) {
+            retval += "FLOAT";
+          } else { // Precision == 0 && length<=9
+            retval += "INTEGER";
           }
         }
         break;
       case IValueMeta.TYPE_STRING:
-        if ( length > 0 ) {
-          if ( length == 1 ) {
-            retval += "CHAR(1)";
-          } else if ( length < 256 ) {
-            retval += "VARCHAR(" + length + ")";
-          } else if ( length < 65536 ) {
-            retval += "TEXT";
-          } else if ( length < 16777215 ) {
-            retval += "MEDIUMTEXT";
-          } else {
-            retval += "LONGTEXT";
-          }
+        if ( length >= CLOB_LENGTH ) {
+          retval += "CLOB";
         } else {
-          retval += "TINYTEXT";
+          if ( length < 256 ) {
+            retval += "VARCHAR";
+            if ( length > 0 ) {
+              retval += "(" + length + ")";
+            }
+          } else {
+            if ( length < 32768 ) {
+              retval += "LVARCHAR";
+            } else {
+              retval += "TEXT";
+            }
+          }
         }
-        break;
-      case IValueMeta.TYPE_BINARY:
-        retval += "LONGBLOB";
         break;
       default:
         retval += " UNKNOWN";
@@ -218,22 +174,76 @@ public class HiveDatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String[] getUsedLibraries() {
-    return new String[] { "pentaho-hadoop-hive-jdbc-shim-1.4-SNAPSHOT.jar" };
+    return new String[] { "ifxjdbc.jar" };
   }
 
   @Override
-  public int getDefaultDatabasePort() {
-    return DEFAULT_PORT;
+  public String getNativeDriver() {
+    return "com.informix.jdbc.IfxDriver";
   }
 
-  /*
-   * (non-Javadoc)
+  @Override
+  public String getNativeJdbcPre() {
+    return "jdbc:informix-sqli:";
+  }
+
+  // /////////////////
+  @Override
+  public int getNotFoundTK( boolean use_autoinc ) {
+    if ( supportsAutoInc() && use_autoinc ) {
+      return 1;
+    }
+    return super.getNotFoundTK( use_autoinc );
+  }
+
+  /**
+   * Indicates the need to insert a placeholder (0) for auto increment fields.
    * 
-   * @see org.pentaho.database.dialect.AbstractDatabaseDialect#supportsSchemas()
+   * @return true if we need a placeholder for auto increment fields in insert statements.
    */
   @Override
-  public boolean supportsSchemas() {
+  public boolean needsPlaceHolder() {
+    return true;
+  }
+
+  @Override
+  public boolean needsToLockAllTables() {
     return false;
+  }
+
+  @Override
+  public String getSQLQueryFields( String tableName ) {
+    return "SELECT FIRST 1 * FROM " + tableName;
+  }
+
+  @Override
+  public String getSQLTableExists( String tablename ) {
+    return getSQLQueryFields( tablename );
+  }
+
+  @Override
+  public String getSQLColumnExists( String columnname, String tablename ) {
+    return getSQLQueryColumnFields( columnname, tablename );
+  }
+
+  public String getSQLQueryColumnFields( String columnname, String tableName ) {
+    return "SELECT FIRST 1 " + columnname + " FROM " + tableName;
+  }
+
+  @Override
+  public String getSQLLockTables( String[] tableNames ) {
+    String sql = "";
+    for ( int i = 0; i < tableNames.length; i++ ) {
+      sql += "LOCK TABLE " + tableNames[i] + " IN EXCLUSIVE MODE;" + CR;
+    }
+    return sql;
+  }
+
+  @Override
+  public String getSQLUnlockTables( String[] tableNames ) {
+    return null;
+    // String sql=""; for (int i=0;i<tableNames.length;i++) { sql+="UNLOCK TABLE "+tableNames[i]+";"+ CR; } return
+    // sql;
   }
 
 }

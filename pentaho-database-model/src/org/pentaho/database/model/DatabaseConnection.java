@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2014 Pentaho Corporation..  All rights reserved.
  */
 
 package org.pentaho.database.model;
@@ -133,8 +133,6 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   /**
    * This method is used to set the access type value. This is only used during marshalling that does not support enums
    * (like Apache Axis)
-   * 
-   * @param value
    */
   public String getAccessTypeValue() {
     return accessType == null ? accessTypeValue : accessType.toString();
@@ -229,7 +227,12 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
    * @see org.pentaho.database.model.IDatabaseConnection#getDatabaseName()
    */
   public String getDatabaseName() {
-    return databaseName;
+    if ( getDatabaseType() != null
+      && ( databaseName == null || databaseName.trim().length() == 0 ) ) {
+      return getDatabaseType().getDefaultDatabaseName();
+    } else {
+      return databaseName;
+    }
   }
 
   /*

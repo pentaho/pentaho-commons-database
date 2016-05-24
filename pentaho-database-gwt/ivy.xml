@@ -33,7 +33,6 @@
         <dependency org="pentaho-kettle" name="kettle-core" rev="${dependency.kettle.revision}" transitive="false"/>
         <dependency org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" transitive="false"/>
         
-        <dependency org="commons-vfs" name="commons-vfs" rev="1.0" transitive="false"/> 
         <dependency org="commons-pool" name="commons-pool" rev="1.5.7" transitive="false"/>
         <dependency org="commons-dbcp" name="commons-dbcp" rev="1.2.1" transitive="false"/>
         <dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.0-BETA" transitive="false"/>
@@ -73,7 +72,9 @@
         <!--  Testing dependencies -->
         <dependency org="junit" name="junit" rev="4.3.1" transitive="false" conf="test->default"/>
         <dependency org="mysql" name="mysql-connector-java" rev="5.1.10" transitive="false" conf="test->default"/>
-        <dependency org="hsqldb" name="hsqldb" rev="1.8.0.7" transitive="false" conf="test->default"/>
-       
+        <dependency org="org.hsqldb" name="hsqldb" rev="2.3.2" transitive="false" conf="test->default"/>
+        <dependency org="org.apache.commons" name="commons-vfs2" rev="2.0" transitive="true" conf="test->default" />
+        <dependency org="com.google.guava" name="guava" rev="17.0" transitive="false" conf="test->default"/>
+        <dependency org="org.mockito" name="mockito-all" rev="1.9.5" transitive="false" conf="test->default"/>
     </dependencies>
 </ivy-module>
