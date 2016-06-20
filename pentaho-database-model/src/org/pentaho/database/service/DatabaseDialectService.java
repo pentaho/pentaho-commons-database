@@ -16,8 +16,6 @@
  */
 package org.pentaho.database.service;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.pentaho.database.IDatabaseDialect;
 import org.pentaho.database.IDatabaseDialectProvider;
 import org.pentaho.database.IDriverLocator;
@@ -33,10 +31,11 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class DatabaseDialectService implements IDatabaseDialectService {
-  private static final Log logger = LogFactory.getLog( DatabaseDialectService.class );
   private static final List<IDatabaseDialectProvider> providers = Collections.unmodifiableList(
-    StreamSupport.stream( ServiceLoader.load( IDatabaseDialectProvider.class ).spliterator(), false ).collect(
-      Collectors.toList() ) );
+          StreamSupport
+                  .stream( ServiceLoader.load( IDatabaseDialectProvider.class,
+                          DatabaseDialectService.class.getClassLoader() ).spliterator(), false )
+                  .collect( Collectors.toList() ) );
 
   private final boolean isOnlyReturnAvailable;
 
