@@ -56,7 +56,10 @@ public class ServiceLoaderDatabaseDialectProvider implements IDatabaseDialectPro
   private Map<IDatabaseType, IDatabaseDialect> allDialectsTypeMap;
 
   public ServiceLoaderDatabaseDialectProvider() {
-    this( ServiceLoader::load );
+    this( databaseDialectClass ->
+            ServiceLoader.load(
+                    databaseDialectClass, ServiceLoaderDatabaseDialectProvider.class.getClassLoader()
+            ) );
   }
 
   public ServiceLoaderDatabaseDialectProvider(
