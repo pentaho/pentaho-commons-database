@@ -29,11 +29,14 @@ import com.google.gwt.user.client.Command;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
+import java.util.TreeMap;
+
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseConnectionPoolParameter;
@@ -231,6 +234,7 @@ public class DataHandler extends AbstractXulEventHandler {
     database.setAttributes( new HashMap<String, String>() );
     database.setConnectionPoolingProperties( new HashMap<String, String>() );
     database.setExtraOptions( new HashMap<String, String>() );
+    database.setExtraOptionsOrder( new HashMap<String, String>() );
     return database;
   }
 
@@ -340,10 +344,11 @@ public class DataHandler extends AbstractXulEventHandler {
 
       if ( databaseConnection != null ) {
         Map<String, String> options = databaseConnection.getExtraOptions();
+        Map<String, String> extraOptionsOrder = databaseConnection.getExtraOptionsOrder();
         if ( options == null || options.size() == 0 ) {
           options = database.getDefaultOptions();
         }
-        setOptionsData( options );
+        setOptionsData( options, extraOptionsOrder );
       }
       setClusterData( databaseConnection != null ? databaseConnection.getPartitioningInformation() : null );
 
@@ -621,7 +626,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
             // Clear extra options before reapplying all values from web
             databaseConnection.setExtraOptions( new HashMap<String, String>() );
-
+            databaseConnection.setExtraOptionsOrder( new HashMap<String, String>() );
             // Populate database connection with new values
             getInfo( databaseConnection );
 
@@ -796,7 +801,9 @@ public class DataHandler extends AbstractXulEventHandler {
 
         // Only if parameter are supplied, we will add to the map...
         if ( !isBlank( parameter ) ) {
-          dbConnection.addExtraOption( dbConnection.getDatabaseType().getShortName(), parameter, value );
+          String databaseTypeCode = dbConnection.getDatabaseType().getShortName();
+          dbConnection.addExtraOption( databaseTypeCode, parameter, value );
+          dbConnection.getExtraOptionsOrder().put( String.valueOf( i ), databaseTypeCode + "." + parameter );
         }
       }
     }
@@ -960,7 +967,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
     // Options Parameters:
 
-    setOptionsData( databaseConnection.getExtraOptions() );
+    setOptionsData( databaseConnection.getExtraOptions(), databaseConnection.getExtraOptionsOrder() );
 
     // Advanced panel settings:
 
@@ -1186,7 +1193,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
   }
 
-  private void setOptionsData( final Map<String, String> extraOptions ) {
+  private void setOptionsData( final Map<String, String> extraOptions, final Map<String, String> extraOptionsOrder ) {
 
     if ( optionsParameterTree == null ) {
       return;
@@ -1199,6 +1206,9 @@ public class DataHandler extends AbstractXulEventHandler {
         clearOptions();
         if ( extraOptions != null ) {
           Iterator<String> keys = extraOptions.keySet().iterator();
+          if ( extraOptionsOrder != null ) {
+            keys = new TreeMap<String, String>( extraOptionsOrder ).values().iterator();
+          }
           String connection = getSelectedString( connectionBox );
           IDatabaseType currentType = null;
 
@@ -1352,6 +1362,8 @@ public class DataHandler extends AbstractXulEventHandler {
 
     // Extra options
     to.setExtraOptions( from.getExtraOptions() );
+
+    to.setExtraOptionsOrder( from.getExtraOptionsOrder() );
 
     // SQL Server double decimal separator
     to.setUsingDoubleDecimalAsSchemaTableSeparator( from.isUsingDoubleDecimalAsSchemaTableSeparator() );
