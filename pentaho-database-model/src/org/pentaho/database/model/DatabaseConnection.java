@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2014 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
  */
 
 package org.pentaho.database.model;
@@ -87,6 +87,8 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   Map<String, String> extraOptions = new HashMap<String, String>();
 
+  Map<String, String> extraOptionsOrder = new HashMap<String, String>(  );
+
   Map<String, String> attributes = new HashMap<String, String>();
 
   Map<String, String> connectionPoolingProperties = new HashMap<String, String>();
@@ -104,7 +106,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setAccessType(org.pentaho.database.model.DatabaseAccessType)
    */
   public void setAccessType( DatabaseAccessType accessType ) {
@@ -113,7 +115,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getAccessType()
    */
   public DatabaseAccessType getAccessType() {
@@ -123,7 +125,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   /**
    * This method is used to set the access type value. This is only used during marshalling that does not support enums
    * (like Apache Axis)
-   * 
+   *
    * @param value
    */
   public void setAccessTypeValue( String value ) {
@@ -140,7 +142,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setDatabaseDriver(org.pentaho.database.model.DatabaseType)
    */
   @XmlElement( type = DatabaseType.class )
@@ -150,7 +152,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getDatabaseType()
    */
   public IDatabaseType getDatabaseType() {
@@ -159,7 +161,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setExtraOptions()
    */
   @Override
@@ -169,16 +171,26 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getExtraOptions()
    */
   public Map<String, String> getExtraOptions() {
     return extraOptions;
   }
 
+  @Override
+  public void setExtraOptionsOrder( Map<String, String> extraOptionsOrder ) {
+    this.extraOptionsOrder = extraOptionsOrder;
+  }
+
+  @Override
+  public Map<String, String> getExtraOptionsOrder() {
+    return this.extraOptionsOrder;
+  }
+
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setName(java.lang.String)
    */
   public void setName( String name ) {
@@ -187,7 +199,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getName()
    */
   public String getName() {
@@ -196,7 +208,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setHostname(java.lang.String)
    */
   public void setHostname( String hostname ) {
@@ -205,7 +217,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getHostname()
    */
   public String getHostname() {
@@ -214,7 +226,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setDatabaseName(java.lang.String)
    */
   public void setDatabaseName( String databaseName ) {
@@ -223,7 +235,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getDatabaseName()
    */
   public String getDatabaseName() {
@@ -237,7 +249,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setDatabasePort(java.lang.String)
    */
   public void setDatabasePort( String databasePort ) {
@@ -246,7 +258,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getDatabasePort()
    */
   public String getDatabasePort() {
@@ -255,7 +267,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setUsername(java.lang.String)
    */
   public void setUsername( String username ) {
@@ -264,7 +276,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getUsername()
    */
   public String getUsername() {
@@ -273,7 +285,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setPassword(java.lang.String)
    */
   public void setPassword( String password ) {
@@ -282,7 +294,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getPassword()
    */
   public String getPassword() {
@@ -291,7 +303,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setStreamingResults(boolean)
    */
   public void setStreamingResults( boolean streamingResults ) {
@@ -300,7 +312,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#isStreamingResults()
    */
   public boolean isStreamingResults() {
@@ -309,7 +321,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setDataTablespace(java.lang.String)
    */
   public void setDataTablespace( String dataTablespace ) {
@@ -318,7 +330,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getDataTablespace()
    */
   public String getDataTablespace() {
@@ -327,7 +339,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setIndexTablespace(java.lang.String)
    */
   public void setIndexTablespace( String indexTablespace ) {
@@ -336,7 +348,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getIndexTablespace()
    */
   public String getIndexTablespace() {
@@ -347,7 +359,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setSQLServerInstance(java.lang.String)
    */
   public void setSQLServerInstance( String sqlServerInstance ) {
@@ -356,7 +368,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getSQLServerInstance()
    */
   public String getSQLServerInstance() {
@@ -365,7 +377,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setUsingDoubleDecimalAsSchemaTableSeparator(boolean)
    */
   public void setUsingDoubleDecimalAsSchemaTableSeparator( boolean usingDoubleDecimalAsSchemaTableSeparator ) {
@@ -374,7 +386,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#isUsingDoubleDecimalAsSchemaTableSeparator()
    */
   public boolean isUsingDoubleDecimalAsSchemaTableSeparator() {
@@ -383,7 +395,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#setInformixServername(java.lang.String)
    */
   public void setInformixServername( String informixServername ) {
@@ -392,7 +404,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#getInformixServername()
    */
   public String getInformixServername() {
@@ -401,7 +413,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.database.model.IDatabaseConnection#addExtraOption(java.lang.String, java.lang.String,
    * java.lang.String)
    */
