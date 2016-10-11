@@ -1563,7 +1563,7 @@ public class DataHandler extends AbstractXulEventHandler {
       if ( databaseConnection != null && databaseConnection.getDatabaseName() != null && !databaseConnection.getDatabaseName().isEmpty() ) {
         webAppName.setValue( databaseConnection.getDatabaseName() );
       } else {
-        webAppName.setValue( "pentaho-di" );
+        webAppName.setValue( "pentaho" );
       }
     }
   }
