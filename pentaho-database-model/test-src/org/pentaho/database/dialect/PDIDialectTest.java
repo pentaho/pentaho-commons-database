@@ -29,6 +29,7 @@ import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -100,5 +101,10 @@ public class PDIDialectTest {
   @Test
   public void testSupportsOptionsInURL() {
     Assert.assertTrue( dialect.supportsOptionsInURL() );
+  }
+
+  @Test
+  public void testGetDefaultPort() throws Exception {
+    assertEquals( 8080, dialect.getDatabaseType().getDefaultDatabasePort() );
   }
 }
