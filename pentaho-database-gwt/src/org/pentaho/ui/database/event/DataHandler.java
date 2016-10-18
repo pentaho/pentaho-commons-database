@@ -1206,7 +1206,7 @@ public class DataHandler extends AbstractXulEventHandler {
         clearOptions();
         if ( extraOptions != null ) {
           Iterator<String> keys = extraOptions.keySet().iterator();
-          if ( extraOptionsOrder != null ) {
+          if ( extraOptionsOrder != null && !extraOptionsOrder.isEmpty() ) {
             keys = new TreeMap<String, String>( extraOptionsOrder ).values().iterator();
           }
           String connection = getSelectedString( connectionBox );
