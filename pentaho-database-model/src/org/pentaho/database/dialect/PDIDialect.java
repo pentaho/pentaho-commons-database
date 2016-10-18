@@ -37,7 +37,7 @@ public class PDIDialect extends GenericDatabaseDialect {
     new DatabaseType( "Pentaho Data Services", "KettleThin",
       DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ),
       8080,
-      "https://help.pentaho.com/Documentation/7.0/0L0/0Y0/0G0",
+      "https://help.pentaho.com/Documentation/7.0/0L0/0Y0/090",
       "Data Services",  // Default database name
       Collections.unmodifiableMap(
         new HashMap<String, String>() {
