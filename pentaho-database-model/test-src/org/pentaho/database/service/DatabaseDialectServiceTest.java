@@ -12,18 +12,17 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 * See the GNU Lesser General Public License for more details.
 *
-* Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+* Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
 */
 
 package org.pentaho.database.service;
 
+import java.util.List;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.pentaho.database.IDatabaseDialect;
 import org.pentaho.database.model.IDatabaseType;
-
-import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings( "nls" ) public class DatabaseDialectServiceTest {
 
@@ -113,7 +112,7 @@ import java.util.Map;
     Assert.assertNotNull( "Should have found the 'KettleThin' DatabaseType", kettleThinType );
     IDatabaseDialect dialect = dialectService.getDialect( kettleThinType );
     Assert.assertEquals( "Types should match", kettleThinType, dialect.getDatabaseType() );
-    Assert.assertEquals( "Data Services", kettleThinType.getDefaultDatabaseName() );
+    Assert.assertEquals( "pentaho", kettleThinType.getDefaultDatabaseName() );
     Map<String, String> options = kettleThinType.getDefaultOptions();
     Assert.assertEquals( 0, options.size() );
     System.out.println( kettleThinType );

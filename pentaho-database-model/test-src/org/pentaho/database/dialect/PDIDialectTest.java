@@ -65,7 +65,7 @@ public class PDIDialectTest {
 
   @Test
   public void testGetDatabaseName() throws Exception {
-    assertThat( dialect.getDatabaseType().getDefaultDatabaseName(), equalTo( "Data Services" ) );
+    assertThat( dialect.getDatabaseType().getDefaultDatabaseName(), equalTo( "pentaho" ) );
   }
 
   @Test
