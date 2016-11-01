@@ -12,12 +12,15 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 * See the GNU Lesser General Public License for more details.
 *
-* Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+* Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
 */
 
 package org.pentaho.database.dialect;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+
 import org.junit.Test;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
@@ -33,95 +36,95 @@ public class MySQLDatabaseDialectTest {
 
   @Test
   public void testGetNativeDriver() {
-    Assert.assertEquals( dialect.getNativeDriver(), "org.gjt.mm.mysql.Driver" );
+    assertEquals( dialect.getNativeDriver(), "org.gjt.mm.mysql.Driver" );
   }
 
   @Test
   public void testGetURL() throws Exception {
     DatabaseConnection conn = new DatabaseConnection();
     conn.setAccessType( DatabaseAccessType.NATIVE );
-    Assert.assertEquals( dialect.getURL( conn ), "jdbc:mysql://null/null" );
+    assertEquals( dialect.getURL( conn ), "jdbc:mysql://null/null" );
   }
 
   @Test
   public void testGetUsedLibraries() {
-    Assert.assertEquals( dialect.getUsedLibraries()[0], "mysql-connector-java-3.1.14-bin.jar" );
+    assertEquals( dialect.getUsedLibraries()[0], "mysql-connector-java-3.1.14-bin.jar" );
   }
 
   @Test
   public void testGetNativeJdbcPre() {
-    Assert.assertEquals( dialect.getNativeJdbcPre(), "jdbc:mysql://" );
+    assertEquals( dialect.getNativeJdbcPre(), "jdbc:mysql://" );
   }
 
   @Test
   public void testGetDatabaseType() {
     IDatabaseType dbType = dialect.getDatabaseType();
-    Assert.assertEquals( dbType.getName(), "MySQL" );
+    assertEquals( dbType.getName(), "MySQL" );
   }
 
   @Test
   public void testGetReservedWords() {
-    Assert.assertTrue( dialect.getReservedWords().length > 0 );
+    assertTrue( dialect.getReservedWords().length > 0 );
   }
 
   @Test
   public void testSupportsBitmapIndex() {
-    Assert.assertFalse( dialect.supportsBitmapIndex() );
+    assertFalse( dialect.supportsBitmapIndex() );
   }
 
   @Test
   public void testGetTruncateTableStatement() {
     String tableName = "table1";
-    Assert.assertEquals( dialect.getTruncateTableStatement( tableName ), "TRUNCATE TABLE " + tableName );
+    assertEquals( dialect.getTruncateTableStatement( tableName ), "TRUNCATE TABLE " + tableName );
   }
 
   @Test
   public void testSupportsSynonyms() {
-    Assert.assertFalse( dialect.supportsSynonyms() );
+    assertFalse( dialect.supportsSynonyms() );
   }
 
   @Test
   public void testSupportsViews() {
-    Assert.assertTrue( dialect.supportsViews() );
+    assertTrue( dialect.supportsViews() );
   }
 
   @Test
   public void testSupportsTransactions() {
-    Assert.assertFalse( dialect.supportsTransactions() );
+    assertFalse( dialect.supportsTransactions() );
   }
 
   @Test
   public void testGetExtraOptionIndicator() {
-    Assert.assertEquals( dialect.getExtraOptionIndicator(), "?" );
+    assertEquals( dialect.getExtraOptionIndicator(), "?" );
   }
 
   @Test
   public void testGetExtraOptionSeparator() {
-    Assert.assertEquals( dialect.getExtraOptionSeparator(), "&" );
+    assertEquals( dialect.getExtraOptionSeparator(), "&" );
   }
 
   @Test
   public void testNeedsToLockAllTables() {
-    Assert.assertTrue( dialect.needsToLockAllTables() );
+    assertTrue( dialect.needsToLockAllTables() );
   }
 
   @Test
   public void testSupportsBooleanDataType() {
-    Assert.assertFalse( dialect.supportsBooleanDataType() );
+    assertFalse( dialect.supportsBooleanDataType() );
   }
 
   @Test
   public void testGetSQLUnlockTables() {
-    Assert.assertEquals( dialect.getSQLUnlockTables( null ), "UNLOCK TABLES" );
+    assertEquals( dialect.getSQLUnlockTables( null ), "UNLOCK TABLES" );
   }
 
   @Test
   public void testGetEndQuote() {
-    Assert.assertEquals( dialect.getEndQuote(), "`" );
+    assertEquals( dialect.getEndQuote(), "`" );
   }
 
   @Test
   public void testGetStartQuote() {
-    Assert.assertEquals( dialect.getStartQuote(), "`" );
+    assertEquals( dialect.getStartQuote(), "`" );
   }
 }

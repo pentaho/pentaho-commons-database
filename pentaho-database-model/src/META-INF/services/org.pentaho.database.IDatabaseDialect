@@ -3,6 +3,7 @@ org.pentaho.database.dialect.GenericDatabaseDialect
 org.pentaho.database.dialect.H2DatabaseDialect
 org.pentaho.database.dialect.HypersonicDatabaseDialect
 org.pentaho.database.dialect.InformixDatabaseDialect
+org.pentaho.database.dialect.MariaDBDatabaseDialect
 org.pentaho.database.dialect.MSSQLServerDatabaseDialect
 org.pentaho.database.dialect.MSSQLServerNativeDatabaseDialect
 org.pentaho.database.dialect.MonetDatabaseDialect
