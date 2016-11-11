@@ -29,14 +29,12 @@ import com.google.gwt.user.client.Command;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 import java.util.TreeMap;
-
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.DatabaseConnectionPoolParameter;
@@ -585,6 +583,7 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   @Bindable
+  @SuppressWarnings( "unused" ) // Bound via XUL
   public void onOK() {
     final IDatabaseConnection database = createDatabaseConnection();
     getInfo( database );
@@ -596,8 +595,17 @@ public class DataHandler extends AbstractXulEventHandler {
       return;
     }
 
-    boolean passed = checkPoolingParameters();
-    if ( !passed ) {
+    if ( isBlank( database.getDatabaseName() ) ) {
+      if ( !"KettleThin".equals( database.getDatabaseType().getShortName() ) ) {
+        showMessage(
+            messages.getString( "DatabaseDialog.ErrorMissingDatabaseName.title" ), //$NON-NLS-1$
+            messages.getString( "DatabaseDialog.ErrorMissingDatabaseName.description" ), false ); //$NON-NLS-1$
+      }
+
+      return;
+    }
+
+    if ( !checkPoolingParameters() ) {
       return;
     }
 

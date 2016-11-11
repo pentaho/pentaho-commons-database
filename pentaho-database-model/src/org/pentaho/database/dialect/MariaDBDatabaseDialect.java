@@ -40,7 +40,7 @@ public class MariaDBDatabaseDialect extends MySQLDatabaseDialect {
   }
 
   public String getNativeJdbcPre() {
-    return "jdbc:mysql://";
+    return "jdbc:mariadb://";
   }
 
   @Override

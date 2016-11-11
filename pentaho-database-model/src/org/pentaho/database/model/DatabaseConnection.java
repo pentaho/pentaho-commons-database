@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -240,7 +239,8 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
    */
   public String getDatabaseName() {
     if ( getDatabaseType() != null
-      && ( databaseName == null || databaseName.trim().length() == 0 ) ) {
+        && ( databaseName == null || databaseName.trim().length() == 0 ) && !"KettleThin"
+        .equals( getDatabaseType().getShortName() ) ) {
       return getDatabaseType().getDefaultDatabaseName();
     } else {
       return databaseName;
