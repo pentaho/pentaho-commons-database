@@ -600,8 +600,9 @@ public class DataHandler extends AbstractXulEventHandler {
         showMessage(
             messages.getString( "DatabaseDialog.ErrorMissingDatabaseName.title" ), //$NON-NLS-1$
             messages.getString( "DatabaseDialog.ErrorMissingDatabaseName.description" ), false ); //$NON-NLS-1$
-        return;
       }
+
+      return;
     }
 
     if ( !checkPoolingParameters() ) {
@@ -1567,8 +1568,7 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     if ( webAppName != null ) {
-
-      if ( databaseConnection != null && databaseConnection.getDatabaseName() != null ) {
+      if ( databaseConnection != null && databaseConnection.getDatabaseName() != null && !databaseConnection.getDatabaseName().isEmpty() ) {
         webAppName.setValue( databaseConnection.getDatabaseName() );
       } else {
         webAppName.setValue( "pentaho" );
