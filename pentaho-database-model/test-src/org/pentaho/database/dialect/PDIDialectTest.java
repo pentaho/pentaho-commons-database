@@ -29,6 +29,7 @@ import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -48,23 +49,23 @@ public class PDIDialectTest {
   @Before
   public void setUp() {
     when( connection.getAccessType() ).thenReturn( DatabaseAccessType.NATIVE );
-    when( connection.getDatabasePort() ).thenReturn( "9080" );
+    when( connection.getDatabasePort() ).thenReturn( "8080" );
     when( connection.getHostname() ).thenReturn( "localhost" );
   }
 
   @Test
   public void testGetURL() throws Exception {
-    when( connection.getDatabaseName() ).thenReturn( "pentaho-di" );
-    assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:9080/pentaho-di/kettle" ) );
+    when( connection.getDatabaseName() ).thenReturn( "pentaho" );
+    assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:8080/pentaho/kettle" ) );
     Map attributes = new HashMap();
-    attributes.put( "KettleThin.webappname", "pentaho-di" );
+    attributes.put( "KettleThin.webappname", "pentaho" );
     when( connection.getAttributes() ).thenReturn( attributes );
-    assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:9080/pentaho-di/kettle" ) );
+    assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:8080/pentaho/kettle" ) );
   }
 
   @Test
   public void testGetDatabaseName() throws Exception {
-    assertThat( dialect.getDatabaseType().getDefaultDatabaseName(), equalTo( "Data Services" ) );
+    assertThat( dialect.getDatabaseType().getDefaultDatabaseName(), equalTo( "pentaho" ) );
   }
 
   @Test
@@ -100,5 +101,10 @@ public class PDIDialectTest {
   @Test
   public void testSupportsOptionsInURL() {
     Assert.assertTrue( dialect.supportsOptionsInURL() );
+  }
+
+  @Test
+  public void testGetDefaultPort() throws Exception {
+    assertEquals( 8080, dialect.getDatabaseType().getDefaultDatabasePort() );
   }
 }
