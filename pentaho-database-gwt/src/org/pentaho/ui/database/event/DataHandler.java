@@ -44,6 +44,7 @@ import org.pentaho.database.model.IDatabaseType;
 import org.pentaho.database.model.PartitionDatabaseMeta;
 import org.pentaho.database.util.DatabaseTypeHelper;
 import org.pentaho.gwt.widgets.client.utils.NameUtils;
+import org.pentaho.gwt.widgets.client.utils.string.StringUtils;
 import org.pentaho.ui.database.event.ILaunch.Status;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
@@ -81,6 +82,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
   // Kettle thin related
   private static final String EXTRA_OPTION_WEB_APPLICATION_NAME = "KettleThin.webappname";
+  private static final String DEFAULT_WEB_APPLICATION_NAME = "pentaho";
 
   protected DatabaseDialogListener listener;
 
@@ -1567,11 +1569,10 @@ public class DataHandler extends AbstractXulEventHandler {
     }
 
     if ( webAppName != null ) {
-
-      if ( databaseConnection != null && databaseConnection.getDatabaseName() != null && !databaseConnection.getDatabaseName().isEmpty() ) {
-        webAppName.setValue( databaseConnection.getDatabaseName() );
+      if ( databaseConnection == null || StringUtils.isEmpty( databaseConnection.getName() ) ) {
+        webAppName.setValue( DEFAULT_WEB_APPLICATION_NAME );
       } else {
-        webAppName.setValue( "pentaho" );
+        webAppName.setValue( meta.getDatabaseName() );
       }
     }
   }
