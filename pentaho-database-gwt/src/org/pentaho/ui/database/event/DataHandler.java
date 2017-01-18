@@ -1131,9 +1131,26 @@ public class DataHandler extends AbstractXulEventHandler {
         }
         item.getRow().addCellText( 2, defaultValue );
         item.getRow().addCellText( 0, "false" );
+        if ( "validationQuery".equals( parameterName ) ) {
+          item.getRow().setParentTreeItem( item );
+          item.getRow().getCell( 0 ).setTreeRowParent( findRow( "testOnBorrow" ) );
+        }
       }
     }
 
+  }
+
+  private XulTreeRow findRow( String _parameterName ) {
+    for ( int i = 0; i < poolParameterTree.getRootChildren().getItemCount(); i++ ) {
+      XulTreeItem item = poolParameterTree.getRootChildren().getItem( i );
+      String parameterName = item.getRow().getCell( 1 ).getLabel();
+      if ( _parameterName.equals( parameterName ) ) {
+        item.getRow().setParentTreeItem( item );
+        XulTree vtree = item.getTree();
+        return item.getRow();
+      }
+    }
+    return null;
   }
 
   private void setDefaultPoolParameters() {
