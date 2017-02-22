@@ -3,26 +3,7 @@
   <!-- Import the subfloor-gwt.xml file which contains all the default tasks -->
   <import file="build-res/subfloor.xml" />
 
-  <!-- override the subfloor assemble target to do special plug-in assembly -->
-  <!-- TODO: Standalone DatabaseDialog project with JSON calls 
-  <target name="assemble" depends="gwt-compile,assemble.init">
-    <copy todir="${approot.stage.dir}/lib">
-      <fileset file="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" />
-    </copy>
-    <copy todir="${approot.stage.dir}">
-      <fileset dir="${package.resdir}" />
-    </copy>
-    
-    <copy todir="${approot.stage.dir}/resources/gwt">
-      <fileset dir="${gwt.output.dir}/org.pentaho.ui.database.DatabaseDialog">
-        <exclude name=".gwt-tmp/" />
-        <exclude name="*-aux/" />
-        <exclude name="WEB-INF/" />
-      </fileset>
-    </copy>
-  </target>
-  -->
-    <!-- Setup the compile classpath -->
+  <!-- Setup the compile classpath -->
   <path id="classpath">
     <fileset dir="${codegenlib.dir}">
       <include name="*.jar" />
@@ -31,12 +12,6 @@
       <include name="*.jar" />
     </fileset>
     <fileset dir="${lib.dir}">
-      <include name="*.jar" />
-    </fileset>
-    <fileset dir="lib-swt">
-      <include name="*.jar" />
-    </fileset>
-    <fileset dir="lib-swt/linux/x86">
       <include name="*.jar" />
     </fileset>
   </path>
@@ -54,12 +29,6 @@
     </fileset>
     <dirset dir="${classes.dir}" />
     <dirset dir="${testclasses.dir}" />
-    <fileset dir="lib-swt">
-      <include name="*.jar" />
-    </fileset>
-    <fileset dir="lib-swt/linux/x86">
-      <include name="swt.jar" />
-    </fileset>
   </path>
   
   <target name="resolve"
