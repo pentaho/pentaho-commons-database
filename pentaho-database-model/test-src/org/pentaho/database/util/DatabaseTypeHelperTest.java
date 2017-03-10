@@ -34,14 +34,25 @@ public class DatabaseTypeHelperTest {
 
   @Test
   public void getDatabaseTypeByShortName() {
-    MSSQLServerNativeDatabaseDialect mssqlNative  = Mockito.spy( new MSSQLServerNativeDatabaseDialect() );
+    MSSQLServerNativeDatabaseDialect mssqlNATIVE  = Mockito.spy( new MSSQLServerNativeDatabaseDialect() );
     Mockito.doReturn( new DatabaseType( "MS SQL Server (Native)", "MSSQLNATIVE",
         DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 1433,
-        "http://msdn.microsoft.com/en-us/library/ms378428.aspx" ) ).when( mssqlNative ).getDatabaseType();
+        "http://msdn.microsoft.com/en-us/library/ms378428.aspx" ) ).when( mssqlNATIVE ).getDatabaseType();
     List<IDatabaseType> databaseTypes = new ArrayList<IDatabaseType>();
     databaseTypes.add( ( new MSSQLServerDatabaseDialect() ).getDatabaseType() );
-    databaseTypes.add( mssqlNative.getDatabaseType() );
+    databaseTypes.add( mssqlNATIVE.getDatabaseType() );
     DatabaseTypeHelper dbt = new DatabaseTypeHelper( databaseTypes );
+    Assert.assertNotNull( "MSSQLNATIVE", dbt.getDatabaseTypeByShortName( "MSSQLNATIVE" ) );
+    Assert.assertNotNull( "MSSQLNATIVE", dbt.getDatabaseTypeByShortName( "MSSQLNative" ) );
+
+    MSSQLServerNativeDatabaseDialect mssqlNative  = Mockito.spy( new MSSQLServerNativeDatabaseDialect() );
+    Mockito.doReturn( new DatabaseType( "MS SQL Server (Native)", "MSSQLNative",
+        DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 1433,
+        "http://msdn.microsoft.com/en-us/library/ms378428.aspx" ) ).when( mssqlNative ).getDatabaseType();
+    databaseTypes = new ArrayList<IDatabaseType>();
+    databaseTypes.add( ( new MSSQLServerDatabaseDialect() ).getDatabaseType() );
+    databaseTypes.add( mssqlNative.getDatabaseType() );
+    dbt = new DatabaseTypeHelper( databaseTypes );
     Assert.assertNotNull( "MSSQLNative", dbt.getDatabaseTypeByShortName( "MSSQLNATIVE" ) );
     Assert.assertNotNull( "MSSQLNative", dbt.getDatabaseTypeByShortName( "MSSQLNative" ) );
   }

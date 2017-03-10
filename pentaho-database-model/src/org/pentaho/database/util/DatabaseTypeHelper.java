@@ -42,7 +42,7 @@ public class DatabaseTypeHelper {
     for ( IDatabaseType dbtype : databaseTypes ) {
       dbTypeNames.add( dbtype.getName() );
       dbTypeByName.put( dbtype.getName(), dbtype );
-      dbTypeByShortName.put( dbtype.getShortName(), dbtype );
+      dbTypeByShortName.put( dbtype.getShortName().toUpperCase(), dbtype );
     }
     databaseTypeNames = dbTypeNames; // );
     databaseTypeByName = dbTypeByName; // );
