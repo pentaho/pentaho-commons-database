@@ -12,7 +12,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 * See the GNU Lesser General Public License for more details.
 *
-* Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+* Copyright (c) 2002-2017 Pentaho Corporation..  All rights reserved.
 */
 
 package org.pentaho.database.service;
@@ -105,7 +105,7 @@ import java.util.Map;
     DatabaseDialectService dialectService = new DatabaseDialectService( false );
     IDatabaseType kettleThinType = null;
     for ( IDatabaseType dbType : dialectService.getDatabaseTypes() ) {
-      if ( dbType.getShortName().equals( "KettleThin" ) ) {
+      if ( dbType.getShortName().equals( "KettleThin" ) || dbType.getShortName().equals( "KETTLETHIN" ) ) {
         kettleThinType = dbType;
         break;
       }
