@@ -33,12 +33,10 @@
     <fileset dir="${lib.dir}">
       <include name="*.jar" />
     </fileset>
-    <fileset dir="lib-swt">
+    <fileset dir="war/WEB-INF/lib">
       <include name="*.jar" />
     </fileset>
-    <fileset dir="lib-swt/linux/x86">
-      <include name="*.jar" />
-    </fileset>
+
   </path>
 
   <!-- Setup the classpath used for testing -->
@@ -54,12 +52,10 @@
     </fileset>
     <dirset dir="${classes.dir}" />
     <dirset dir="${testclasses.dir}" />
-    <fileset dir="lib-swt">
+    <fileset dir="war/WEB-INF/lib">
       <include name="*.jar" />
     </fileset>
-    <fileset dir="lib-swt/linux/x86">
-      <include name="swt.jar" />
-    </fileset>
+
   </path>
   
   <target name="resolve"
