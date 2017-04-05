@@ -35,7 +35,7 @@
         
         <dependency org="commons-pool" name="commons-pool" rev="1.5.7" transitive="false"/>
         <dependency org="commons-dbcp" name="commons-dbcp" rev="1.2.1" transitive="false"/>
-        <dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.0-BETA" transitive="false"/>
+        <dependency org="commons-beanutils" name="commons-beanutils" rev="1.9.3" transitive="false"/>
         <dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false"/>
         <dependency org="commons-lang" name="commons-lang" rev="2.6" transitive="false"/>
         <dependency org="commons-logging" name="commons-logging" rev="1.1.1" transitive="false"/>
