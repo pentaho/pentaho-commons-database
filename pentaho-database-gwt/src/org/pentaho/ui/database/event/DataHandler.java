@@ -597,7 +597,7 @@ public class DataHandler extends AbstractXulEventHandler {
       return;
     }
 
-    if ( isBlank( database.getDatabaseName() ) ) {
+    if ( isBlank( database.getDatabaseName() ) && databaseNameBox != null ) {
       if ( !"KettleThin".equals( database.getDatabaseType().getShortName() ) ) {
         showMessage(
             messages.getString( "DatabaseDialog.ErrorMissingDatabaseName.title" ), //$NON-NLS-1$
