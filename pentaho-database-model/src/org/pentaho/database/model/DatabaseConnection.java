@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2017 Pentaho Corporation..  All rights reserved.
  */
 
 package org.pentaho.database.model;
@@ -652,7 +652,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   @Override
   public String toString() {
     return "DatabaseConnection [id=" + id + ", name=" + name + ", databaseName=" + databaseName + ", databasePort="
-        + databasePort + ", hostname=" + hostname + ", username=" + username + ", password=" + password
+        + databasePort + ", hostname=" + hostname + ", username=" + username + ", password=*****"
         + ", dataTablespace=" + dataTablespace + ", indexTablespace=" + indexTablespace + ", streamingResults="
         + streamingResults + ", quoteAllFields=" + quoteAllFields + ", changed=" + changed
         + ", usingDoubleDecimalAsSchemaTableSeparator=" + usingDoubleDecimalAsSchemaTableSeparator
