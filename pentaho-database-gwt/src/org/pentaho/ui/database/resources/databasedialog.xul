@@ -119,7 +119,7 @@
                      Tested and couldn't find any problems with having 100% width.
                      -->
 				
-				<tree id="options-parameter-tree" flex="1" width="100%" editable="true" onedit="dataHandler.editOptions()" seltype="cell">
+				<tree id="puc_options-parameter-tree" flex="1" width="100%" editable="true" onedit="dataHandler.editOptions()" seltype="cell">
 
 					<treecols id="option-column-list">
 					  	<treecol id="parameter-col" label="${DatabaseDialog.column.Parameter}" flex="1" editable="true" type="text"/>  

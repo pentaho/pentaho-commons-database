@@ -1631,7 +1631,7 @@ public class DataHandler extends AbstractXulEventHandler {
     maxPoolSizeBox = (XulTextbox) document.getElementById( "max-pool-size-text" ); //$NON-NLS-1$
     poolParameterTree = (XulTree) document.getElementById( "pool-parameter-tree" ); //$NON-NLS-1$
     clusterParameterTree = (XulTree) document.getElementById( "cluster-parameter-tree" ); //$NON-NLS-1$
-    optionsParameterTree = (XulTree) document.getElementById( "options-parameter-tree" ); //$NON-NLS-1$
+    optionsParameterTree = (XulTree) document.getElementById( "puc_options-parameter-tree" ); //$NON-NLS-1$
     poolingDescription = (XulTextbox) document.getElementById( "pooling-description" ); //$NON-NLS-1$ 
     poolingParameterDescriptionLabel =
         (XulLabel) document.getElementById( "pool-parameter-description-label" ); //$NON-NLS-1$
