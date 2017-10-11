@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2017 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.ui.database.event;
@@ -156,7 +156,7 @@ public class DataHandler extends AbstractXulEventHandler {
   // MySQL specific
   private XulCheckbox resultStreamingCursorCheck;
 
-  // Pentaho data services specific
+  // Hitachi Vantara data services specific
   private XulTextbox webAppName;
 
   // ==== Options Panel ==== //
