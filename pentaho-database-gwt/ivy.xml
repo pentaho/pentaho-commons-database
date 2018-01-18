@@ -20,9 +20,12 @@
     
     <dependencies defaultconf="default->default">
  
-        <dependency org="${pentaho.group}" name="pentaho-xul-core" rev="${pentaho-xul.version}" transitive="true" changing="true" />
-        <dependency org="${pentaho.group}" name="pentaho-xul-swing" rev="${pentaho-xul.version}" transitive="true" changing="true" />
-        <dependency org="${pentaho.group}" name="pentaho-xul-swt" rev="${pentaho-xul.version}" transitive="true" changing="true" />
+        <dependency org="org.pentaho" name="commons-xul-core" rev="${commons-xul.version}" transitive="true" changing="true" />
+        <dependency org="org.pentaho" name="commons-xul-swing" rev="${commons-xul.version}" transitive="true" changing="true" />
+        <dependency org="org.pentaho" name="commons-xul-swt" rev="${commons-xul.version}" transitive="false" changing="true" />
+
+        <!-- use to come from swt above, being platform specific this should never come transitively anyway -->
+        <dependency org="org.eclipse.swt" name="org.eclipse.swt.gtk.linux.x86_64" rev="4.6" transitive="false" changing="true" />
     
     	<dependency org="org.eclipse" name="jface" rev="3.3.0-I20070606-0010" transitive="false" />
     	<dependency org="org.eclipse.core" name="runtime" rev="3.3.100-v20070530" transitive="false" />
@@ -50,23 +53,23 @@
         <dependency org="pentaho" name="pentaho-database-model"  rev="${pentaho-database-model.version}"  transitive="false" changing="true"/>
         <dependency org="org.pentaho" name="commons-gwt-widgets" rev="${commons-gwt.version}"
                     conf="codegen->default"
-                    changing="true">
+                    changing="true" transitive="false">
             <artifact name="commons-gwt-widgets"/>
             <artifact name="commons-gwt-widgets" type="source" ext="jar" m:classifier="sources"/>
         </dependency>
 
-        <dependency org="pentaho" name="pentaho-xul-core" rev="${pentaho-xul.version}"
+        <dependency org="org.pentaho" name="commons-xul-core" rev="${commons-xul.version}"
                     conf="codegen->default"
                     changing="true">
-            <artifact name="pentaho-xul-core"/>
-            <artifact name="pentaho-xul-core" type="source" ext="jar" m:classifier="sources"/>
+            <artifact name="commons-xul-core"/>
+            <artifact name="commons-xul-core" type="source" ext="jar" m:classifier="sources"/>
         </dependency>
 
-        <dependency org="pentaho" name="pentaho-xul-gwt" rev="${pentaho-xul.version}"
+        <dependency org="org.pentaho" name="commons-xul-gwt-impl" rev="${commons-xul.version}"
                     conf="codegen->default"
                     changing="true">
-            <artifact name="pentaho-xul-gwt"/>
-            <artifact name="pentaho-xul-gwt" type="source" ext="jar" m:classifier="sources"/>
+            <artifact name="commons-xul-gwt-impl"/>
+            <artifact name="commons-xul-gwt-impl" type="source" ext="jar" m:classifier="sources"/>
         </dependency>
         
         <!--  Testing dependencies -->
