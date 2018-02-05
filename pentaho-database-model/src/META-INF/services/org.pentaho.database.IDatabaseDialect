@@ -1,5 +1,6 @@
 org.pentaho.database.dialect.DB2DatabaseDialect
 org.pentaho.database.dialect.GenericDatabaseDialect
+org.pentaho.database.dialect.GoogleBigQueryDatabaseDialect
 org.pentaho.database.dialect.H2DatabaseDialect
 org.pentaho.database.dialect.HypersonicDatabaseDialect
 org.pentaho.database.dialect.InformixDatabaseDialect
