@@ -1,6 +1,0 @@
-<project name="pentaho-database-gwt" basedir="." default="default" xmlns:ivy="antlib:org.apache.ivy.ant">
-
-  <import file="build.xml" />
-
-	<target name="dev-publish-local-full" depends="clean-all, resolve, publish-local"></target>
-</project>
