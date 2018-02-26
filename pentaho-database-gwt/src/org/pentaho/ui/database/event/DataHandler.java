@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2017 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2002-2018 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.ui.database.event;
@@ -434,7 +434,7 @@ public class DataHandler extends AbstractXulEventHandler {
     GwtLayoutHandler.deferUpdateUI( this.optionsParameterTree, new Command() {
       @Override
       public void execute() {
-        int rowsToAdd = 5 - values.length;
+        int rowsToAdd = 15 - values.length;
         while ( rowsToAdd-- > 0 ) {
           XulTreeRow row = DataHandler.this.optionsParameterTree.getRootChildren().addNewRow();
           row.addCellText( 0, "" ); //$NON-NLS-1$
@@ -1273,7 +1273,7 @@ public class DataHandler extends AbstractXulEventHandler {
 
         }
         // Add 5 blank rows if none are already there, otherwise, just add one.
-        int numToAdd = 5;
+        int numToAdd = 15;
         if ( extraOptions != null && extraOptions.keySet().size() > 0 ) {
           numToAdd = 1;
         }
