@@ -63,7 +63,7 @@
 						</listbox>
             <hbox>
               <label flex="1" id="context_help" value="${DatabaseDialog.label.AddingDatabases}" onclick="dataHandler.showContextHelp()"/>
-              <image src="help_link.png" height="16" width="16" onclick="dataHandler.showContextHelp()"/>
+              <image src="images/spacer.gif" height="16" width="16" onclick="dataHandler.showContextHelp()" pen:classname="helpIcon" />
             </hbox>
 						<label id="access-type-label" value="${DatabaseDialog.label.AccessMethod}" />
 						<listbox id="access-type-list" flex="3" rows="4" onselect="fragmentHandler.refreshOptions()">
