@@ -1676,12 +1676,14 @@ public class DataHandler extends AbstractXulEventHandler {
 
   @Bindable
   public void showContextHelp() {
-    jsni_showContextHelp();
+    final String baseDocUrl = messages.getString( "DataHandler.BaseDocUrl" );
+    jsni_showContextHelp( baseDocUrl );
   }
 
-  private native void jsni_showContextHelp()/*-{
-                                            $wnd.open("https://help.pentaho.com/Documentation/8.1/Setup/Configuration/Define_Data_Connections","webHelp","width=1200,height=600,location=no,status=no,toolbar=no");
-                                            }-*/;
+  private native void jsni_showContextHelp( final String baseDocUrl )/*-{
+   $wnd.open(baseDocUrl + "Setup/Configuration/Define_Data_Connections",
+       "webHelp","width=1200,height=600,location=no,status=no,toolbar=no");
+  }-*/;
 
   public static String getBaseURL() {
     String moduleUrl = GWT.getModuleBaseURL();
