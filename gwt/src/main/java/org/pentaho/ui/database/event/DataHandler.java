@@ -1680,7 +1680,7 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   private native void jsni_showContextHelp()/*-{
-                                            $wnd.open($wnd.CONTEXT_PATH+"webHelp/Viewer.jsp?topic=webHelp/concept_adding_a_jdbc_driver.html","webHelp","width=475,height=600,location=no,status=no,toolbar=no");
+                                            $wnd.open("https://help.pentaho.com/Documentation/8.1/Setup/Configuration/Define_Data_Connections","webHelp","width=1200,height=600,location=no,status=no,toolbar=no");
                                             }-*/;
 
   public static String getBaseURL() {
