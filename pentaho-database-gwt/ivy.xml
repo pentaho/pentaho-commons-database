@@ -28,7 +28,7 @@
     	<dependency org="org.eclipse.core" name="runtime" rev="3.3.100-v20070530" transitive="false" />
     	<dependency org="org.eclipse.equinox" name="common" rev="3.3.0-v20070426" transitive="false" />
     	<dependency org="org.eclipse.core" name="commands" rev="3.3.0-I20070605-0010" transitive="false" />
-        <dependency org="jaxen" name="jaxen" rev="1.1.1" transitive="false" />
+        <dependency org="jaxen" name="jaxen" rev="1.1.6" transitive="false" />
         <dependency org="log4j" name="log4j" rev="1.2.16" transitive="false"/>
         <dependency org="pentaho-kettle" name="kettle-core" rev="${dependency.kettle.revision}" transitive="false"/>
         <dependency org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" transitive="false"/>
@@ -36,7 +36,7 @@
         <dependency org="commons-pool" name="commons-pool" rev="1.5.7" transitive="false"/>
         <dependency org="commons-dbcp" name="commons-dbcp" rev="1.2.1" transitive="false"/>
         <dependency org="commons-beanutils" name="commons-beanutils" rev="1.9.3" transitive="false"/>
-        <dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false"/>
+        <dependency org="org.dom4j" name="dom4j" rev="2.1.1" transitive="false"/>
         <dependency org="commons-lang" name="commons-lang" rev="2.6" transitive="false"/>
         <dependency org="commons-logging" name="commons-logging" rev="1.1.1" transitive="false"/>
         
