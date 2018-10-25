@@ -10,13 +10,13 @@
   <parent>
     <groupId>org.pentaho</groupId>
     <artifactId>commons-database</artifactId>
-    <version>8.1.0.0-SNAPSHOT</version>
+    <version>8.1.0.5-646</version>
   </parent>
 
   <properties>
-    <commons-xul.version>${project.version}</commons-xul.version>
-    <commons-gwt.version>${project.version}</commons-gwt.version>
-    <pdi.version>${project.version}</pdi.version>
+    <commons-xul.version>8.1.0.5-646</commons-xul.version>
+    <commons-gwt.version>8.1.0.5-646</commons-gwt.version>
+    <pdi.version>8.1.0.5-646</pdi.version>
     <commons-vfs2.version>2.2</commons-vfs2.version>
   </properties>
 
