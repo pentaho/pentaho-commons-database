@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
+ * Copyright (c) 2002-2019 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.database.util;
@@ -68,6 +68,7 @@ public class DatabaseUtil {
     meta.setPassword( conn.getPassword() );
 
     meta.setServername( conn.getInformixServername() );
+    meta.setWarehouse( conn.getWarehouse() );
     meta.setDataTablespace( conn.getDataTablespace() );
     meta.setIndexTablespace( conn.getIndexTablespace() );
 

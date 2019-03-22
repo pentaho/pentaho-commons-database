@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
+ * Copyright (c) 2002-2019 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.database.model;
@@ -68,6 +68,8 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   // Informix server name
   String informixServername;
+
+  String warehouse;
 
   boolean forcingIdentifiersToLowerCase;
 
@@ -411,6 +413,14 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
     return informixServername;
   }
 
+  @Override public void setWarehouse( String warehouse ) {
+    this.warehouse = warehouse;
+  }
+
+  @Override public String getWarehouse() {
+    return this.warehouse;
+  }
+
   /*
    * (non-Javadoc)
    *
@@ -662,7 +672,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
         + accessTypeValue + ", accessType=" + accessType + ", databaseType=" + databaseType + ", extraOptions="
         + extraOptions + ", attributes=" + attributes + ", connectionPoolingProperties=" + connectionPoolingProperties
         + ", partitioningInformation=" + partitioningInformation + ", initialPoolSize=" + initialPoolSize
-        + ", maxPoolSize=" + maxPoolSize + ", partitioned=" + partitioned + "]";
+        + ", maxPoolSize=" + maxPoolSize + ", partitioned=" + partitioned + ", warehouse=" + warehouse + "]";
   }
 
 }

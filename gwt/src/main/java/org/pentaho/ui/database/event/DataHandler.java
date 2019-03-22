@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2018 Hitachi Vantara..  All rights reserved.
+ * Copyright (c) 2002-2019 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.ui.database.event;
@@ -135,6 +135,8 @@ public class DataHandler extends AbstractXulEventHandler {
 
   // MS SQL Server specific
   private XulTextbox serverInstanceBox;
+
+  private XulTextbox warehouseBox;
 
   // Informix specific
   private XulTextbox serverNameBox;
@@ -1420,6 +1422,10 @@ public class DataHandler extends AbstractXulEventHandler {
     if ( from.getInformixServername() != null ) {
       to.setInformixServername( from.getInformixServername() );
     }
+
+    if ( from.getWarehouse() != null ) {
+      to.setWarehouse( from.getWarehouse() );
+    }
   }
 
   private void getConnectionSpecificInfo( IDatabaseConnection meta ) {
@@ -1499,6 +1505,11 @@ public class DataHandler extends AbstractXulEventHandler {
     // Server Name: (Informix)
     if ( serverNameBox != null ) {
       meta.setInformixServername( serverNameBox.getValue() );
+    }
+
+    // Warehouse
+    if ( warehouseBox != null ) {
+        meta.setWarehouse( warehouseBox.getValue() );
     }
 
     if ( webAppName != null ) {
@@ -1585,6 +1596,10 @@ public class DataHandler extends AbstractXulEventHandler {
       serverNameBox.setValue( meta.getInformixServername() );
     }
 
+    if ( warehouseBox != null ) {
+        warehouseBox.setValue( meta.getWarehouse() );
+    }
+
     if ( webAppName != null ) {
       if ( databaseConnection == null || StringUtils.isEmpty( databaseConnection.getName() ) ) {
         webAppName.setValue( DEFAULT_WEB_APPLICATION_NAME );
@@ -1641,6 +1656,7 @@ public class DataHandler extends AbstractXulEventHandler {
     upperCaseIdentifiersCheck = (XulCheckbox) document.getElementById( "force-upper-case-check" ); //$NON-NLS-1$;
     sqlBox = (XulTextbox) document.getElementById( "sql-text" ); //$NON-NLS-1$;
     webAppName = (XulTextbox) document.getElementById( "web-application-name-text" );
+    warehouseBox = (XulTextbox) document.getElementById( "warehouse-text" );
   }
 
   private void showMessage( String title, String message, boolean scroll ) {

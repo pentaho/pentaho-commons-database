@@ -12,12 +12,10 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 * See the GNU Lesser General Public License for more details.
 *
-* Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
+* Copyright (c) 2002-2019 Hitachi Vantara..  All rights reserved.
 */
 
 package org.pentaho.ui.database.event;
-
-//import java.io.InputStream;
 
 import com.google.gwt.core.client.GWT;
 import org.pentaho.database.model.DatabaseAccessType;
@@ -82,6 +80,7 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
     supportedFragments.add( "oracle_odbc.xul" );
     supportedFragments.add( "kettlethin_native.xul" );
     supportedFragments.add( "sapr3_plugin.xul" );
+    supportedFragments.add( "snowflake_native.xul");
   }
 
   public void setDisableRefresh( boolean disableRefresh ) {
