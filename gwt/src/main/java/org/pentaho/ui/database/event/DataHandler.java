@@ -1700,7 +1700,7 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   private native void jsni_showContextHelp( final String baseDocUrl )/*-{
-   $wnd.open(baseDocUrl + "Setup/Configuration/Define_Data_Connections",
+   $wnd.open(baseDocUrl + "Setup/Define_data_connections",
        "webHelp","width=1200,height=600,location=no,status=no,toolbar=no");
   }-*/;
 
