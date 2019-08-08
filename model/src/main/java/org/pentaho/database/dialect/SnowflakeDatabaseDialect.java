@@ -40,21 +40,25 @@ public class SnowflakeDatabaseDialect extends AbstractDatabaseDialect {
     }
   }
 
+  @Override public String getExtraOptionSeparator() {
+    return "&";
+  }
+
   @Override
-  public String getAddColumnStatement( String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk,
+  public String getAddColumnStatement( String tablename, IValueMeta v, String tk, boolean useAutoinc, String pk,
                                        boolean semicolon ) {
     return null;
   }
 
   @Override
-  public String getModifyColumnStatement( String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk,
+  public String getModifyColumnStatement( String tablename, IValueMeta v, String tk, boolean useAutoinc, String pk,
                                           boolean semicolon ) {
     return null;
   }
 
   @Override
-  public String getFieldDefinition( IValueMeta v, String tk, String pk, boolean use_autoinc, boolean add_fieldname,
-                                    boolean add_cr ) {
+  public String getFieldDefinition( IValueMeta v, String tk, String pk, boolean useAutoinc, boolean addFieldname,
+                                    boolean addCr ) {
     return null;
   }
 
