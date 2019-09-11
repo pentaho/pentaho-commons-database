@@ -53,6 +53,7 @@ import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulCheckbox;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulListitem;
+import org.pentaho.ui.xul.components.XulMenuList;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
@@ -63,8 +64,15 @@ import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.containers.XulTreeItem;
 import org.pentaho.ui.xul.containers.XulTreeRow;
 import org.pentaho.ui.xul.containers.XulWindow;
+import org.pentaho.ui.xul.gwt.tags.GwtVbox;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.stereotype.Bindable;
+
+import static org.pentaho.di.core.database.RedshiftDatabaseMeta.IAM_ACCESS_KEY_ID;
+import static org.pentaho.di.core.database.RedshiftDatabaseMeta.IAM_PROFILE_NAME;
+import static org.pentaho.di.core.database.RedshiftDatabaseMeta.IAM_SECRET_ACCESS_KEY;
+import static org.pentaho.di.core.database.RedshiftDatabaseMeta.IAM_SESSION_TOKEN;
+import static org.pentaho.di.core.database.RedshiftDatabaseMeta.JDBC_AUTH_METHOD;
 
 /**
  * Handles all manipulation of the DatabaseMeta, data retrieval from XUL DOM and rudimentary validation.
@@ -204,6 +212,12 @@ public class DataHandler extends AbstractXulEventHandler {
   private XulLabel poolingDescriptionLabel;
 
   protected XulTree poolParameterTree;
+
+  private XulMenuList jdbcAuthMethod;
+  private XulTextbox iamAccessKeyId;
+  private XulTextbox iamSecretKeyId;
+  private XulTextbox iamSessionToken;
+  private XulTextbox iamProfileName;
 
   protected IConnectionAutoBeanFactory connectionAutoBeanFactory;
 
@@ -1518,6 +1532,22 @@ public class DataHandler extends AbstractXulEventHandler {
     if ( webAppName != null ) {
       meta.setDatabaseName( webAppName.getValue() );
     }
+
+    if ( jdbcAuthMethod != null ) {
+      meta.getAttributes().put( JDBC_AUTH_METHOD, jdbcAuthMethod.getValue() );
+    }
+    if ( iamAccessKeyId != null ) {
+      meta.getAttributes().put( IAM_ACCESS_KEY_ID, iamAccessKeyId.getValue() );
+    }
+    if ( iamSecretKeyId != null ) {
+      meta.getAttributes().put( IAM_SECRET_ACCESS_KEY, iamSecretKeyId.getValue() );
+    }
+    if ( iamSessionToken != null ) {
+      meta.getAttributes().put( IAM_SESSION_TOKEN, iamSessionToken.getValue() );
+    }
+    if ( iamProfileName != null ) {
+      meta.getAttributes().put( IAM_PROFILE_NAME, iamProfileName.getValue() );
+    }
   }
 
   private void setConnectionSpecificInfo( IDatabaseConnection meta ) {
@@ -1610,6 +1640,52 @@ public class DataHandler extends AbstractXulEventHandler {
         webAppName.setValue( meta.getDatabaseName() );
       }
     }
+
+    if ( jdbcAuthMethod != null ) {
+      jdbcAuthMethod.setValue( meta.getAttributes().get( JDBC_AUTH_METHOD ) );
+      setAuthFieldsVisible();
+    }
+    if ( iamAccessKeyId != null ) {
+      iamAccessKeyId.setValue( meta.getAttributes().get( IAM_ACCESS_KEY_ID ) );
+    }
+    if ( iamSecretKeyId != null ) {
+      iamSecretKeyId.setValue( meta.getAttributes().get( IAM_SECRET_ACCESS_KEY ) );
+    }
+    if ( iamSessionToken != null ) {
+      iamSessionToken.setValue( meta.getAttributes().get( IAM_SESSION_TOKEN ) );
+    }
+    if ( iamProfileName != null ) {
+      iamProfileName.setValue( meta.getAttributes().get( IAM_PROFILE_NAME ) );
+    }
+  }
+
+  @SuppressWarnings ( "unused" )
+  public void setAuthFieldsVisible() {
+    jdbcAuthMethod = (XulMenuList) document.getElementById( "redshift-auth-method-list" );
+    GwtVbox standardControls = (GwtVbox) document.getElementById( "auth-standard-controls" );
+    GwtVbox iamControls = (GwtVbox) document.getElementById( "auth-iam-controls" );
+    GwtVbox profileControls = (GwtVbox) document.getElementById( "auth-profile-controls" );
+    int jdbcAuthMethodValue = jdbcAuthMethod.getSelectedIndex();
+    switch ( jdbcAuthMethodValue ) {
+      case 1:
+        //iam
+        standardControls.setVisible( false );
+        iamControls.setVisible( true );
+        profileControls.setVisible( false );
+        break;
+      case 2:
+        //profile
+        standardControls.setVisible( false );
+        iamControls.setVisible( false );
+        profileControls.setVisible( true );
+        break;
+      default:
+        //standard
+        standardControls.setVisible( true );
+        iamControls.setVisible( false );
+        profileControls.setVisible( false );
+        break;
+    }
   }
 
   protected void getControls() {
@@ -1660,6 +1736,11 @@ public class DataHandler extends AbstractXulEventHandler {
     sqlBox = (XulTextbox) document.getElementById( "sql-text" ); //$NON-NLS-1$;
     webAppName = (XulTextbox) document.getElementById( "web-application-name-text" );
     warehouseBox = (XulTextbox) document.getElementById( "warehouse-text" );
+    jdbcAuthMethod = (XulMenuList) document.getElementById( "redshift-auth-method-list" );
+    iamAccessKeyId = (XulTextbox) document.getElementById( "iam-access-key-id" );
+    iamSecretKeyId = (XulTextbox) document.getElementById( "iam-secret-access-key" );
+    iamSessionToken = (XulTextbox) document.getElementById( "iam-session-token" );
+    iamProfileName = (XulTextbox) document.getElementById( "iam-profile-name" );
   }
 
   private void showMessage( String title, String message, boolean scroll ) {

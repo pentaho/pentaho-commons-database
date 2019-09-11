@@ -81,6 +81,7 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
     supportedFragments.add( "kettlethin_native.xul" );
     supportedFragments.add( "sapr3_plugin.xul" );
     supportedFragments.add( "snowflakehv_native.xul" );
+    supportedFragments.add( "redshift_native.xul" );
   }
 
   public void setDisableRefresh( boolean disableRefresh ) {
@@ -267,5 +268,11 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
   @Override
   public boolean isRefreshDisabled() {
     return this.disableRefresh;
+  }
+
+  @Bindable
+  public void setAuthMethodVisibility() throws XulException {
+    DataHandler dataHandler = (DataHandler) xulDomContainer.getEventHandler( "dataHandler" );
+    dataHandler.setAuthFieldsVisible();
   }
 }
