@@ -3,7 +3,7 @@
             xmlns="http://www.pentaho.org/keymaster/gatekeeper/there.is.only.xul"
             xmlns:pen="http://www.pentaho.org/2008/xul">
     <caption label="${DatabaseDialog.USER_SETTINGS}"/>
-    <label id="server-host-name-label" value="Redshift Host" />
+    <label id="server-host-name-label" value="${DatabaseDialog.label.ServerHostname}" />
     <textbox pen:customclass="variabletextbox" id="server-host-name-text"  />
     <label id="database-name-label" value="${DatabaseDialog.label.DatabaseName}" />
     <textbox pen:customclass="variabletextbox" id="database-name-text"/>
