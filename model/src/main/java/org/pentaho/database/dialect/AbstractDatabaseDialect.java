@@ -545,6 +545,7 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
       String valueSeparator = getExtraOptionValueSeparator();
 
       Map<String, String> map = connection.getExtraOptions();
+      putOptionalOptions( connection, map );
       if ( map.size() > 0 ) {
         Iterator<String> iterator = map.keySet().iterator();
         boolean first = true;
@@ -577,6 +578,8 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
     }
     return url.toString();
   }
+
+  protected void putOptionalOptions( IDatabaseConnection connection, Map<String, String> map ) { }
 
   // public abstract String getSQLQueryColumnFields(String columnname, String tableName);
 
