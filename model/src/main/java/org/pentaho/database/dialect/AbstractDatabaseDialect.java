@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
+ * Copyright (c) 2002-2019 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.database.dialect;
@@ -46,7 +46,6 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
   /**
    * CR: operating systems specific Carriage Return
    */
-  // public static final String CR = System.getProperty("line.separator");
   public static final String CR = " ";
 
   /*
@@ -95,7 +94,7 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
    * 
    * @see org.pentaho.database.dialect.IDatabaseDialect#getNotFoundTK(boolean)
    */
-  public int getNotFoundTK( boolean use_autoinc ) {
+  public int getNotFoundTK( boolean useAutoInc ) {
     return 0;
   }
 
@@ -221,8 +220,8 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
    * 
    * @see org.pentaho.database.dialect.IDatabaseDialect#getSchemaTableCombination(java.lang.String, java.lang.String)
    */
-  public String getSchemaTableCombination( String schema_name, String table_part ) {
-    return schema_name + "." + table_part;
+  public String getSchemaTableCombination( String schemaName, String tablePart ) {
+    return schemaName + "." + tablePart;
   }
 
   /*
@@ -285,7 +284,7 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
    * @see org.pentaho.database.dialect.IDatabaseDialect#getDropColumnStatement(java.lang.String,
    * org.pentaho.di.core.row.ValueMetaInterface, java.lang.String, boolean, java.lang.String, boolean)
    */
-  public String getDropColumnStatement( String tablename, IValueMeta v, String tk, boolean use_autoinc, String pk,
+  public String getDropColumnStatement( String tablename, IValueMeta v, String tk, boolean useAutoinc, String pk,
       boolean semicolon ) {
     return "ALTER TABLE " + tablename + " DROP " + v.getName() + CR;
   }
@@ -467,18 +466,8 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
    * @see org.pentaho.database.dialect.IDatabaseDialect#supportsBooleanDataType()
    */
   public boolean supportsBooleanDataType() {
-    // String usePool = attributes.getProperty(ATTRIBUTE_SUPPORTS_BOOLEAN_DATA_TYPE, "N");
-    // return "Y".equalsIgnoreCase(usePool);
     return true;
   }
-
-  // /**
-  // * @param b Set to true if the database supports a boolean, bit, logical, ... datatype
-  // */
-  // public void setSupportsBooleanDataType(boolean b)
-  // {
-  // attributes.setProperty(ATTRIBUTE_SUPPORTS_BOOLEAN_DATA_TYPE, b?"Y":"N");
-  // }
 
   /*
    * (non-Javadoc)
@@ -534,10 +523,8 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
     return true;
   }
 
-  public abstract String getURL( IDatabaseConnection connection ) throws DatabaseDialectException;
-
   public String getURLWithExtraOptions( IDatabaseConnection connection ) throws DatabaseDialectException {
-    StringBuffer url = new StringBuffer( getURL( connection ) );
+    StringBuilder url = new StringBuilder( getURL( connection ) );
     if ( supportsOptionsInURL() ) {
       // OK, now add all the options...
       String optionIndicator = getExtraOptionIndicator();
@@ -550,7 +537,7 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
         Iterator<String> iterator = map.keySet().iterator();
         boolean first = true;
         while ( iterator.hasNext() ) {
-          String typedParameter = (String) iterator.next();
+          String typedParameter = iterator.next();
           int dotIndex = typedParameter.indexOf( '.' );
           if ( dotIndex >= 0 ) {
             String typeCode = typedParameter.substring( 0, dotIndex );
@@ -581,24 +568,9 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
 
   protected void putOptionalOptions( IDatabaseConnection connection, Map<String, String> map ) { }
 
-  // public abstract String getSQLQueryColumnFields(String columnname, String tableName);
-
-  public abstract String getAddColumnStatement( String tablename, IValueMeta v, String tk, boolean use_autoinc,
-      String pk, boolean semicolon );
-
-  public abstract String getModifyColumnStatement( String tablename, IValueMeta v, String tk, boolean use_autoinc,
-      String pk, boolean semicolon );
-
-  public abstract String getFieldDefinition( IValueMeta v, String tk, String pk, boolean use_autoinc,
-      boolean add_fieldname, boolean add_cr );
-
   public String getExtraOptionsHelpText() {
     return getDatabaseType().getExtraOptionsHelpUrl();
   }
-
-  public abstract String[] getUsedLibraries();
-
-  public abstract String getNativeDriver();
 
   /**
    * @return true if the database supports connection options in the URL, false if they are put in a Properties object.
@@ -606,8 +578,6 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
   public boolean supportsOptionsInURL() {
     return true;
   }
-
-  public abstract String getNativeJdbcPre();
 
   public IDatabaseConnection createNativeConnection( String jdbcUrl ) {
     if ( !jdbcUrl.startsWith( getNativeJdbcPre() ) ) {
@@ -626,19 +596,19 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
     // hostname/dbname
     // dbname
 
-    if ( str.indexOf( ":" ) >= 0 ) {
-      hostname = str.substring( 0, str.indexOf( ":" ) );
-      str = str.substring( str.indexOf( ":" ) + 1 );
-      if ( str.indexOf( "/" ) >= 0 ) {
-        port = str.substring( 0, str.indexOf( "/" ) );
-        databaseNameAndParams = str.substring( str.indexOf( "/" ) + 1 );
+    if ( str.indexOf( ':' ) >= 0 ) {
+      hostname = str.substring( 0, str.indexOf( ':' ) );
+      str = str.substring( str.indexOf( ':' ) + 1 );
+      if ( str.indexOf( '/' ) >= 0 ) {
+        port = str.substring( 0, str.indexOf( '/' ) );
+        databaseNameAndParams = str.substring( str.indexOf( '/' ) + 1 );
       } else {
         port = str;
       }
     } else {
-      if ( str.indexOf( "/" ) >= 0 ) {
-        hostname = str.substring( 0, str.indexOf( "/" ) );
-        databaseNameAndParams = str.substring( str.indexOf( "/" ) + 1 );
+      if ( str.indexOf( '/' ) >= 0 ) {
+        hostname = str.substring( 0, str.indexOf( '/' ) );
+        databaseNameAndParams = str.substring( str.indexOf( '/' ) + 1 );
       } else {
         databaseNameAndParams = str;
       }
