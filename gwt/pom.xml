@@ -17,6 +17,7 @@
     <commons-xul.version>9.0.0.0-SNAPSHOT</commons-xul.version>
     <commons-gwt.version>9.0.0.0-SNAPSHOT</commons-gwt.version>
     <pdi.version>9.0.0.0-SNAPSHOT</pdi.version>
+    <commons-vfs2.version>2.2</commons-vfs2.version>
   </properties>
 
   <dependencies>
@@ -230,11 +231,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-vfs2</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
+      <version>${commons-vfs2.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
