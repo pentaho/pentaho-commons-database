@@ -17,6 +17,7 @@
     <commons-xul.version>9.1.0.0-SNAPSHOT</commons-xul.version>
     <commons-gwt.version>9.1.0.0-SNAPSHOT</commons-gwt.version>
     <pdi.version>9.1.0.0-SNAPSHOT</pdi.version>
+    <encryption-support.version>9.1.0.0-SNAPSHOT</encryption-support.version>
   </properties>
 
   <dependencies>
@@ -55,6 +56,12 @@
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.pentaho</groupId>
+      <artifactId>pentaho-encryption-support</artifactId>
+      <version>${encryption-support.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>pentaho-kettle</groupId>
