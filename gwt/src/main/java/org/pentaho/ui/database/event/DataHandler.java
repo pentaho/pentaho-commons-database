@@ -634,7 +634,7 @@ public class DataHandler extends AbstractXulEventHandler {
         new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
     checkParamsBuilder.setHeader( "Content-Type", "application/json" ); //$NON-NLS-1$//$NON-NLS-2$
     try {
-      if( !StringUtils.isEmpty( database.getPassword() ) ) {
+      if ( !StringUtils.isEmpty( database.getPassword() ) ) {
         database.setPassword( "ENC:" + Base64ClientUtils.encode( database.getPassword() ) );
       }
       AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean( database );
@@ -692,7 +692,7 @@ public class DataHandler extends AbstractXulEventHandler {
         new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
     checkParamsBuilder.setHeader( "Content-Type", "application/json" ); //$NON-NLS-1$ //$NON-NLS-2$
     try {
-      if( !StringUtils.isEmpty( database.getPassword() ) ) {
+      if ( !StringUtils.isEmpty( database.getPassword() ) ) {
         database.setPassword( "ENC:" + Base64ClientUtils.encode( database.getPassword() ) );
       }
       AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean( database );

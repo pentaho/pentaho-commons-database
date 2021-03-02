@@ -20,6 +20,8 @@ package org.pentaho.ui.database.gwt;
 
 public class Base64ClientUtils {
 
+  private Base64ClientUtils() { }
+
   public static native String encode( String text ) /*-{
     return window.btoa( text );
   }-*/;
