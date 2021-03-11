@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2019 Hitachi Vantara..  All rights reserved.
+ * Copyright (c) 2002-2021 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.ui.database.event;
@@ -29,13 +29,6 @@ import com.google.gwt.user.client.Command;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.pentaho.database.dialect.SnowflakeDatabaseDialect;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
@@ -48,6 +41,7 @@ import org.pentaho.database.util.DatabaseTypeHelper;
 import org.pentaho.gwt.widgets.client.utils.NameUtils;
 import org.pentaho.gwt.widgets.client.utils.string.StringUtils;
 import org.pentaho.ui.database.event.ILaunch.Status;
+import org.pentaho.ui.database.gwt.Base64ClientUtils;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulCheckbox;
@@ -67,6 +61,13 @@ import org.pentaho.ui.xul.containers.XulWindow;
 import org.pentaho.ui.xul.gwt.tags.GwtVbox;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.stereotype.Bindable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.pentaho.di.core.database.RedshiftDatabaseMeta.IAM_ACCESS_KEY_ID;
 import static org.pentaho.di.core.database.RedshiftDatabaseMeta.IAM_PROFILE_NAME;
@@ -633,6 +634,9 @@ public class DataHandler extends AbstractXulEventHandler {
         new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
     checkParamsBuilder.setHeader( "Content-Type", "application/json" ); //$NON-NLS-1$//$NON-NLS-2$
     try {
+      if ( !StringUtils.isEmpty( database.getPassword() ) ) {
+        database.setPassword( "ENC:" + Base64ClientUtils.encode( database.getPassword() ) );
+      }
       AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean( database );
       String checkParamsJson = AutoBeanCodex.encode( bean ).getPayload();
       checkParamsBuilder.sendRequest( checkParamsJson, new RequestCallback() {
@@ -688,6 +692,9 @@ public class DataHandler extends AbstractXulEventHandler {
         new RequestBuilder( RequestBuilder.POST, getBaseURL() + "checkParams" ); //$NON-NLS-1$
     checkParamsBuilder.setHeader( "Content-Type", "application/json" ); //$NON-NLS-1$ //$NON-NLS-2$
     try {
+      if ( !StringUtils.isEmpty( database.getPassword() ) ) {
+        database.setPassword( "ENC:" + Base64ClientUtils.encode( database.getPassword() ) );
+      }
       AutoBean<IDatabaseConnection> bean = AutoBeanUtils.getAutoBean( database );
       String checkParamsJson = AutoBeanCodex.encode( bean ).getPayload();
       checkParamsBuilder.sendRequest( checkParamsJson, new RequestCallback() {
