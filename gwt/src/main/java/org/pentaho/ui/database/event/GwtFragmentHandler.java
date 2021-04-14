@@ -82,6 +82,7 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
     supportedFragments.add( "sapr3_plugin.xul" );
     supportedFragments.add( "snowflakehv_native.xul" );
     supportedFragments.add( "redshift_native.xul" );
+    supportedFragments.add( "azuresqldb_native.xul" );
   }
 
   public void setDisableRefresh( boolean disableRefresh ) {
