@@ -17,3 +17,4 @@ org.pentaho.database.dialect.TeradataDatabaseDialect
 org.pentaho.database.dialect.Vertica5DatabaseDialect
 org.pentaho.database.dialect.VerticaDatabaseDialect
 org.pentaho.database.dialect.SnowflakeDatabaseDialect
+org.pentaho.database.dialect.AzureSQLDataBaseDialect
