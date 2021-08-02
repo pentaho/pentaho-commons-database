@@ -610,6 +610,10 @@ public class DataHandler extends AbstractXulEventHandler {
 
   @Bindable
   private void close() {
+    //Clear the UI components
+    databaseConnection = createDatabaseConnection();
+    setConnectionSpecificInfo( databaseConnection );
+
     XulComponent window = document.getElementById( "general-datasource-window" ); //$NON-NLS-1$
 
     if ( window == null ) { // window must be root
