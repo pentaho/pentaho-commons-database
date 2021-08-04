@@ -698,10 +698,10 @@ public class DataHandler extends AbstractXulEventHandler {
             getInfo( databaseConnection );
 
             databaseConnection.setChanged( true );
-            close();
             if ( listener != null ) {
               listener.onDialogAccept( databaseConnection );
             }
+            close();
           } else {
             gatherErrors( response );
           }
