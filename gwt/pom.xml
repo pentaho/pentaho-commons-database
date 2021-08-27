@@ -221,6 +221,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Endorsed Standards Excluded from Java 11+ -->
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+    </dependency>
+
     <!-- test dependencies -->
     <dependency>
       <groupId>com.google.gwt</groupId>
