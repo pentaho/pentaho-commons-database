@@ -1,6 +1,5 @@
 <module> <!-- rename-to="DatabaseDialog"> -->
   <inherits name='com.google.gwt.user.User'/>
-  <!--  what is this? inherits name='com.googlecode.gwtx.Java'/ -->
   <!-- inherits name='com.google.gwt.xml.XML'/ -->
   <inherits name="org.pentaho.gwt.widgets.Widgets"/>
   <inherits name="org.pentaho.gwt.widgets.login.Login"/> 
