@@ -317,10 +317,12 @@ public class DataHandler extends AbstractXulEventHandler {
 
   @Bindable
   public void setAzureSqlDBAuthRelatedFieldsVisible() {
-    passwordBox.setDisabled( azureSqlDBJdbcAuthMethod != null
-        && ( "Azure Active Directory - Universal With MFA".equals( azureSqlDBJdbcAuthMethod.getValue() )
-        || "Azure Active Directory - Integrated".equals( azureSqlDBJdbcAuthMethod.getValue() ) ) );
-    userNameBox.setDisabled( azureSqlDBJdbcAuthMethod != null && "Azure Active Directory - Integrated".equals( azureSqlDBJdbcAuthMethod.getValue() ) );
+    if ( azureSqlDBJdbcAuthMethod != null ) {
+      passwordBox.setDisabled(
+          "Azure Active Directory - Universal With MFA".equals( azureSqlDBJdbcAuthMethod.getValue() )
+        || "Azure Active Directory - Integrated".equals( azureSqlDBJdbcAuthMethod.getValue() ) );
+      userNameBox.setDisabled( "Azure Active Directory - Integrated".equals( azureSqlDBJdbcAuthMethod.getValue() ) );
+    }
   }
 
   @Bindable
