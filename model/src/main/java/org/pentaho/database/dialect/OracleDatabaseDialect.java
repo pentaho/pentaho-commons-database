@@ -110,7 +110,7 @@ public class OracleDatabaseDialect extends AbstractDatabaseDialect {
       if ( databaseName != null && databaseName.length() > 0
           && ( databaseName.startsWith( "/" ) || databaseName.startsWith( ":" ) ) ) {
         return getNativeJdbcPre() + hostname + ":" + port + databaseName;
-      } else if ( isEmpty( port ) && ( isEmpty( port ) || port.equals( "-1" ) ) ) { // -1 when file based stored
+      } else if ( isEmpty( port ) || port.equals( "-1" ) || port.equals( "0" ) ) { // -1 when file based stored
                                                                                     // connection
         // support RAC with a self defined URL in databaseName like
         // (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = host1-vip)(PORT = 1521))(ADDRESS = (PROTOCOL = TCP)(HOST =
