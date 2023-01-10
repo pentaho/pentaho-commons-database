@@ -142,4 +142,6 @@ public interface IDatabaseConnection extends Serializable {
 
   List<PartitionDatabaseMeta> getPartitioningInformation();
 
+  String calculateHash();
+
 }
