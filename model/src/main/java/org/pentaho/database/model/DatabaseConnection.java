@@ -17,6 +17,8 @@
 
 package org.pentaho.database.model;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -637,6 +639,13 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
    */
   public List<PartitionDatabaseMeta> getPartitioningInformation() {
     return this.partitioningInformation;
+  }
+
+  @Override
+  public String calculateHash() {
+    // Is assumed that toString has information on the connection configuration.
+    // If you need to change toString implementation, please revise this method.
+    return DigestUtils.sha3_256Hex( toString() );
   }
 
   @Override
