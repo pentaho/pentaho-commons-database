@@ -17,6 +17,7 @@
 
 package org.pentaho.database.model;
 
+import com.google.gwt.core.shared.GwtIncompatible;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.Serializable;
@@ -641,6 +642,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
     return this.partitioningInformation;
   }
 
+  @GwtIncompatible( "Not required for GWT" )
   @Override
   public String calculateHash() {
     // Is assumed that toString has information on the connection configuration.
