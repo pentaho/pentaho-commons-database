@@ -647,6 +647,12 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   public String calculateHash() {
     // Is assumed that toString has information on the connection configuration.
     // If you need to change toString implementation, please revise this method.
+
+    String version = System.getProperty("java.version");
+    if ( version.startsWith( "1.8" ) ) {  // Can't use Sha3-256 with java 8
+      return DigestUtils.sha256Hex( toString() );
+    }
+
     return DigestUtils.sha3_256Hex( toString() );
   }
 
