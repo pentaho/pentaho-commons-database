@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
+ * Copyright (c) 2002-2023 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.database.model;
@@ -648,7 +648,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
     // Is assumed that toString has information on the connection configuration.
     // If you need to change toString implementation, please revise this method.
 
-    String version = System.getProperty("java.version");
+    String version = System.getProperty( "java.version" );
     if ( version.startsWith( "1.8" ) ) {  // Can't use Sha3-256 with java 8
       return DigestUtils.sha256Hex( toString() );
     }
