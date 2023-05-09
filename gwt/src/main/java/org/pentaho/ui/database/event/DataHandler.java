@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2021 Hitachi Vantara..  All rights reserved.
+ * Copyright (c) 2002-2023 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.ui.database.event;
@@ -38,6 +38,7 @@ import org.pentaho.database.model.IDatabaseConnectionPoolParameter;
 import org.pentaho.database.model.IDatabaseType;
 import org.pentaho.database.model.PartitionDatabaseMeta;
 import org.pentaho.database.util.DatabaseTypeHelper;
+import org.pentaho.gwt.widgets.client.listbox.CustomListBox;
 import org.pentaho.gwt.widgets.client.utils.NameUtils;
 import org.pentaho.gwt.widgets.client.utils.string.StringUtils;
 import org.pentaho.ui.database.event.ILaunch.Status;
@@ -393,7 +394,16 @@ public class DataHandler extends AbstractXulEventHandler {
       accessBox.setSelectedItem( accessKey );
 
       // Refreshes the options since the above selection may not fire the selected item event
-      fragmentHandler.refreshOptionsWithCallback( null );
+      fragmentHandler.refreshOptionsWithCallback(new IFragmentHandler.Callback() {
+        @Override
+        public void callback() {
+          if ( connectionBox != null ) {
+            CustomListBox connectionBoxWidget = (CustomListBox) connectionBox.getManagedObject();
+            connectionBoxWidget.setFocus( true );
+            connectionBoxWidget.scrollSelectedItemIntoView();
+          }
+        }
+      } );
 
       if ( databaseConnection != null ) {
         Map<String, String> options = databaseConnection.getExtraOptions();
