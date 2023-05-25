@@ -720,7 +720,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   @Override
   public String toString() {
-    return "DatabaseConnection [name=" + name + ", databaseName=" + databaseName + ", databasePort="
+    return "DatabaseConnection [id=" + id + ", name=" + name + ", databaseName=" + databaseName + ", databasePort="
       + databasePort + ", hostname=" + hostname + ", username=" + username + ", password=*****"
       + ", dataTablespace=" + dataTablespace + ", indexTablespace=" + indexTablespace + ", streamingResults="
       + streamingResults + ", quoteAllFields=" + quoteAllFields + ", changed=" + changed
