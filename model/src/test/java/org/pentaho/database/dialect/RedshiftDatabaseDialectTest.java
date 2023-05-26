@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.pentaho.database.dialect.RedshiftDatabaseDialect.IAM_ACCESS_KEY_ID;
 import static org.pentaho.database.dialect.RedshiftDatabaseDialect.IAM_PROFILE_NAME;
 import static org.pentaho.database.dialect.RedshiftDatabaseDialect.IAM_SECRET_ACCESS_KEY;
@@ -55,9 +56,12 @@ public class RedshiftDatabaseDialectTest {
     attributes.put( IAM_ACCESS_KEY_ID, "id" );
     attributes.put( IAM_SESSION_TOKEN, "session" );
     connection.setAttributes( attributes );
-    assertEquals(
-      "jdbc:redshift:iam://redshift.com:9999/FantasyFootball?SessionToken=session&AccessKeyID=id&SecretAccessKey=secretKey",
-      dialect.getURLWithExtraOptions( connection ) );
+    String resultString = dialect.getURLWithExtraOptions( connection );
+
+    assertTrue( resultString.startsWith( "jdbc:redshift:iam://redshift.com:9999/FantasyFootball?" ) );
+    assertTrue( resultString.contains( "AccessKeyID=id" ) );
+    assertTrue( resultString.contains( "SecretAccessKey=secretKey" ) );
+    assertTrue( resultString.contains( "SessionToken=session" ) );
   }
 
   private IDatabaseConnection redshiftConnection() {
