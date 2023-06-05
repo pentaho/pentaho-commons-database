@@ -17,6 +17,8 @@
 
 package org.pentaho.database.model;
 
+import com.google.gwt.core.shared.GwtIncompatible;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -141,5 +143,8 @@ public interface IDatabaseConnection extends Serializable {
   void setPartitioningInformation( List<PartitionDatabaseMeta> partitioningInformation );
 
   List<PartitionDatabaseMeta> getPartitioningInformation();
+
+  @GwtIncompatible( "Not required for GWT" )
+  String calculateHash();
 
 }
