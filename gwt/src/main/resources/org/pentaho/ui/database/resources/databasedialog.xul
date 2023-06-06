@@ -9,6 +9,9 @@
     buttonalign="end"
 	buttonlabelaccept="${DatabaseDialog.USER_OK}"
 	buttonlabelcancel="${DatabaseDialog.USER_CANCEL}"
+	pen:responsive="true"
+	pen:sizingmode="fillviewportwidth"
+	pen:widthcategory="large"
 	ondialogaccept="dataHandler.onOK()"
 	ondialogcancel="dataHandler.onCancel()"
 	xmlns="http://www.pentaho.org/keymaster/gatekeeper/there.is.only.xul"
@@ -56,8 +59,8 @@
 	<!--     CONNECTION ACCESS LIST BOX: The box that contains the connection type list
 			 and the access method list.                                                   -->
 	<!--  ###############################################################################  -->
-				<hbox id="connection-access-list-box" flex="1">
-					<vbox id="type-box">
+				<hbox id="connection-access-list-box" flex="1" pen:classname="flex-wrap">
+					<vbox id="type-box" flex="1">
 						<label id="connection-type-label" value="${DatabaseDialog.label.ConnectionType}" />
 						<listbox id="connection-type-list" flex="6" rows="11" onselect="dataHandler.loadAccessData()">
 						</listbox>
@@ -91,7 +94,7 @@
 	         attribute settings.                                                           -->
 	<!--  ###############################################################################  -->
 			<groupbox id="advanced-group-box" orient="vertical">
-				<groupbox id="identifier-group-box" orient="vertical">
+				<groupbox id="identifier-group-box" pen:classname="flex-none" orient="vertical">
 					<caption label="${DatabaseDialog.USER_IDENTIFIERS}" />
 					<checkbox id="quote-identifiers-check" label="${DatabaseDialog.label.AdvancedQuoteAllFields}" checked="false" />
 					<checkbox id="force-lower-case-check" label="${DatabaseDialog.label.AdvancedForceIdentifiersLowerCase}" checked="false" />
@@ -162,7 +165,7 @@
 						</vbox>
 						<vbox>
 							<label id="max-pool-size-label" value="${DatabaseDialog.label.MaximumPoolSize}" disabled="true"/>
-							<textbox  pen:customclass="variabletextbox" id="max-pool-size-text" disabled="true"/>
+							<textbox pen:customclass="variabletextbox" id="max-pool-size-text" disabled="true"/>
 						</vbox>
 					</groupbox>				
 
