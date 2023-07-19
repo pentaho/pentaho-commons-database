@@ -64,7 +64,7 @@
 						<label id="connection-type-label" value="${DatabaseDialog.label.ConnectionType}" />
 						<listbox id="connection-type-list" flex="6" rows="11" onselect="dataHandler.loadAccessData()">
 						</listbox>
-            <hbox>
+            <hbox flex="0">
               <label flex="1" id="context_help" value="${DatabaseDialog.label.AddingDatabases}" />
               <image src="images/spacer.gif" height="16" width="16" onclick="dataHandler.showContextHelp()" tabindex="0" pen:classname="helpIcon" />
             </hbox>
