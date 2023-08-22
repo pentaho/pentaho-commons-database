@@ -98,6 +98,9 @@ public class DataHandler extends AbstractXulEventHandler {
   private static final String EXTRA_OPTION_WEB_APPLICATION_NAME = "KettleThin.webappname";
   private static final String DEFAULT_WEB_APPLICATION_NAME = "pentaho";
 
+  private static final String DEFAULT_DATASTORE_INITIAL_SIZE = "0";
+  private static final String DEFAULT_DATASTORE_MAXIMUM_SIZE = "20";
+
   protected DatabaseDialogListener listener;
 
   protected IMessages messages;
@@ -1075,7 +1078,10 @@ public class DataHandler extends AbstractXulEventHandler {
       if ( databaseConnection.getId() != null ) {
         poolingCheck.setChecked( databaseConnection.isUsingConnectionPool() );
       } else {
-        poolingCheck.setChecked( true ); // new connection, default to true
+        // new connection, default values
+        poolingCheck.setChecked( true );
+        poolSizeBox.setValue( DEFAULT_DATASTORE_INITIAL_SIZE );
+        maxPoolSizeBox.setValue( DEFAULT_DATASTORE_MAXIMUM_SIZE );
       }
     }
 
@@ -1085,7 +1091,6 @@ public class DataHandler extends AbstractXulEventHandler {
       if ( poolSizeBox != null ) {
         poolSizeBox.setValue( Integer.toString( databaseConnection.getInitialPoolSize() ) );
       }
-
       if ( maxPoolSizeBox != null ) {
         maxPoolSizeBox.setValue( Integer.toString( databaseConnection.getMaximumPoolSize() ) );
       }
