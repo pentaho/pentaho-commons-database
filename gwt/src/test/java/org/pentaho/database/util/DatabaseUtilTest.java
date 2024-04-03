@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
+ * Copyright (c) 2002 - 2024 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.database.util;
@@ -24,7 +24,7 @@ import java.util.Properties;
 import org.junit.Assert;
 
 import org.mockito.Mockito;
-import org.mockito.Matchers;
+import static org.mockito.Mockito.any;
 
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.IDatabaseConnection;
@@ -58,7 +58,7 @@ public class DatabaseUtilTest {
     Mockito.when( dbIface.getAttributes() ).thenReturn( props );
     Mockito.when( dbIface.getConnectionPoolingProperties() ).thenCallRealMethod();
     Mockito.when( dbIface.getExtraOptions() ).thenCallRealMethod();
-    Mockito.doCallRealMethod().when( dbIface ).setAttributes( Matchers.any( Properties.class ) );
+    Mockito.doCallRealMethod().when( dbIface ).setAttributes( any( Properties.class ) );
     dbIface.setAttributes( new Properties() );
 
     final Plugin dbPlugin = Mockito.mock( Plugin.class, Mockito.withSettings().extraInterfaces( ClassLoadingPluginInterface.class ) );
@@ -68,7 +68,7 @@ public class DatabaseUtilTest {
     Mockito.when( dbPlugin.matches( dbName ) ).thenReturn( true );
     Mockito.when( dbPlugin.getClassMap() ).thenReturn(
         new HashMap<Class<?>, String>() { { put( dbPlugin.getClass(), "org.pentaho.di.core.database.InfobrightDatabaseMeta" ); } } );
-    Mockito.doReturn( dbIface ).when( ( (ClassLoadingPluginInterface) dbPlugin ) ).loadClass( Matchers.any( Class.class ) );
+    Mockito.doReturn( dbIface ).when( ( (ClassLoadingPluginInterface) dbPlugin ) ).loadClass( any( Class.class ) );
 
     PluginRegistry.getInstance().registerPlugin(
         DatabasePluginType.class,

@@ -12,7 +12,7 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 * See the GNU Lesser General Public License for more details.
 *
-* Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
+* Copyright (c) 2002 - 2024 Hitachi Vantara..  All rights reserved.
 */
 
 package org.pentaho.database.dialect;
@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 
@@ -48,7 +48,6 @@ public class PDIDialectTest {
 
   @Before
   public void setUp() {
-    when( connection.getAccessType() ).thenReturn( DatabaseAccessType.NATIVE );
     when( connection.getDatabasePort() ).thenReturn( "8080" );
     when( connection.getHostname() ).thenReturn( "localhost" );
   }
@@ -59,7 +58,6 @@ public class PDIDialectTest {
     assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:8080/pentaho/kettle" ) );
     Map attributes = new HashMap();
     attributes.put( "KettleThin.webappname", "pentaho" );
-    when( connection.getAttributes() ).thenReturn( attributes );
     assertThat( dialect.getURL( connection ), equalTo( "jdbc:pdi://localhost:8080/pentaho/kettle" ) );
   }
 
