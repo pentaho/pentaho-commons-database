@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2024 Hitachi Vantara..  All rights reserved.
+ * Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.database.dialect;
@@ -43,18 +43,9 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
   }
 
   public String getNativeDriver() {
-    String driver = "com.mysql.cj.jdbc.Driver";
-    try {
-      Class.forName( driver );
-    } catch ( ClassNotFoundException e ) {
-      driver = "org.gjt.mm.mysql.Driver";
-      try {
-        Class.forName( driver );
-      } catch ( ClassNotFoundException ex ) {
-      }
-    }
-    return driver;
+    return "org.gjt.mm.mysql.Driver";
   }
+
   /**
    * Generates the SQL statement to add a column to the specified table
    * 
