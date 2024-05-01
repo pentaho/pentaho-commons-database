@@ -12,7 +12,7 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2002-2017 Hitachi Vantara..  All rights reserved.
+ * Copyright (c) 2002-2024 Hitachi Vantara..  All rights reserved.
  */
 
 package org.pentaho.database.dialect;
@@ -27,7 +27,7 @@ import org.pentaho.database.model.IDatabaseType;
 public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = 8317996922081590794L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "MySQL", "MYSQL", DatabaseAccessType.getList(
@@ -43,12 +43,19 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
   }
 
   public String getNativeDriver() {
-    return "org.gjt.mm.mysql.Driver";
+    String driver = "com.mysql.cj.jdbc.Driver";
+    try {
+      Class.forName( driver );
+    } catch ( ClassNotFoundException e ) {
+      driver = "org.gjt.mm.mysql.Driver";
+    }
+    return driver;
   }
+
 
   /**
    * Generates the SQL statement to add a column to the specified table
-   * 
+   *
    * @param tablename
    *          The table to add
    * @param v
@@ -71,7 +78,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
 
   /**
    * Generates the SQL statement to modify a column in the specified table
-   * 
+   *
    * @param tablename
    *          The table to add
    * @param v
@@ -198,7 +205,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
 
   /**
    * Returns the minimal SQL to launch in order to determine the layout of the resultset for a given database table
-   * 
+   *
    * @param tableName
    *          The name of the table to determine the layout for
    * @return The SQL to launch.
@@ -253,7 +260,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.di.core.database.DatabaseInterface#getReservedWords()
    */
   @Override
@@ -284,7 +291,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.pentaho.di.core.database.DatabaseInterface#getStartQuote()
    */
   @Override
@@ -294,7 +301,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
 
   /**
    * Simply add an underscore in the case of MySQL!
-   * 
+   *
    * @see org.pentaho.di.core.database.DatabaseInterface#getEndQuote()
    */
   @Override
