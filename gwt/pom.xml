@@ -18,6 +18,7 @@
     <commons-gwt.version>10.2.0.0-SNAPSHOT</commons-gwt.version>
     <pdi.version>10.2.0.0-SNAPSHOT</pdi.version>
     <encryption-support.version>10.2.0.0-SNAPSHOT</encryption-support.version>
+    <maven-surefire-plugin.argLine>--add-opens java.base/java.lang=ALL-UNNAMED</maven-surefire-plugin.argLine>
   </properties>
 
   <dependencies>
@@ -155,6 +156,12 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>metastore</artifactId>
+      <version>${pdi.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
