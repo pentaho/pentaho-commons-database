@@ -17,6 +17,8 @@
 
 package org.pentaho.database.dialect;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.pentaho.database.DatabaseDialectException;
 import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
@@ -29,6 +31,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
   /**
    * 
    */
+  private static final Log logger = LogFactory.getLog(MySQLDatabaseDialect.class );
   private static final long serialVersionUID = 8317996922081590794L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "MySQL", "MYSQL", DatabaseAccessType.getList(
       DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 3306,
@@ -46,8 +49,10 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
     String driver = "com.mysql.cj.jdbc.Driver";
     try {
       Class.forName( driver );
+      logger.info( "Selected MySQL Driver: " + driver );
     } catch ( ClassNotFoundException e ) {
       driver = "org.gjt.mm.mysql.Driver";
+      logger.info( "Selected MySQL Driver: " + driver );
     }
     return driver;
   }
