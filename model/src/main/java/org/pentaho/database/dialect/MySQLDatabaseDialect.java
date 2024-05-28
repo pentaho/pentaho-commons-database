@@ -17,12 +17,15 @@
 
 package org.pentaho.database.dialect;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.pentaho.database.DatabaseDialectException;
 import org.pentaho.database.IValueMeta;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
+import java.util.Objects;
 
 public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
 
@@ -33,6 +36,8 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
   private static final IDatabaseType DBTYPE = new DatabaseType( "MySQL", "MYSQL", DatabaseAccessType.getList(
       DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 3306,
       "http://dev.mysql.com/doc/refman/5.0/en/connector-j-reference-configuration-properties.html" );
+  private static final Log logger = LogFactory.getLog(MySQLDatabaseDialect.class );
+
 
   public MySQLDatabaseDialect() {
 
@@ -42,16 +47,29 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
     return DBTYPE;
   }
 
-  public String getNativeDriver() {
+  private static boolean isDriverLogged = false;
+  private static String getSelectedDriver() {
     String driver = "com.mysql.cj.jdbc.Driver";
     try {
       Class.forName( driver );
     } catch ( ClassNotFoundException e ) {
       driver = "org.gjt.mm.mysql.Driver";
+      try {
+        Class.forName( driver );
+      } catch ( ClassNotFoundException ex ) {
+        driver = null;
+      }
+    }
+    if ( !isDriverLogged ) {
+      LogFactory.getLog( MySQLDatabaseDialect.class ).info( "MySQL Driver: " + Objects.toString ( driver, " Not found" ));
+      isDriverLogged = true;
     }
     return driver;
   }
-
+  @Override
+  public String getNativeDriver() {
+    return getSelectedDriver();
+  }
   /**
    * Generates the SQL statement to add a column to the specified table
    * 
