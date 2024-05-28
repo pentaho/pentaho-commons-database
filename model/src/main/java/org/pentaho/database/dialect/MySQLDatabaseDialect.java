@@ -23,6 +23,7 @@ import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
+import org.apache.commons.logging.LogFactory;
 
 public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
 
@@ -33,6 +34,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
   private static final IDatabaseType DBTYPE = new DatabaseType( "MySQL", "MYSQL", DatabaseAccessType.getList(
       DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 3306,
       "http://dev.mysql.com/doc/refman/5.0/en/connector-j-reference-configuration-properties.html" );
+  private static boolean isDriverLogged = false;
 
   public MySQLDatabaseDialect() {
 
@@ -49,9 +51,12 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
     } catch ( ClassNotFoundException e ) {
       driver = "org.gjt.mm.mysql.Driver";
     }
+    if ( !isDriverLogged ) {
+      LogFactory.getLog( MySQLDatabaseDialect.class ).info( "Selected MySQL Driver: " + driver );
+      isDriverLogged = true;
+    }
     return driver;
   }
-
   /**
    * Generates the SQL statement to add a column to the specified table
    * 
