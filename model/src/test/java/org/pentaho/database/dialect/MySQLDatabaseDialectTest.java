@@ -36,7 +36,7 @@ public class MySQLDatabaseDialectTest {
 
   @Test
   public void testGetNativeDriver() {
-    assertEquals( dialect.getNativeDriver(), "org.gjt.mm.mysql.Driver" );
+    assertEquals( dialect.getNativeDriver(), "com.mysql.jdbc.Driver" );
   }
 
   @Test
