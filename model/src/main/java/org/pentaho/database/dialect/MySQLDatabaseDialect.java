@@ -48,7 +48,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
     try {
       Class.forName( driver );
     } catch ( ClassNotFoundException e ) {
-      driver = "org.gjt.mm.mysql.Driver";
+      driver = "com.mysql.jdbc.Driver";
     }
     return driver;
   }
