@@ -71,7 +71,7 @@ public class DatabaseConnectionServiceIT {
     DatabaseTypeHelper helper = new DatabaseTypeHelper( dialectService.getDatabaseTypes() );
 
     IDatabaseConnection conn = connectionService.createDatabaseConnection(
-        "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost:1234/testdb" );
+        "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:1234/testdb" );
 
     Assert.assertNotNull( conn );
     Assert.assertEquals( DatabaseAccessType.NATIVE, conn.getAccessType() );
@@ -81,7 +81,7 @@ public class DatabaseConnectionServiceIT {
     Assert.assertEquals( "testdb", conn.getDatabaseName() );
 
     conn = connectionService.createDatabaseConnection(
-        "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/testdb" );
+        "com.mysql.jdbc.Driver", "jdbc:mysql://localhost/testdb" );
 
     Assert.assertNotNull( conn );
     Assert.assertEquals( DatabaseAccessType.NATIVE, conn.getAccessType() );
