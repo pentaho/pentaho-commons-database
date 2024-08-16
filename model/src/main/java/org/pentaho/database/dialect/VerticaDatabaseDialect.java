@@ -38,7 +38,7 @@ public class VerticaDatabaseDialect extends AbstractDatabaseDialect {
   private static final long serialVersionUID = 449286268556765514L;
 
   private static final IDatabaseType DBTYPE = new DatabaseType( "Vertica", "VERTICA", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 5433, null );
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 5433, null );
 
   public VerticaDatabaseDialect() {
   }
@@ -149,12 +149,8 @@ public class VerticaDatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
-    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + connection.getDatabaseName();
-    } else {
-      return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
-          + connection.getDatabaseName();
-    }
+    return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
+      + connection.getDatabaseName();
   }
 
   /**

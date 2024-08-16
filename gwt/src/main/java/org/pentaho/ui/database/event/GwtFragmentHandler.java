@@ -78,7 +78,6 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
     supportedFragments.add( "oracle_jndi.xul" );
     supportedFragments.add( "oracle_native.xul" );
     supportedFragments.add( "oracle_oci.xul" );
-    supportedFragments.add( "oracle_odbc.xul" );
     supportedFragments.add( "kettlethin_native.xul" );
     supportedFragments.add( "sapr3_plugin.xul" );
     supportedFragments.add( "snowflakehv_native.xul" );
@@ -196,9 +195,6 @@ public class GwtFragmentHandler extends AbstractXulEventHandler implements IFrag
         break;
       case OCI:
         fragment = getFragment( database, "_oci.xul", "common_native.xul" ); //$NON-NLS-1$ //$NON-NLS-2$
-        break;
-      case ODBC:
-        fragment = getFragment( database, "_odbc.xul", "common_odbc.xul" ); //$NON-NLS-1$ //$NON-NLS-2$
         break;
       case PLUGIN:
         fragment = getFragment( database, "_plugin.xul", "common_native.xul" ); //$NON-NLS-1$ //$NON-NLS-2$

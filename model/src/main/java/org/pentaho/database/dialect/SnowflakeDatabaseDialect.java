@@ -28,16 +28,13 @@ public class SnowflakeDatabaseDialect extends AbstractDatabaseDialect {
   public static final String WAREHOUSE = "warehouse";
 
   public static final IDatabaseType DBTYPE = new DatabaseType( "Snowflake", "SNOWFLAKEHV", DatabaseAccessType.getList(
-    DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 443,
+    DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 443,
     "https://docs.snowflake.net/manuals/user-guide/jdbc-configure.html#jdbc-driver-connection-string" );
 
   @Override public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
-    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + connection.getDatabaseName();
-    } else {
-      return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/?db=" + connection.getDatabaseName()
-        + "&warehouse=" + connection.getAttributes().get( WAREHOUSE );
-    }
+    return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/?db="
+      + connection.getDatabaseName()
+      + "&warehouse=" + connection.getAttributes().get( WAREHOUSE );
   }
 
   @Override public String getExtraOptionSeparator() {

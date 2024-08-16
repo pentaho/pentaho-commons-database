@@ -30,7 +30,7 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
    */
   private static final long serialVersionUID = -348349304650440017L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "IBM DB2", "DB2", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 50000, null );
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 50000, null );
 
   public DB2DatabaseDialect() {
   }
@@ -56,12 +56,8 @@ public class DB2DatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
-    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + connection.getDatabaseName();
-    } else {
-      return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
-          + connection.getDatabaseName();
-    }
+    return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
+      + connection.getDatabaseName();
   }
 
   /**

@@ -31,7 +31,7 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
    */
   private static final long serialVersionUID = -5178086598065739669L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "MS SQL Server", "MSSQL", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 1433,
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 1433,
       "http://jtds.sourceforge.net/faq.html#urlFormat" );
 
   public MSSQLServerDatabaseDialect() {
@@ -54,12 +54,8 @@ public class MSSQLServerDatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
-    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + connection.getDatabaseName();
-    } else {
-      return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
-          + connection.getDatabaseName();
-    }
+    return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
+      + connection.getDatabaseName();
   }
 
   @Override

@@ -171,9 +171,6 @@ public class PostgreSQLDatabaseDialectTest {
   public void testGetURL() {
     DatabaseConnection conn = new DatabaseConnection();
     Assert.assertEquals( dialect.getURL( conn ), "jdbc:postgresql://null:null/null" );
-
-    conn.setAccessType( DatabaseAccessType.ODBC );
-    Assert.assertEquals( dialect.getURL( conn ), "jdbc:odbc:null" );
   }
 
   @Test

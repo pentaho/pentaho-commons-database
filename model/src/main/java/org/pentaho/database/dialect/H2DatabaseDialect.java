@@ -32,7 +32,7 @@ public class H2DatabaseDialect extends AbstractDatabaseDialect {
    */
   private static final long serialVersionUID = 6336803851399366111L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "H2", "H2", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 9092, "" );
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 9092, "" );
 
   public H2DatabaseDialect() {
 
@@ -54,17 +54,13 @@ public class H2DatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection databaseConnection ) throws DatabaseDialectException {
-    if ( databaseConnection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + databaseConnection.getDatabaseName();
+    if ( toInt( databaseConnection.getDatabasePort(), -1 ) <= 0 || isEmpty( databaseConnection.getHostname() ) ) {
+      // When no port is specified, or port is 0 support local/memory
+      // HSQLDB databases.
+      return getNativeJdbcPre() + databaseConnection.getDatabaseName();
     } else {
-      if ( toInt( databaseConnection.getDatabasePort(), -1 ) <= 0 || isEmpty( databaseConnection.getHostname() ) ) {
-        // When no port is specified, or port is 0 support local/memory
-        // HSQLDB databases.
-        return getNativeJdbcPre() + databaseConnection.getDatabaseName();
-      } else {
-        return getNativeJdbcPre() + "h2://" + databaseConnection.getHostname() + ":"
-            + databaseConnection.getDatabasePort() + "/" + databaseConnection.getDatabaseName();
-      }
+      return getNativeJdbcPre() + "h2://" + databaseConnection.getHostname() + ":"
+        + databaseConnection.getDatabasePort() + "/" + databaseConnection.getDatabaseName();
     }
   }
 

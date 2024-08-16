@@ -24,7 +24,7 @@ import java.util.Map;
 
 public enum DatabaseAccessType {
 
-  NATIVE( "Native (JDBC)" ), ODBC( "ODBC" ), OCI( "OCI" ), PLUGIN( "Plugin specific access method" ), JNDI( "JNDI" ), CUSTOM(
+  NATIVE( "Native (JDBC)" ), ODBC( "ODBC (deprecated)" ), OCI( "OCI" ), PLUGIN( "Plugin specific access method" ), JNDI( "JNDI" ), CUSTOM(
       "Custom" );
 
   private String name;

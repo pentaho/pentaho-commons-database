@@ -24,6 +24,7 @@ import org.pentaho.database.model.DatabaseType;
 import org.pentaho.database.model.IDatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
 
+@Deprecated
 public class MSAccessDatabaseDialect extends AbstractDatabaseDialect {
 
   /**
@@ -31,7 +32,7 @@ public class MSAccessDatabaseDialect extends AbstractDatabaseDialect {
    */
   private static final long serialVersionUID = 84703860781502052L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "MS Access", "MSACCESS", DatabaseAccessType
-      .getList( DatabaseAccessType.ODBC ), -1, null );
+      .getList( ), -1, null );
 
   public MSAccessDatabaseDialect() {
 

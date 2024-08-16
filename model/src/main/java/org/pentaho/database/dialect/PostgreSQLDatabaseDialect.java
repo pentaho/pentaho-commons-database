@@ -30,7 +30,7 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
    */
   private static final long serialVersionUID = -9013539302559330294L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "PostgreSQL", "POSTGRESQL", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 5432,
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 5432,
       "http://jdbc.postgresql.org/documentation/83/connect.html#connection-parameters" );
 
   public PostgreSQLDatabaseDialect() {
@@ -53,12 +53,8 @@ public class PostgreSQLDatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection connection ) {
-    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + connection.getDatabaseName();
-    } else {
-      return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
-          + connection.getDatabaseName();
-    }
+    return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
+      + connection.getDatabaseName();
   }
 
   /**

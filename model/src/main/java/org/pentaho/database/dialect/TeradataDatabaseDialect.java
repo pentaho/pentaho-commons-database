@@ -32,7 +32,7 @@ public class TeradataDatabaseDialect extends AbstractDatabaseDialect {
    */
   private static final long serialVersionUID = -3869260264366995990L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "Teradata", "TERADATA", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 1025,
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 1025,
       "http://www.info.ncr.com/eTeradata-BrowseBy-Results.cfm?pl=&PID=&title=%25&release=&kword=CJDBC&sbrn=7&nm=Teradata+Tools+and+Utilities+-+Java+Database+Connectivity+(JDBC)" );
 
   public TeradataDatabaseDialect() {
@@ -46,21 +46,16 @@ public class TeradataDatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
-    if (connection.getAccessType() == DatabaseAccessType.NATIVE) {
-      String url = "jdbc:teradata://" + connection.getHostname();
-      String sep = "/"; // Default separator is / if it's the only parameter, otherwise it's a comma
-      if(connection.getDatabaseName() != null && connection.getDatabaseName().length()>0){
-        url += "/DATABASE="+connection.getDatabaseName();
-        sep = ",";
-      } 
-      if(connection.getDatabasePort() != null && connection.getDatabasePort().length()>0){
-        url += sep + "DBS_PORT=" + connection.getDatabasePort();
-      }
-      return url;
-      
-    } else {
-      return "jdbc:odbc:" + connection.getDatabaseName();
+    String url = "jdbc:teradata://" + connection.getHostname();
+    String sep = "/"; // Default separator is / if it's the only parameter, otherwise it's a comma
+    if ( connection.getDatabaseName() != null && connection.getDatabaseName().length() > 0 ) {
+      url += "/DATABASE=" + connection.getDatabaseName();
+      sep = ",";
     }
+    if ( connection.getDatabasePort() != null && connection.getDatabasePort().length() > 0 ) {
+      url += sep + "DBS_PORT=" + connection.getDatabasePort();
+    }
+    return url;
   }
 
   /**
