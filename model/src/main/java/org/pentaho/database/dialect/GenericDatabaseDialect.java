@@ -179,10 +179,7 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
     String url = connection.getAttributes().get( ATTRIBUTE_CUSTOM_URL );
-    if ( url == null ) {
-      url = "";
-    }
-    return url;
+    return url == null ? "" : url;
   }
 
   /**
