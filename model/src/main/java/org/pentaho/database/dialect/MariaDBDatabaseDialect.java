@@ -25,7 +25,7 @@ public class MariaDBDatabaseDialect extends MySQLDatabaseDialect {
 
   private static final long serialVersionUID = 8237047662096530976L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "MariaDB", "MARIADB", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 3306,
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 3306,
       "https://mariadb.com/kb/en/mariadb/about-mariadb-connector-j/" );
 
   public MariaDBDatabaseDialect() {

@@ -32,7 +32,7 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
    */
   private static final long serialVersionUID = 8317996922081590794L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "MySQL", "MYSQL", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 3306,
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 3306,
       "http://dev.mysql.com/doc/refman/5.0/en/connector-j-reference-configuration-properties.html" );
 
   public MySQLDatabaseDialect() {
@@ -241,15 +241,11 @@ public class MySQLDatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
-    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + connection.getDatabaseName();
+    if ( isEmpty( connection.getDatabasePort() ) ) {
+      return getNativeJdbcPre() + connection.getHostname() + "/" + connection.getDatabaseName();
     } else {
-      if ( isEmpty( connection.getDatabasePort() ) ) {
-        return getNativeJdbcPre() + connection.getHostname() + "/" + connection.getDatabaseName();
-      } else {
-        return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
-            + connection.getDatabaseName();
-      }
+      return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
+        + connection.getDatabaseName();
     }
   }
 

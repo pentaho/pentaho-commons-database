@@ -148,9 +148,6 @@ public class FragmentHandler extends AbstractXulEventHandler implements IFragmen
       case OCI:
         fragment = getFragment(database, "_oci.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;
-      case ODBC:
-        fragment = getFragment(database, "_odbc.xul", "common_odbc.xul"); //$NON-NLS-1$ //$NON-NLS-2$
-        break;
       case PLUGIN:
         fragment = getFragment(database, "_plugin.xul", "common_native.xul"); //$NON-NLS-1$ //$NON-NLS-2$
         break;

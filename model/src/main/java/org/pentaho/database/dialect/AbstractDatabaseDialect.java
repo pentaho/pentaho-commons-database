@@ -650,11 +650,7 @@ public abstract class AbstractDatabaseDialect implements IDatabaseDialect, IDriv
   }
 
   public String getDriverClass( IDatabaseConnection connection ) {
-    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "sun.jdbc.odbc.JdbcOdbcDriver";
-    } else {
-      return getNativeDriver();
-    }
+    return getNativeDriver();
   }
 
   /**

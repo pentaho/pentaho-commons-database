@@ -31,7 +31,7 @@ public class RedshiftDatabaseDialect extends PostgreSQLDatabaseDialect {
   private static final long serialVersionUID = 7855404769773045690L;
 
   private static final IDatabaseType DBTYPE = new DatabaseType( "Redshift", "REDSHIFT", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 5439,
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 5439,
       "http://http://docs.aws.amazon.com/redshift/latest/mgmt/configure-jdbc-connection.html" );
 
   static final String JDBC_AUTH_METHOD = "jdbcAuthMethod";
@@ -63,15 +63,11 @@ public class RedshiftDatabaseDialect extends PostgreSQLDatabaseDialect {
   }
 
   @Override public String getURL( IDatabaseConnection connection ) {
-    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + connection.getDatabaseName();
+    if ( Arrays.asList( PROFILE_CREDENTIALS, IAM_CREDENTIALS )
+      .contains( connection.getAttributes().get( JDBC_AUTH_METHOD ) ) ) {
+      return "jdbc:redshift:iam://" + endOfUrl( connection );
     } else {
-      if ( Arrays.asList( PROFILE_CREDENTIALS, IAM_CREDENTIALS )
-        .contains( connection.getAttributes().get( JDBC_AUTH_METHOD ) ) ) {
-        return "jdbc:redshift:iam://" + endOfUrl( connection );
-      } else {
-        return "jdbc:redshift://" + endOfUrl( connection );
-      }
+      return "jdbc:redshift://" + endOfUrl( connection );
     }
   }
 

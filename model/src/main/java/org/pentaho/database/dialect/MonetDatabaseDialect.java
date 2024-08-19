@@ -34,7 +34,7 @@ public class MonetDatabaseDialect extends AbstractDatabaseDialect {
   private static final IDatabaseType DBTYPE = new DatabaseType(
       "MonetDB", //$NON-NLS-1$
       "MONETDB", //$NON-NLS-1$
-      DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 50000,
+      DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 50000,
       "" //$NON-NLS-1$
   );
 
@@ -58,17 +58,14 @@ public class MonetDatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection databaseConnection ) throws DatabaseDialectException {
-    if ( databaseConnection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + databaseConnection.getDatabaseName(); //$NON-NLS-1$
+    if ( toInt( databaseConnection.getDatabasePort(), -1 ) <= 0 || isEmpty( databaseConnection.getHostname() ) ) {
+      // When no port is specified, or port is 0 support local/memory
+      // HSQLDB databases.
+      return getNativeJdbcPre() + databaseConnection.getDatabaseName();
     } else {
-      if ( toInt( databaseConnection.getDatabasePort(), -1 ) <= 0 || isEmpty( databaseConnection.getHostname() ) ) {
-        // When no port is specified, or port is 0 support local/memory
-        // HSQLDB databases.
-        return getNativeJdbcPre() + databaseConnection.getDatabaseName();
-      } else {
-        return getNativeJdbcPre()
-            + "//" + databaseConnection.getHostname() + ":" + databaseConnection.getDatabasePort() + "/" + databaseConnection.getDatabaseName(); //$NON-NLS-1$
-      }
+      return getNativeJdbcPre()
+        + "//" + databaseConnection.getHostname() + ":" + databaseConnection.getDatabasePort() + "/"
+        + databaseConnection.getDatabaseName(); //$NON-NLS-1$
     }
   }
 

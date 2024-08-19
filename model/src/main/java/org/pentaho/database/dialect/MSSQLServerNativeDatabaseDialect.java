@@ -35,7 +35,7 @@ public class MSSQLServerNativeDatabaseDialect extends MSSQLServerDatabaseDialect
   public static final String ATTRIBUTE_USE_INTEGRATED_SECURITY = "MSSQLUseIntegratedSecurity"; //$NON-NLS-1$
 
   private static final IDatabaseType DBTYPE = new DatabaseType( "MS SQL Server (Native)", "MSSQLNative",
-      DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 1433,
+      DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 1433,
       "http://msdn.microsoft.com/en-us/library/ms378428.aspx" );
 
   public MSSQLServerNativeDatabaseDialect() {
@@ -58,23 +58,19 @@ public class MSSQLServerNativeDatabaseDialect extends MSSQLServerDatabaseDialect
 
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
-    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + connection.getDatabaseName();
-    } else {
-      String useIntegratedSecurity = "false";
-      Object value = connection.getAttributes().get( ATTRIBUTE_USE_INTEGRATED_SECURITY );
-      if ( value != null && value instanceof String ) {
-        useIntegratedSecurity = (String) value;
-        // Check if the String can be parsed into a boolean
-        try {
-          Boolean.parseBoolean( useIntegratedSecurity );
-        } catch ( IllegalArgumentException e ) {
-          useIntegratedSecurity = "false"; //$NON-NLS-1$
-        }
+    String useIntegratedSecurity = "false";
+    Object value = connection.getAttributes().get( ATTRIBUTE_USE_INTEGRATED_SECURITY );
+    if ( value != null && value instanceof String ) {
+      useIntegratedSecurity = (String) value;
+      // Check if the String can be parsed into a boolean
+      try {
+        Boolean.parseBoolean( useIntegratedSecurity );
+      } catch ( IllegalArgumentException e ) {
+        useIntegratedSecurity = "false"; //$NON-NLS-1$
       }
-      return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + ";databaseName="
-          + connection.getDatabaseName() + ";integratedSecurity=" + useIntegratedSecurity;
     }
+    return getNativeJdbcPre() + connection.getHostname() + ":" + connection.getDatabasePort() + ";databaseName="
+      + connection.getDatabaseName() + ";integratedSecurity=" + useIntegratedSecurity;
   }
 
   @Override

@@ -36,7 +36,7 @@ public class DatabaseTypeHelperTest {
   public void getDatabaseTypeByShortName() {
     MSSQLServerNativeDatabaseDialect mssqlNATIVE  = Mockito.spy( new MSSQLServerNativeDatabaseDialect() );
     Mockito.doReturn( new DatabaseType( "MS SQL Server (Native)", "MSSQLNATIVE",
-        DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 1433,
+        DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 1433,
         "http://msdn.microsoft.com/en-us/library/ms378428.aspx" ) ).when( mssqlNATIVE ).getDatabaseType();
     List<IDatabaseType> databaseTypes = new ArrayList<IDatabaseType>();
     databaseTypes.add( ( new MSSQLServerDatabaseDialect() ).getDatabaseType() );
@@ -47,7 +47,7 @@ public class DatabaseTypeHelperTest {
 
     MSSQLServerNativeDatabaseDialect mssqlNative  = Mockito.spy( new MSSQLServerNativeDatabaseDialect() );
     Mockito.doReturn( new DatabaseType( "MS SQL Server (Native)", "MSSQLNative",
-        DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 1433,
+        DatabaseAccessType.getList( DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 1433,
         "http://msdn.microsoft.com/en-us/library/ms378428.aspx" ) ).when( mssqlNative ).getDatabaseType();
     databaseTypes = new ArrayList<IDatabaseType>();
     databaseTypes.add( ( new MSSQLServerDatabaseDialect() ).getDatabaseType() );

@@ -29,7 +29,7 @@ public class InformixDatabaseDialect extends AbstractDatabaseDialect {
    */
   private static final long serialVersionUID = -3869260264366995990L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "Informix", "INFORMIX", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 9088,
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 9088,
       "http://publib.boulder.ibm.com/infocenter/idshelp/v10/index.jsp?topic=/com.ibm.jdbc_pg.doc/jdbc212.htm" );
   
   public InformixDatabaseDialect() {
@@ -44,12 +44,8 @@ public class InformixDatabaseDialect extends AbstractDatabaseDialect {
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
     // jdbc:informix-sqli://192.168.149.128:9088/stores:INFORMIXSERVER=demo_on
-    if ( connection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + connection.getDatabaseName();
-    } else {
-      return "jdbc:informix-sqli://" + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
-          + connection.getDatabaseName() + ":INFORMIXSERVER=" + connection.getInformixServername() + ";DELIMIDENT=Y";
-    }
+    return "jdbc:informix-sqli://" + connection.getHostname() + ":" + connection.getDatabasePort() + "/"
+      + connection.getDatabaseName() + ":INFORMIXSERVER=" + connection.getInformixServername() + ";DELIMIDENT=Y";
   }
 
   /**

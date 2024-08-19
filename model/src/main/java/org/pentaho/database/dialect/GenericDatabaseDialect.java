@@ -32,7 +32,7 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
   public static final String ATTRIBUTE_CUSTOM_DRIVER_CLASS = "CUSTOM_DRIVER_CLASS";
 
   private static final IDatabaseType DBTYPE = new DatabaseType( "Generic database", "GENERIC", DatabaseAccessType
-      .getList( DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), -1, null );
+      .getList( DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), -1, null );
 
   public GenericDatabaseDialect() {
   }
@@ -178,15 +178,8 @@ public class GenericDatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection connection ) throws DatabaseDialectException {
-    if ( connection.getAccessType() == DatabaseAccessType.NATIVE ) {
-      String url = connection.getAttributes().get( ATTRIBUTE_CUSTOM_URL );
-      if ( url == null ) {
-        url = "";
-      }
-      return url;
-    } else {
-      return "jdbc:odbc:" + connection.getDatabaseName();
-    }
+    String url = connection.getAttributes().get( ATTRIBUTE_CUSTOM_URL );
+    return url == null ? "" : url;
   }
 
   /**

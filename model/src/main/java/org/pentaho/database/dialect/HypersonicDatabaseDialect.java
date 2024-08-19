@@ -32,7 +32,7 @@ public class HypersonicDatabaseDialect extends AbstractDatabaseDialect {
    */
   private static final long serialVersionUID = -2040510217856396716L;
   private static final IDatabaseType DBTYPE = new DatabaseType( "Hypersonic", "HYPERSONIC", DatabaseAccessType.getList(
-      DatabaseAccessType.NATIVE, DatabaseAccessType.ODBC, DatabaseAccessType.JNDI ), 9001,
+      DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 9001,
       "http://hsqldb.sourceforge.net/doc/guide/ch04.html#N109DA" );
 
   public HypersonicDatabaseDialect() {
@@ -55,17 +55,13 @@ public class HypersonicDatabaseDialect extends AbstractDatabaseDialect {
 
   @Override
   public String getURL( IDatabaseConnection databaseConnection ) throws DatabaseDialectException {
-    if ( databaseConnection.getAccessType() == DatabaseAccessType.ODBC ) {
-      return "jdbc:odbc:" + databaseConnection.getDatabaseName();
+    if ( toInt( databaseConnection.getDatabasePort(), -1 ) <= 0 || isEmpty( databaseConnection.getHostname() ) ) {
+      // When no port is specified, or port is 0 support local/memory
+      // HSQLDB databases.
+      return getNativeJdbcPre() + databaseConnection.getDatabaseName();
     } else {
-      if ( toInt( databaseConnection.getDatabasePort(), -1 ) <= 0 || isEmpty( databaseConnection.getHostname() ) ) {
-        // When no port is specified, or port is 0 support local/memory
-        // HSQLDB databases.
-        return getNativeJdbcPre() + databaseConnection.getDatabaseName();
-      } else {
-        return getNativeJdbcPre() + "hsql://" + databaseConnection.getHostname() + ":"
-            + databaseConnection.getDatabasePort() + "/" + databaseConnection.getDatabaseName();
-      }
+      return getNativeJdbcPre() + "hsql://" + databaseConnection.getHostname() + ":"
+        + databaseConnection.getDatabasePort() + "/" + databaseConnection.getDatabaseName();
     }
   }
 
