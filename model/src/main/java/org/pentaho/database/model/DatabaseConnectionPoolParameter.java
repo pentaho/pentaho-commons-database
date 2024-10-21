@@ -15,7 +15,7 @@ package org.pentaho.database.model;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class DatabaseConnectionPoolParameter implements IDatabaseConnectionPoolParameter, Serializable {
