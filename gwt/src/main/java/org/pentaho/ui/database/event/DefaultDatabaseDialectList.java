@@ -15,8 +15,8 @@ package org.pentaho.ui.database.event;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAnyElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.pentaho.database.IDatabaseDialect;
 
