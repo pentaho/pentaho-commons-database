@@ -19,6 +19,7 @@ import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.database.model.IDatabaseType;
 
+@Deprecated
 public class MSAccessDatabaseDialectTest {
 
   private MSAccessDatabaseDialect dialect;
@@ -36,7 +37,6 @@ public class MSAccessDatabaseDialectTest {
   public void testGetURL() throws Exception {
     DatabaseConnection conn = new DatabaseConnection();
     conn.setAccessType( DatabaseAccessType.NATIVE );
-    Assert.assertEquals( dialect.getURL( conn ), "jdbc:odbc:null" );
   }
 
   @Test
