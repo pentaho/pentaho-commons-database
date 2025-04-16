@@ -13,7 +13,7 @@
 
 package org.pentaho.database.service;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.database.DatabaseDialectException;
 import org.pentaho.database.dialect.GenericDatabaseDialect;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 public class DatabaseConnectionServiceIT {
 
   public static final String DRIVER_ORG_MYSQL = "org.mysql.Driver";
-  public static final String DRIVER_MYSQL_JDBC = "com.mysql.jdbc.Driver";
+  public static final String DRIVER_MYSQL_JDBC = "com.mysql.cj.jdbc.Driver";
   public static final String DRIVER_MICROSOFT_SQLSERVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
   public static final String DRIVER_HSQLDB = "org.hsqldb.jdbcDriver";
 
@@ -44,12 +44,12 @@ public class DatabaseConnectionServiceIT {
   public static final String TEST_DB_NAME = "testdb";
   public static final String DATABASE_SHORTNAME_GENERIC = "GENERIC";
 
-  DatabaseDialectService dialectService;
-  DatabaseConnectionService connectionService;
-  DatabaseTypeHelper helper;
+  static DatabaseDialectService dialectService;
+  static DatabaseConnectionService connectionService;
+  static DatabaseTypeHelper helper;
 
-  @Before
-  public void setUp() {
+  @BeforeClass
+  public static void setUp() {
     dialectService = new DatabaseDialectService( false );
     connectionService = new DatabaseConnectionService( dialectService );
     helper = new DatabaseTypeHelper( dialectService.getDatabaseTypes() );

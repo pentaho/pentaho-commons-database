@@ -93,10 +93,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.49</version>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>8.4.0</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <!-- Exclude the transitive dependency on protobuf-java due to CVE-2024-7254,
+               This exclusion may be removed in a future upgrade, when safe.-->
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.hsqldb</groupId>
