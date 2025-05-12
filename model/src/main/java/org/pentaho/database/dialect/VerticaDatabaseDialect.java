@@ -33,7 +33,7 @@ public class VerticaDatabaseDialect extends AbstractDatabaseDialect {
 
   private static final long serialVersionUID = 449286268556765514L;
 
-  private static final IDatabaseType DBTYPE = new DatabaseType( "Vertica", "VERTICA", DatabaseAccessType.getList(
+  private static final IDatabaseType DBTYPE = new DatabaseType( "Vertica (deprecated)", "VERTICA", DatabaseAccessType.getList(
       DatabaseAccessType.NATIVE, DatabaseAccessType.JNDI ), 5433, null );
 
   public VerticaDatabaseDialect() {

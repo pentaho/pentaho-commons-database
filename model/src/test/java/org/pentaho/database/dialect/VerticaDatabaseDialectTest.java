@@ -52,7 +52,7 @@ public class VerticaDatabaseDialectTest {
   @Test
   public void testGetDatabaseType() {
     IDatabaseType dbType = dialect.getDatabaseType();
-    Assert.assertEquals( dbType.getName(), "Vertica" );
+    Assert.assertEquals( dbType.getName(), "Vertica (deprecated)" );
   }
 
   @Test
