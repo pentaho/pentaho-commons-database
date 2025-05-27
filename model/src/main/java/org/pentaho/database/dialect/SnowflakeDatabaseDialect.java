@@ -56,7 +56,7 @@ public class SnowflakeDatabaseDialect extends AbstractDatabaseDialect {
   }
 
   @Override public String[] getUsedLibraries() {
-    return new String[] { "snowflake-jdbc-3.23.1.jar" };
+    return new String[] { "snowflake-jdbc-3.24.0.jar" };
   }
 
   @Override public String getNativeDriver() {
