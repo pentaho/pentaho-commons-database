@@ -15,7 +15,7 @@ package org.pentaho.database.model;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Class to contain the information needed to parition (cluster): id, hostname, port, database
