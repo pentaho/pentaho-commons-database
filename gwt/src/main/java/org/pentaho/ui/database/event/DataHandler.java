@@ -1884,7 +1884,7 @@ public class DataHandler extends AbstractXulEventHandler {
   }
 
   private native void jsni_showContextHelp( final String baseDocUrl )/*-{
-   $wnd.open(baseDocUrl + "pdia-10.2-install/pentaho-configuration/tasks-to-be-performed-by-a-pentaho-administrator/define-data-connections",
+   $wnd.open("https://docs.pentaho.com/pdia-10.2-install/pentaho-configuration/tasks-to-be-performed-by-a-pentaho-administrator/define-data-connections",
        "webHelp","width=1200,height=600,location=no,status=no,toolbar=no");
   }-*/;
 
