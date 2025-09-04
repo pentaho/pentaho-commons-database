@@ -115,7 +115,7 @@
 
     <!-- third party dependencies -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-user</artifactId>
     </dependency>
 
@@ -234,7 +234,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>test</scope>
     </dependency>
