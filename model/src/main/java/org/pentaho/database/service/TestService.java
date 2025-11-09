@@ -20,7 +20,7 @@ public class TestService {
     public static void main(String[] args) {
         Object value = "123";
         Integer a = 56 + ConversionService.convert(value);
-        System.out.println(convert(value));
+       
     }
 
 
