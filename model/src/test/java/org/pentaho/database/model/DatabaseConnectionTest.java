@@ -34,4 +34,14 @@ public class DatabaseConnectionTest {
     Assert.assertEquals( null, connection.getDatabaseName() );
     Assert.assertEquals( "default", connection.getDatabaseName() );
   }
+
+  @Test
+  public void testGetConnectionId() {
+    IDatabaseConnection connection = new DatabaseConnection();
+    connection.setConnectionId( "test" );
+    Assert.assertEquals( "test", connection.getConnectionId() );
+
+    String str = connection.toString();
+    Assert.assertTrue( str.contains( "connectionId=test" ) );
+  }
 }

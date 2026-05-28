@@ -45,6 +45,19 @@ public interface IDatabaseConnection extends Serializable {
 
   String getName();
 
+  /**
+   * Set the connection-management-service's connection Id.
+   *
+   * @param connectionId
+   *            connection Id.
+   */
+  void setConnectionId( String connectionId );
+
+  /**
+   * @return connection-management-service's connection Id.
+   */
+  String getConnectionId();
+
   void setHostname( String hostname );
 
   String getHostname();
