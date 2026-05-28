@@ -14,22 +14,19 @@
 package org.pentaho.database.model;
 
 import com.google.gwt.core.shared.GwtIncompatible;
-import org.apache.commons.codec.binary.StringUtils;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.pentaho.database.util.Const;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
-  private static final long serialVersionUID = -3816140282186728714L;
+  private static final long serialVersionUID = -3536617472795421491L;
 
   public static final String EMPTY_OPTIONS_STRING = "><EMPTY><"; //$NON-NLS-1$
 
@@ -43,6 +40,8 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   String id;
 
   String name;
+
+  String connectionId;
 
   String databaseName;
 
@@ -205,6 +204,26 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
    */
   public String getName() {
     return name;
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.pentaho.database.model.IDatabaseConnection#setConnectionId(java.lang.String)
+   */
+  @Override
+  public void setConnectionId(  String connectionId ) {
+    this.connectionId = connectionId;
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.pentaho.database.model.IDatabaseConnection#getConnectionId()
+   */
+  @Override
+  public String getConnectionId() {
+    return connectionId;
   }
 
   /*
@@ -656,6 +675,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
   private String encodeProperties() {
     StringBuilder sb = new StringBuilder();
     sb.append( encodeAttribute( "name=", name ) );
+    sb.append( encodeAttribute( "connectionId=", connectionId ) );
     sb.append( encodeAttribute( "databaseName=", databaseName ) );
     sb.append( encodeAttribute( "databasePort=", databasePort ) );
     sb.append( encodeAttribute( "hostname=", hostname ) );
@@ -716,7 +736,7 @@ public class DatabaseConnection implements Serializable, IDatabaseConnection {
 
   @Override
   public String toString() {
-    return "DatabaseConnection [id=" + id + ", name=" + name + ", databaseName=" + databaseName + ", databasePort="
+    return "DatabaseConnection [id=" + id + ", name=" + name + ", connectionId=" + connectionId + ", databaseName=" + databaseName + ", databasePort="
       + databasePort + ", hostname=" + hostname + ", username=" + username + ", password=*****"
       + ", dataTablespace=" + dataTablespace + ", indexTablespace=" + indexTablespace + ", streamingResults="
       + streamingResults + ", quoteAllFields=" + quoteAllFields + ", changed=" + changed
